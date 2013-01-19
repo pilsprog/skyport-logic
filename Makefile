@@ -1,48 +1,30 @@
-PLATFORM := linux
 COMPILER=javac
 INTERPRETER=java
+BINDIR=bin
 
-ifeq ($(PLATFORM),linux)
+CFLAGS=-d $(BINDIR)
+RUNFLAGS=-cp bin
 
-CFLAGS=-cp ../lwjgl/jar/lwjgl.jar:../PNGDecoder/PNGDecoder.jar:.
-RUNFLAGS=-cp ../lwjgl/jar/lwjgl.jar:../PNGDecoder/PNGDecoder.jar:.
-LD_LIBRARY_PATH=../lwjgl/native/linux/
-DELETE=rm
+SOURCES=$(wildcard world/*.java logic/*.java net/*.java)
+CLASSFILES=$(patsubst %.java, $(BINDIR)/%.class, $(notdir $(SOURCES)))
 
-endif
-ifeq ($(PLATFORM),windows)
+default: $(CLASSFILES)
+	@$(MAKE) $(BINDIR)/Main.class
 
-CFLAGS=-cp ..\lwjgl\jar\lwjgl.jar;..\PNGDecoder\PNGDecoder.jar;.
-RUNFLAGS=-cp ..\lwjgl\jar\lwjgl.jar;..\PNGDecoder\PNGDecoder.jar;.
-LD_LIBRARY_PATH=..\lwjgl\native\windows\
-DELETE=erase
-
-endif
-
-default: Main.class Makefile
-run: default
-	@LD_LIBRARY_PATH=$(LD_LIBRARY_PATH) $(INTERPRETER) $(RUNFLAGS) Main
-
-clean:
-	$(DELETE) *.class
-
-Main.class: World.class Engine.class Main.java Makefile
+$(BINDIR)/Main.class: Makefile
 	$(COMPILER) $(CFLAGS) Main.java
 
-World.class: World.java
-	$(COMPILER) $(CFLAGS) World.java
+$(BINDIR)/%.class: logic/%.java
+	$(COMPILER) $(CFLAGS) $<
+$(BINDIR)/%.class: world/%.java
+	$(COMPILER) $(CFLAGS) $<
+$(BINDIR)/%.class: net/%.java
+	$(COMPILER) $(CFLAGS) $< 
 
-Engine.class: World.class Graphics.class Conf.class Engine.java
-	$(COMPILER) $(CFLAGS) Engine.java
-
-Graphics.class: Texture.class Graphics.java
-	$(COMPILER) $(CFLAGS) Graphics.java
-
-Conf.class: Conf.java
-	$(COMPILER) $(CFLAGS) Conf.java
-
-Texture.class: Texture.java
-	$(COMPILER) $(CFLAGS) Texture.java
-
-Tile.class: Texture.class Tile.java
-	$(COMPILER) $(CFLAGS) Tile.java
+# Some cleanup & convenience stuff
+run:
+	$(INTERPRETER) $(RUNFLAGS) Main
+clean:
+	$(DELETE) $(CLASSFILES)
+.PHONY: run
+.PHONY: clean
