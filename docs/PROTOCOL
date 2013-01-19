@@ -1,9 +1,19 @@
+SKYPORT AI COMPETITION PROTOCOL REV. 1
+
 SYNOPSIS
     This file describes the protocol used by the AIs to communicate with the
-    Server.
+    Server. The revision described in this protocol is rev1.
+    Note that lines prefixed with ">" describe "incoming" data, that is, data
+    sent from the server to the AI client, while lines prefixed with "<"
+    describe "outgoing" data, that is, data the AI client sends to the server.
+    Note also that messages in this document are broken up into several lines
+    for clarity, and are adorned with explanatory comments. however, when they
+    are sent to the server, they need to be all on one single line without any
+    comments.
 
 TRANSPORT
-    The transport protocol used is line-based TCP.
+    The transport protocol used is line-based TCP. The server accepts UNIX-style
+    line-endings (\n) and windows-style line-endings (\r\n).
     When reading from the socket, make sure that you don't limit the length of
     your lines, as some packets may end up rather large.
 
@@ -18,11 +28,14 @@ CODEC & FORMAT
     not require you to have capabilities like partial JSON parsing, and does not
     require you to deal with special characters/unicode. However, chosing a JSON
     parser that is reasonably fast may give you an advantage.
-    Make sure that when you read from the TCP socket
     
 HANDSHAKE
-    Handshake sent by the AI to establish the connection
-    ...
+    Handshake sent by the AI to establish the connection.
+    Sent immediately upon connecting. If no handshake is sent after 10 seconds,
+    the server will drop the connection.
+    < {"connect":REVISION,
+       "name":NAME,
+      }
     
 GAMESTATE
     Gamestate sent by the server to each of the AIs
