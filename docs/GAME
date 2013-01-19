@@ -4,8 +4,8 @@ SYNOPSIS
 
 MAP
     The map is a hexagonal grid of tiles. See PROTOCOL/MAP-OBJECT for an exact description
-    of the coordinate system used. In short, the tiles have a normal coordinate system
-    impose on them:
+    of the map format used. In short, the tiles have a normal coordinate system
+    imposed on them:
 
 
 
@@ -13,23 +13,25 @@ MAP
       \                               /
        \                             /
         \                _____      /
-         \         <1>  /     \  <1>
+         \         <0>  /     \  <0>
           \            /       \
-           \     ,----(   1,1   )----.
-            <2> /      \       /      \ <2>
-         _____ /  2,1   \_____/  1,2   \_____
-    <3> /      \        /     \        /     \  <3>
+           \     ,----(   0,0   )----.
+            <1> /      \       /      \ <1>
+         _____ /  1,0   \_____/  0,1   \_____
+    <2> /      \        /     \        /     \  <2>
        /        \      /       \      /       \
-      (   3,1    )----(   2,2   )----(   1,3   )
+      (   2,0    )----(   1,1   )----(   0,2   )
        \        /      \       /      \       /
-        \_____ /  3,1   \_____/  2,1   \_____/
+        \_____ /  2,1   \_____/  1,2   \_____/
                \        /     \        /
                 \      /       \      /
-                 `----(   3,3   )----'
+                 `----(   2,2   )----'
                        \       /
                         \_____/
-  
-    
+
+    Positions are always written as [J, K], i.e. the J-coordinate comes first, the K-coordinate second.
+
+			
 RESOURCES
     There are three basic types of resources...
 
