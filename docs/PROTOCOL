@@ -1,0 +1,22 @@
+SYNOPSIS
+    This file describes the protocol used by the AIs to communicate with the
+    Server.
+
+CODEC & FORMAT
+    Codec used for all transmissions
+    ...
+    
+HANDSHAKE
+    Handshake sent by the AI to establish the connection
+    ...
+    
+GAMESTATE
+    Gamestate sent by the server to each of the AIs
+    ...
+    
+ACTIONS
+    Actions that can be taken by the AI.
+    ...
+    
+
+    
