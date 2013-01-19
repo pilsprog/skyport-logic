@@ -33,14 +33,39 @@ HANDSHAKE
     Handshake sent by the AI to establish the connection.
     Sent immediately upon connecting. If no handshake is sent after 10 seconds,
     the server will drop the connection.
-    < {"connect":REVISION,
-       "name":NAME,
-      }
-    
+        < {"connect":REVISION,   // The protocol revision as integer, i.e. 1
+        <  "name":NAME           // The name of your AI. String with less than 16 letters.
+        < }
+    If the handshake was successful, the server answers with
+        > {"connect":true}
+    Otherwise with
+        > {"connect":false,
+        >  "reason":"Some string that describes why the connection failed"
+	> }
+
+GAMESTART
+    Before the game starts, the server sends an initial gamestate to all AIs, with
+    the TURN-NUMBER = 0. This gamestate should not be replied to, and the server
+    rejects all replies. 10 seconds after the GAMESTART was sent, the actual
+    gameplay starts. The intent is to give all clients time to initialize and process
+    the board, resources & starting-positions into datastructures.
+
 GAMESTATE
-    Gamestate sent by the server to each of the AIs
-    ...
-    
+    Gamestate sent by the server to each of the AIs every round. You may use
+    any information contained in this packet to your advantage however you like.
+    After you have received the GAMESTATE packet, you have 3 seconds to reply
+    with 3 actions. If your reply is late, your actions will be discarded and
+    you forfeit your turn.
+        > {"gamestate": TURN-NUMBER,
+            // turn-number starting to count at 1, i.e. this would be the TURN-NUMBERth turn.
+        >  "map": MAP-OBJECT,
+	    // mapobject describing all tiles. See MAP-OBJECT at the end of this file for its structure.
+        >  "entities": ENTITY-OBJECT,
+	    // entity-object describing the position of all entities on the map.
+        >  "players":["player1", "player2", ...]
+	    // players active in the game. The first player in the list, is the first allowed to act.
+        > }
+
 ACTIONS
     Actions that can be taken by the AI.
     ...
