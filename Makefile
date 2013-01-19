@@ -25,6 +25,6 @@ $(BINDIR)/%.class: net/%.java
 run:
 	$(INTERPRETER) $(RUNFLAGS) Main
 clean:
-	$(DELETE) $(CLASSFILES)
+	$(RM) $(CLASSFILES) $(BINDIR)/Main.class
 .PHONY: run
 .PHONY: clean
