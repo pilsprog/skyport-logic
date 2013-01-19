@@ -1,0 +1,39 @@
+SYNOPSIS
+    This file describes the game rules as implemented by the server.
+    
+
+MAP
+    The map consists...
+
+    
+RESOURCES
+    There are three basic types of resources...
+
+    
+WEAPONS
+    There are three basic types of weapons...
+
+    
+LOADOUT
+    Upon gamestart, the AI can chose...
+
+    
+STARTING
+    Upon gamestart, each AI is set to a protected starting-tile...
+
+    
+ACTIONS
+    Each round, each client gets three actions to use ...
+
+    
+MOVEMENT
+    Each action may be used for moving in one of the six cardinal directions...
+
+    
+FIGHTING
+    Each round, you may use one of your actions to fire a weapon. Firing a weapon
+    will terminate your turn...
+
+    
+WINNING CONDITION
+    A round has finished once ...
