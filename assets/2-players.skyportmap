@@ -1,0 +1,46 @@
+skyport map format 1 # Format version
+ignore /\_           # Characters to ignore (whitespace is always ignored)
+players 2	     # This map is for two players
+description "testmap for two players"
+spawn S		     # S denotes a spawnpoint
+grass G		     # G is grass
+cogs  C		     # C are cogs
+rubidium R	     # R is rubidium
+explosium E	     # E is explosium
+void V	  	     # V is void
+rocks O		     # O are rocks ("obstacle")
+
+
+                                                      __                                           
+                                                   __/G \__                                           
+                                                __/G \__/G \__                                        
+                                             __/G \__/G \__/G \__                                     
+                                          __/G \__/G \__/G \__/G \__                                  
+                                       __/G \__/G \__/G \__/G \__/G \__                               
+                                    __/G \__/G \__/G \__/G \__/G \__/G \__                            
+                                 __/G \__/R \__/G \__/G \__/R \__/G \__/G \__                         
+                              __/G \__/G \__/G \__/V \__/G \__/G \__/G \__/G \__                      
+                           __/G \__/G \__/G \__/V \__/V \__/G \__/R \__/E \__/G \__                   
+                        __/G \__/G \__/G \__/G \__/V \__/G \__/G \__/G \__/G \__/G \__                
+                     __/G \__/G \__/G \__/E \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__             
+                  __/G \__/R \__/R \__/G \__/G \__/R \__/G \__/G \__/G \__/G \__/G \__/G \__          
+               __/G \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/R \__/G \__/G \__       
+            __/G \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__    
+         __/G \__/G \__/R \__/G \__/E \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__ 
+        /S \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/R \__/G \__/G \__/G \__/R \__/G \__/S \
+        \__/G \__/G \__/G \__/C \__/G \__/G \__/G \__/G \__/G \__/E \__/G \__/G \__/G \__/G \__/G \__/
+           \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/R \__/R \__/G \__/G \__/   
+              \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/R \__/      
+                 \__/G \__/R \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/         
+                    \__/G \__/G \__/G \__/E \__/G \__/R \__/G \__/G \__/G \__/G \__/G \__/            
+                       \__/G \__/C \__/G \__/G \__/G \__/G \__/G \__/G \__/C \__/G \__/               
+                          \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/                  
+                             \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/C \__/                     
+                                \__/G \__/G \__/G \__/G \__/G \__/G \__/G \__/                        
+                                   \__/G \__/G \__/C \__/G \__/G \__/G \__/                           
+                                      \__/G \__/G \__/G \__/G \__/G \__/                              
+                                         \__/G \__/G \__/G \__/G \__/                                 
+                                            \__/G \__/G \__/G \__/                                     
+                                               \__/G \__/G \__/                                       
+                                                  \__/G \__/                                          
+                                                     \__/

@@ -51,11 +51,38 @@ TILES
         COGS      - Cannot be moved onto, but if you are in its immediate proximity,
                     you will continuously gain cogs for each round.
 
+TURNS
+    Each round, each player gets three turns. In a turn, he may move to any
+    adjacent tile, covering a maximal distance of three tiles per turn. A
+    player may chose to use an action for something else, such as firing a
+    weapon or simply waiting. Firing a weapon immediately ends the turn, but
+    any left-over actions give your attack an extra damage bonus.
+    Waiting incurrs a small point/health penality, so that inactive AIs will
+    get kicked out after a while.
+
+		    
 WEAPONS
     There are three basic weapons, the laser, the mortar and the battle droid.
     Each weapon may be upgraded three times, to increase its range and damage,
-    see the next section
-		    
+    see the next sections.
+
+MORTAR
+    The mortar is the easiest to use; it simply has a radius/range, and it
+    hit any tile inside that range. An alternative interpretation (resulting
+    in the same tiles) is to say "the mortar can move a fixed number of steps
+    in any direction. Any tile it can reach in that number of steps, is in
+    range". The mortar is unaffected by gaps and rocks, but shooting at them
+    has no effect.
+    The mortar does the least damage of all weapons.
+    
+LASER
+    The laser has the longest range, and shoots straight. That means there 
+
+    
+
+
+
+       
 RESOURCES
     There are three basic types of resources, 
 
