@@ -29,15 +29,35 @@ MAP
                        \       /
                         \_____/
 
-    Positions are always written as [J, K], i.e. the J-coordinate comes first, the K-coordinate second.
+    Positions are always written as [J, K], i.e. the J-coordinate comes first,
+    the K-coordinate second. For instance, you may send the server a message
+    such as "go to [1,0]" and then "fire mortar [2,2]". The server would then
+    first move you to the tile [1, 0], and then perform your mortar shot,
+    assuming it is in range.
+    There are seven different types of tiles, as described in the next section.
 
-			
-RESOURCES
-    There are three basic types of resources...
+TILES
+    ACCESSIBLE TILES (These tiles can be moved onto)
+        GRASS     - normal grassland. No effect. May come in various forms and colors, but
+    	            robots don't care about aesthetics.
+    INACCESSIBLE TILES (These tiles cannot be moved onto, but the server may place you on them.)
+    	VOID      - No tile at all.	
+        SPAWN     - protected spawn area. Once you move away from it, you can't re-enter.
+        ROCK      - A rock is blocking the way.
+	EXPLODIUM - Cannot be moved onto, but if you are in its immediate proximity,
+	            you will continuously gain explodium for each round.
+        RUBIDIUM  - Cannot be moved onto, but if you are in its immediate proximity,
+		    you will continuously gain rubidium for each round.
+        COGS      - Cannot be moved onto, but if you are in its immediate proximity,
+                    you will continuously gain cogs for each round.
 
-    
 WEAPONS
-    There are three basic types of weapons...
+    There are three basic weapons, the laser, the mortar and the battle droid.
+    Each weapon may be upgraded three times, to increase its range and damage,
+    see the next section
+		    
+RESOURCES
+    There are three basic types of resources, 
 
     
 LOADOUT
