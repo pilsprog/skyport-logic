@@ -1,6 +1,13 @@
 COMPILER=javac
 BINDIR=bin
+PLATFORM:=linux
+ifeq ($(PLATFORM),linux)
 CFLAGS=-cp netty/netty.jar:$(BINDIR) -d $(BINDIR)
+endif
+
+ifeq ($(PLATFORM),windows)
+CFLAGS=-cp netty/netty.jar;$(BINDIR) -d $(BINDIR)
+endif
 
 default:
 	@$(MAKE) $(BINDIR)/Main.class

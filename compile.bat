@@ -1,2 +1,2 @@
-make default
+make default PLATFORM=windows
 @Pause
