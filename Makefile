@@ -1,30 +1,19 @@
 COMPILER=javac
-INTERPRETER=java
 BINDIR=bin
+CFLAGS=-cp netty/netty.jar:$(BINDIR) -d $(BINDIR)
 
-CFLAGS=-d $(BINDIR)
-RUNFLAGS=-cp bin
-
-SOURCES=$(wildcard world/*.java logic/*.java net/*.java)
-CLASSFILES=$(patsubst %.java, $(BINDIR)/%.class, $(notdir $(SOURCES)))
-
-default: $(CLASSFILES)
+default:
 	@$(MAKE) $(BINDIR)/Main.class
 
-$(BINDIR)/Main.class: Makefile
+$(BINDIR)/Main.class: $(BINDIR)/Acceptor.class Makefile
 	$(COMPILER) $(CFLAGS) Main.java
-
-$(BINDIR)/%.class: logic/%.java
+# These two always need to be compiled in one go...
+$(BINDIR)/Acceptor.class $(BINDIR)/AIClientHandler.class: net/Acceptor.java net/AIClientHandler.java
+	$(COMPILER) $(CFLAGS) net/Acceptor.java net/AIClientHandler.java
+$(BINDIR)/World.class: world/World.java
 	$(COMPILER) $(CFLAGS) $<
-$(BINDIR)/%.class: world/%.java
-	$(COMPILER) $(CFLAGS) $<
-$(BINDIR)/%.class: net/%.java
-	$(COMPILER) $(CFLAGS) $< 
 
 # Some cleanup & convenience stuff
-run:
-	$(INTERPRETER) $(RUNFLAGS) Main
 clean:
-	$(RM) $(CLASSFILES) $(BINDIR)/Main.class
-.PHONY: run
+	$(RM) bin/*.class $(BINDIR)/Main.class
 .PHONY: clean

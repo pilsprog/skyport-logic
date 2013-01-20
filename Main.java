@@ -1,5 +1,11 @@
 public class Main {
     public static void main(String[] args) {
-	System.out.println("Testing the build system");
+	int port;
+        if (args.length > 0) {
+            port = Integer.parseInt(args[0]);
+        } else {
+            port = 54321;
+        }
+        new Acceptor(port).run();
     }
 }

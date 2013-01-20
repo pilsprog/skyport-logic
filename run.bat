@@ -1,3 +1,3 @@
 @echo off
-java -cp bin Main
+java -cp bin:netty/netty.jar Main
 @Pause
