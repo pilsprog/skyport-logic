@@ -1,24 +1,20 @@
 COMPILER=javac
 BINDIR=bin
 PLATFORM:=linux
-ifeq ($(PLATFORM),linux)
-CFLAGS=-cp netty/netty.jar:$(BINDIR) -d $(BINDIR)
-endif
-
-ifeq ($(PLATFORM),windows)
-CFLAGS=-cp netty/netty.jar;$(BINDIR) -d $(BINDIR)
-endif
+CFLAGS=-cp $(BINDIR) -d $(BINDIR) -Xlint:all 
 
 default:
 	@$(MAKE) $(BINDIR)/Main.class
-
-$(BINDIR)/Main.class: $(BINDIR)/Acceptor.class Makefile
+$(BINDIR)/Main.class: $(BINDIR)/Acceptor.class $(BINDIR)/GameThread.class Main.java Makefile
 	$(COMPILER) $(CFLAGS) Main.java
-# These two always need to be compiled in one go...
-$(BINDIR)/Acceptor.class $(BINDIR)/AIClientHandler.class: net/Acceptor.java net/AIClientHandler.java
-	$(COMPILER) $(CFLAGS) net/Acceptor.java net/AIClientHandler.java
-$(BINDIR)/World.class: world/World.java
-	$(COMPILER) $(CFLAGS) $<
+$(BINDIR)/Acceptor.class: $(BINDIR)/AIConnection.class $(BINDIR)/AIClientHandler.class net/Acceptor.java
+	$(COMPILER) $(CFLAGS) net/Acceptor.java
+$(BINDIR)/AIClientHandler.class: net/AIClientHandler.java
+	$(COMPILER) $(CFLAGS) net/AIClientHandler.java
+$(BINDIR)/AIConnection.class: net/AIConnection.java
+	$(COMPILER) $(CFLAGS) net/AIConnection.java
+$(BINDIR)/GameThread.class: logic/GameThread.java
+	$(COMPILER) $(CFLAGS) logic/GameThread.java
 
 # Some cleanup & convenience stuff
 clean:

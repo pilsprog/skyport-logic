@@ -1,28 +1,41 @@
-import java.net.InetSocketAddress;
-import java.util.concurrent.Executors;
+import java.net.*;
+import java.io.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.jboss.netty.bootstrap.ServerBootstrap;
-import org.jboss.netty.channel.ChannelPipeline;
-import org.jboss.netty.channel.ChannelPipelineFactory;
-import org.jboss.netty.channel.Channels;
-import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
-
-public class Acceptor {
-    private final int port;
-    public Acceptor(int port) {
-        this.port = port;
+public class Acceptor implements Runnable {
+    private ServerSocket acceptorSocket;
+    private ConcurrentLinkedQueue<AIConnection> globalClientList;
+    public Acceptor(int port, ConcurrentLinkedQueue<AIConnection> globalClients){
+	try {
+	    acceptorSocket = new ServerSocket(port);
+	    acceptorSocket.setReuseAddress(true);
+	    globalClientList = globalClients;
+	    System.out.println("[ACCEPTOR] listening on port " + acceptorSocket.toString());
+	}
+	catch(IOException e){
+	    System.out.println("[ACCEPTOR] Error binding to port: " + e);
+	    System.exit(1);
+	}
     }
-    
-    public void run() {
-        ServerBootstrap bootstrap = new ServerBootstrap(
-              			    new NioServerSocketChannelFactory(
-								      Executors.newCachedThreadPool(),
-								      Executors.newCachedThreadPool()));
-        bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
-		public ChannelPipeline getPipeline() throws Exception {
-		    return Channels.pipeline(new AIClientHandler());
-		}
-	    });
-        bootstrap.bind(new InetSocketAddress(port));
+    public void run(){
+	System.out.println("[ACCEPTOR] Starting to accept incoming connections");
+	while(true){
+	    try {
+		Socket clientSocket = acceptorSocket.accept();
+		System.out.println("[ACCEPTOR] Connect from " + clientSocket);
+		spawnReadHandlerThread(clientSocket);
+	    }
+	    catch (IOException e) {
+		System.out.println("[ACCEPTOR] Error accepting connection: " + e);
+	    }
+	}
+    };
+
+    public void spawnReadHandlerThread(Socket clientSocket){
+	AIConnection aiConnectionObject = new AIConnection(clientSocket);
+	globalClientList.add(aiConnectionObject);
+	AIClientHandler handler = new AIClientHandler(aiConnectionObject, globalClientList);
+	Thread thread = new Thread(handler);
+	thread.start();
     }
 }

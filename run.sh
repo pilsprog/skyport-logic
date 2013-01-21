@@ -1,2 +1,3 @@
 #!/bin/bash
-java -cp bin/:netty/netty.jar Main
+# args are: port, players, game time
+java -cp bin Main 54321 2 120

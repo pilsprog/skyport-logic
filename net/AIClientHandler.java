@@ -1,30 +1,22 @@
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.channel.ExceptionEvent;
-import org.jboss.netty.channel.MessageEvent;
-import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
-
-public class AIClientHandler extends SimpleChannelUpstreamHandler {
-    private static final Logger logger = Logger.getLogger(Acceptor.class.getName());
-    private final AtomicLong transferredBytes = new AtomicLong();
-    public long getTransferredBytes() {
-        return transferredBytes.get();
-    }    
+import java.util.concurrent.ConcurrentLinkedQueue;
+public class AIClientHandler implements Runnable {
+    AIConnection connection;
+    ConcurrentLinkedQueue<AIConnection> globalClientList;
+    public AIClientHandler(AIConnection aiConnection, ConcurrentLinkedQueue<AIConnection> lq) {
+	connection = aiConnection;
+	globalClientList = lq;
+	System.out.println("[AIREADER] Created new reader thread. " + lq.size() + " clients active.");
+    }
     @Override
-    public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) {
-        transferredBytes.addAndGet(((ChannelBuffer) e.getMessage()).readableBytes());
-        e.getChannel().write(e.getMessage());
-    }    
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) {
-        logger.log(
-		   Level.WARNING,
-		   "Unexpected exception from downstream.",
-		   e.getCause());
-        e.getChannel().close();
+    public void run(){
+	while(true){
+	    boolean data = connection.read();
+	    if(!data){
+		globalClientList.remove(connection);
+		System.out.println("[AIREADER] Disconnect from " + connection.getIp() + ". "
+				   + globalClientList.size() + " clients active.");
+		return;
+	    }
+	}
     }
 }
