@@ -25,6 +25,7 @@ public class GameThread {
 		Thread.sleep(500);
 	    }
 	    catch(InterruptedException e){}
+	    // todo: prevent acceptor from accepting more clients than we want.
 	    if(globalClients.size() == minUsers){
 		System.out.println("[GAMETHRD] Got " + minUsers + " users, starting the round");
 		break;
@@ -48,8 +49,10 @@ public class GameThread {
 		System.exit(0);
 	    }
 	    System.out.println("[GAMETHRD] Sending gamestate...");
+	    sendGamestate();
 	    letClientsThink();
 	    System.out.println("[GAMETHRD] Deadline! Processing actions...");
+	    // processing actions here
 	}
 	
     }

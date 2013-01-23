@@ -59,7 +59,8 @@ TURNS
     any left-over actions give your attack an extra damage bonus.
     Waiting incurrs a small point/health penality, so that inactive AIs will
     get kicked out after a while.
-
+    After a players turn is over, the gamestate is sent to all clients, and
+    the next player may make his turn.
 		    
 WEAPONS
     There are three basic weapons, the laser, the mortar and the battle droid.
@@ -72,15 +73,33 @@ MORTAR
     in the same tiles) is to say "the mortar can move a fixed number of steps
     in any direction. Any tile it can reach in that number of steps, is in
     range". The mortar is unaffected by gaps and rocks, but shooting at them
-    has no effect.
-    The mortar does the least damage of all weapons.
+    has no effect. The mortar carries a small explosive load, and hence has
+    a very weak AoE bonus damage at a radius of one tile.
+    Range at level 1: 2 tiles
+    Range at level 2: 3 tiles
+    Range at level 3: 4 tiles
+    See range-mortar.png for a visualization.
     
 LASER
-    The laser has the longest range, and shoots straight. That means there 
-
+    The laser has the longest range, and shoots straight. That means there
+    are tiles it cannot reach, without moving into a different position first.
+    The laser can shoot over gaps, but not through rocks.
+    Range at level 1: 5 tiles
+    Range at level 2: 6 tiles
+    Range at level 3: 7 tiles
+    See range-laser.png for a visualization.
     
-
-
+DROID
+    The droid requires the player to send a list of directional steps.
+    It has a fixed number of steps it can walk, after which it will explode,
+    whether it has reached its target or not. The droid cannot walk over gaps
+    or rocks, so it has to navigate around them. The droid carries a big
+    explosive payload and induces a massive AoE damage bonus, at a radius of
+    one tile.
+    Range at level 1: 3 steps
+    Range at level 2: 4 steps
+    Range at level 3: 5 steps
+    See range-droid.png for a visualization
 
        
 RESOURCES
