@@ -26,9 +26,10 @@ MAP
                \        /     \        /
                 \      /       \      /
                  `----(   2,2   )----'
-                       \       /
-                        \_____/
-
+               .       \       /      .
+              .         \_____/        .
+             .                          .
+	      
     Positions are always written as [J, K], i.e. the J-coordinate comes first,
     the K-coordinate second. For instance, you may send the server a message
     such as "go to [1,0]" and then "fire mortar [2,2]". The server would then
@@ -99,33 +100,76 @@ DROID
     Range at level 1: 3 steps
     Range at level 2: 4 steps
     Range at level 3: 5 steps
-    See range-droid.png for a visualization
+    See range-droid.png for a visualization.
 
        
 RESOURCES
-    There are three basic types of resources, 
+    There are three basic types of resources: rubidium, explosium and scrap.
+    rubidium is used to upgrade lasers, explosium is used to upgrade the
+    mortar, and scrap is used to upgrade the battle droid. Resources are
+    obtained simply by standing or moving in its immediate vicinity (radius
+    of one tile.) If a player has collected enough of one type of resource,
+    his weapon is upgraded to the next-highest tier. Once a weapon has
+    reached level 3, it cannot be upgraded anymore.
 
     
 LOADOUT
-    Upon gamestart, the AI can chose...
+    Upon gamestart, the AI can chose two weapons to use for the entire game.
+    Any combinations of weapons can be chosen. Some maps may contain an un-
+    even distribution of resources, having more resources of one type on one
+    end, or lacking a resource alltogether. It is hence probably wise to
+    scan the map thoroughly before chosing a loadout.
 
     
 STARTING
-    Upon gamestart, each AI is set to a protected starting-tile...
-
+    Upon gamestart, each AI is set to a protected starting-tile. A starting-
+    tile can be moved off of, but cannot be moved onto. Hence only the server
+    may place a player on a starting tile.
+    Attacking a player on a starting tile incurs damage to the player
+    performing the attack. A player on a starting-tile may not perform any
+    moves other than moving away from the starting tile. Standing on the
+    starting-tile incurs a health/point penality.
     
 ACTIONS
-    Each round, each client gets three actions to use ...
-
+    Each round, each client gets three actions to use. An offensive move
+    immediately terminates the players turn, and uses up the remaining
+    moves (if any) for a damage bonus. 
     
 MOVEMENT
-    Each action may be used for moving in one of the six cardinal directions...
-
+    An action may be used for moving in one of the six cardinal directions.
+    Only grass-tiles may be moved onto, attempting to move onto any other
+    tile is an invalid move and hence discarded by the server.
     
-FIGHTING
-    Each round, you may use one of your actions to fire a weapon. Firing a weapon
-    will terminate your turn...
+POINTS
+    Killing another player awards you with a certain amount of points. You
+    may lose varying amounts of points by performing certain actions that
+    incur a penality, such as not moving a turn and standing on a spawn
+    tile beyond the initial round. After a fixed amount of time has passed,
+    the round ends, and the player with the highest score wins.
 
+DESTRUCTION
+    Each player starts with a certain amount of health. Health does not
+    replenish, but upon destruction, a player may respawn from his spawn-
+    point and continue playing without losing their upgraded weapons.
+    Respawning takes one full turn.
     
-WINNING CONDITION
-    A round has finished once ...
+SUDDEN DEATH/CRUMBLING WORLD
+    may be implemented? Where do the spawn-points go? what about players that
+    fall off the world? Should this be a core mechanic?
+
+ARITHMETIC & STATS
+    hp = -dmg
+    Player at full health: 100hp
+    laser lvl 1: 20dmg
+    laser lvl 2: 20dmg
+    laser lvl 3: 25dmg
+    mortar lvl 1: 20dmg
+    mortar lvl 2: 20dmg
+    mortar lvl 3: 25dmg
+    mortar AoE damage: 2dmg
+    droid lvl 1: 20dmg
+    droid lvl 2: 20dmg
+    droid lvl 3: 25dmg
+    droid AoE damage: 10dmg
+    player_damage = weapon_damage + unused_turns*(0.2*weapon_damage)
+    
