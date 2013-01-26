@@ -1,6 +1,6 @@
 COMPILER=javac
 BD=bin
-CFLAGS=-cp $(BD) -d $(BD) -Xlint:all 
+CFLAGS= -cp "$(BD):$(BD)/json/" -d $(BD) -Xlint:all 
 
 default:
 	@$(MAKE) $(BD)/Main.class
@@ -12,8 +12,12 @@ $(BD)/Acceptor.class: $(BD)/AIConnection.class $(BD)/AIClientHandler.class net/A
 	$(COMPILER) $(CFLAGS) net/Acceptor.java
 $(BD)/AIClientHandler.class: json net/AIClientHandler.java
 	$(COMPILER) $(CFLAGS) net/AIClientHandler.java
-$(BD)/AIConnection.class: net/AIConnection.java
+$(BD)/AIConnection.class: $(BD)/StatefulProtocolDecoder.class net/AIConnection.java
 	$(COMPILER) $(CFLAGS) net/AIConnection.java
+$(BD)/StatefulProtocolDecoder.class: json $(BD)/ProtocolException.class net/StatefulProtocolDecoder.java
+	$(COMPILER) $(CFLAGS) net/StatefulProtocolDecoder.java
+$(BD)/ProtocolException.class: net/ProtocolException.java
+	$(COMPILER) $(CFLAGS) net/ProtocolException.java
 
 ## Logic
 $(BD)/GameThread.class: $(BD)/GameState.class logic/GameThread.java
@@ -27,7 +31,7 @@ $(BD)/Action.class: logic/Action.java
 ## World
 
 ## JSON
-json: json/JSONWriter.java
+json $(BD)/json/JSONWriter.class: json/JSONWriter.java
 	$(COMPILER) -d $(BD)/json json/*.java
 
 # Some cleanup & convenience stuff

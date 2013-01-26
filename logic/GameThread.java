@@ -5,12 +5,14 @@ public class GameThread {
     int minUsers;
     int gameTimeoutSeconds;
     int roundTimeSeconds;
+    GameState gamestate;
     public GameThread(ConcurrentLinkedQueue<AIConnection> globalClientsArg,
 		      int minUsersArg, int gameTimeoutSecondsArg, int roundTimeSecondsArg){
 	globalClients = globalClientsArg;
 	minUsers = minUsersArg;
 	gameTimeoutSeconds = gameTimeoutSecondsArg;
 	roundTimeSeconds = roundTimeSecondsArg;
+	//	gamestate = new GameState("testworld.skyportmap");
     }
     public void run(int gameSecondsTimeout){
 	try {
@@ -60,7 +62,9 @@ public class GameThread {
 	try {
 	    Thread.sleep(roundTimeSeconds*1000);
 	}
-	catch (InterruptedException e){}
+	catch (InterruptedException e){
+	    System.out.println("INTTERUPTED!");
+	}
     }
     public void sendGamestate(){
 	

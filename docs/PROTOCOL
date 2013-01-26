@@ -38,10 +38,9 @@ HANDSHAKE
         < }
     If the handshake was successful, the server answers with
         > {"connect":true}
-    Otherwise with
-        > {"connect":false,
-        >  "reason":"Some string that describes why the connection failed"
-	> }
+    Otherwise it will send an error.
+
+	
 
 GAMESTART
     Before the game starts, the server sends an initial gamestate to all AIs, with
@@ -71,4 +70,9 @@ ACTIONS
     ...
     
 
-    
+ERRORS
+    If the server encounters an error, either due to an invalid protocol command, or due to
+    an invalid move, it will send back an error object.
+    Example:
+        > {"error":"You need to send a hanshake first"}
+    Error messages are not machine-readable and mainly meant for human debugging.

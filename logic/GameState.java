@@ -11,5 +11,4 @@ public class GameState {
     public void getPlayerOrder(){}
     public void getNextGamestateObject(){}
     public void performAction(Player player, Action action){}
-    
 }
