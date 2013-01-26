@@ -58,13 +58,87 @@ GAMESTATE
         > {"gamestate": TURN-NUMBER,
             // turn-number starting to count at 1, i.e. this would be the TURN-NUMBERth turn.
         >  "map": MAP-OBJECT,
-	    // mapobject describing all tiles. See MAP-OBJECT at the end of this file for its structure.
+	    // mapobject describing all tiles. See MAP-OBJECT below for its detailed structure.
         >  "entities": ENTITY-OBJECT,
 	    // entity-object describing the position of all entities on the map.
-        >  "players":["player1", "player2", ...]
-	    // players active in the game. The first player in the list, is the first allowed to act.
+        >  "players":[PLAYER1, PLAYER2, ...]
+	    // players active in the game. The first player in the list, is the one to act this turn.
         > }
 
+MAP-OBJECT
+     J-coordinate                      K-coordinate
+      \                               /
+       \                             /
+        \                _____      /
+         \         <0>  /     \  <0>
+          \            /       \
+           \     ,----(   0,0   )----.
+            <1> /      \       /      \ <1>
+         _____ /  1,0   \_____/  0,1   \_____
+    <2> /      \        /     \        /     \  <2>
+       /        \      /       \      /       \
+      (   2,0    )----(   1,1   )----(   0,2   )
+       \        /      \       /      \       /
+        \_____ /  2,1   \_____/  1,2   \_____/
+               \        /     \        /
+                \      /       \      /
+                 `----(   2,2   )----'
+               .       \       /      .
+              .         \_____/        .
+             .                          .
+
+	
+    > {"j-length": MAP-WIDTH-IN-J-DIRECTION // size of the map in the J-direction
+    >  "k-length": MAP-WIDTH-IN-K-DIRECTION // size of the map in the K-direction
+    >  "data": [ // the map data, one J-column at a time
+    >          [TILE(0,0), TILE(0,1), TILE(0,2), ...],
+    >          [TILE(1,0), TILE(1,1), TILE(1,2), ...],
+    >          [TILE(2,0), TILE(2,1), TILE(2,2), ...]]
+    > }
+    TILE(j, k) is the tile-type at coordinate (j, k).
+    TILE(j, k) is simply a string of one of the following types:
+    "G" -- "GRASS"
+    "V" -- "VOID"
+    "S" -- "SPAWN"
+    "E" -- "EXPLODIUM"
+    "R" -- "RUBIDIUM"
+    "C" -- "SCRAP"
+    "O" -- "ROCK"
+    See the docs/GAME file for a description of how each of these behaves.
+    The TILE(j,k) notation used here is simply to indicate that this tile
+    is at position (j,k), the (j,k) is not part of the actual protocol.
+    
+    EXAMPLE:
+    >  "data": [                // the map data, one J-column at a time
+    >          ["G", "E", "S"], // first J-column
+    >          ["G", "R", "V"], // second J-column
+    >          ["C", "G", "G"]] // third J-column
+    > }
+    extracts to
+
+     J-coordinate                      K-coordinate
+      \                               /
+       \                             /
+        \                _____      /
+         \         <0>  /     \  <0>
+          \            /       \
+           \     ,----(    G    )----.
+            <1> /      \       /      \ <1>
+         _____ /   G    \_____/   E    \_____
+    <2> /      \        /     \        /     \  <2>
+       /        \      /       \      /       \
+      (    C     )----(    R    )----(    S    )
+       \        /      \       /      \       /
+        \_____ /   G    \_____/   V    \_____/
+               \        /     \        /
+                \      /       \      /
+                 `----(    G    )----'
+               .       \       /      .
+              .         \_____/        .
+             .                          .
+    
+	
+	
 ACTIONS
     Actions that can be taken by the AI.
     ...

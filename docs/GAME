@@ -49,8 +49,8 @@ TILES
 	            you will continuously gain explodium for each round.
         RUBIDIUM  - Cannot be moved onto, but if you are in its immediate proximity,
 		    you will continuously gain rubidium for each round.
-        COGS      - Cannot be moved onto, but if you are in its immediate proximity,
-                    you will continuously gain cogs for each round.
+        SCRAP     - Cannot be moved onto, but if you are in its immediate proximity,
+                    you will continuously gain scrap for each round.
 
 TURNS
     Each round, each player gets three turns. In a turn, he may move to any
