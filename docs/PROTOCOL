@@ -141,7 +141,9 @@ MAP-OBJECT
 	
 ACTIONS
     Actions that can be taken by the AI.
-    ...
+    > {"action":
+    >  
+    > }
     
 
 ERRORS

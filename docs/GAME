@@ -41,16 +41,19 @@ TILES
     ACCESSIBLE TILES (These tiles can be moved onto)
         GRASS     - normal grassland. No effect. May come in various forms and colors, but
     	            robots don't care about aesthetics.
+        EXPLODIUM - If you stand on this tile, you can use one action or more to mine
+		    explodium. An explodium tile has 2 explodium, which you mine at a rate of
+		    one explodium per action. After it is depleted, it turns into grass.
+	RUBIDIUM - If you stand on this tile, you can use one action or more to mine
+		    rubidium. An rubidium tile has 2 rubidium, which you mine at a rate of
+		    one rubidium per action. After it is depleted, it turns into grass.
+	SCRAP - If you stand on this tile, you can use one action or more to mine
+		    scrap. An scrap tile has 2 scrap, which you mine at a rate of
+		    one scrap per action. After it is depleted, it turns into grass.
     INACCESSIBLE TILES (These tiles cannot be moved onto, but the server may place you on them.)
     	VOID      - No tile at all.	
         SPAWN     - protected spawn area. Once you move away from it, you can't re-enter.
         ROCK      - A rock is blocking the way.
-	EXPLODIUM - Cannot be moved onto, but if you are in its immediate proximity,
-	            you will continuously gain explodium for each round.
-        RUBIDIUM  - Cannot be moved onto, but if you are in its immediate proximity,
-		    you will continuously gain rubidium for each round.
-        SCRAP     - Cannot be moved onto, but if you are in its immediate proximity,
-                    you will continuously gain scrap for each round.
 
 TURNS
     Each round, each player gets three turns. In a turn, he may move to any
@@ -106,10 +109,10 @@ DROID
 RESOURCES
     There are three basic types of resources: rubidium, explosium and scrap.
     rubidium is used to upgrade lasers, explosium is used to upgrade the
-    mortar, and scrap is used to upgrade the battle droid. Resources are
-    obtained simply by standing or moving in its immediate vicinity (radius
-    of one tile.) If a player has collected enough of one type of resource,
-    his weapon is upgraded to the next-highest tier. Once a weapon has
+    mortar, and scrap is used to upgrade the battle droid.
+    Resources are obtained by standing on a resource-tile and using an action
+    to mine the resource. If a player has collected enough of one type of resource,
+    he can use a turn to upgrade his weapon to the next-highest tier. Once a weapon has
     reached level 3, it cannot be upgraded anymore.
 
     
@@ -158,18 +161,21 @@ SUDDEN DEATH/CRUMBLING WORLD
     fall off the world? Should this be a core mechanic?
 
 ARITHMETIC & STATS
+    Upgrading a weapon from lvl 1 to lvl 2: 4 resources
+    Upgrading a weapon from lvl 2 to lvl 3: 5 resources
     hp = -dmg
     Player at full health: 100hp
-    laser lvl 1: 20dmg
-    laser lvl 2: 20dmg
-    laser lvl 3: 25dmg
+    laser lvl 1: 16dmg
+    laser lvl 2: 18dmg
+    laser lvl 3: 22dmg
     mortar lvl 1: 20dmg
     mortar lvl 2: 20dmg
     mortar lvl 3: 25dmg
     mortar AoE damage: 2dmg
-    droid lvl 1: 20dmg
-    droid lvl 2: 20dmg
-    droid lvl 3: 25dmg
+    droid lvl 1: 22dmg
+    droid lvl 2: 24dmg
+    droid lvl 3: 26dmg
     droid AoE damage: 10dmg
-    player_damage = weapon_damage + unused_turns*(0.2*weapon_damage)
+    player_damage = weapon_damage
+        + AoE_damage + unused_turns*(0.2*weapon_damage) + unused_turns*(0.2*AoE_damage)
     
