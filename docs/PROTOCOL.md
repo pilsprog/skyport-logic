@@ -122,17 +122,20 @@ The map-object looks as follows:
 * "R" -- "RUBIDIUM"
 * "C" -- "SCRAP"
 * "O" -- "ROCK"
+
 See the docs/GAME file for a description of how each of these behaves.
-The TILE(j,k) notation used here is simply to indicate that this tile
+The `TILE(j,k)` notation used here is simply to indicate that this tile
 is at position (j,k), the (j,k) is not part of the actual protocol.
     
 EXAMPLE:
-    >  "data": [                // the map data, one J-column at a time
-    >          ["G", "E", "S"], // first J-column
-    >          ["G", "R", "V"], // second J-column
-    >          ["C", "G", "G"]] // third J-column
+
+    > {"data": [                 // the map data, one J-column at a time
+    >          ["G", "E", "S"],  // first J-column
+    >          ["G", "R", "V"],  // second J-column
+    >          ["C", "G", "G"]]  // third J-column
     > }
-extracts to
+
+"extracts" to
 
      J-coordinate                      K-coordinate
       \                               /
