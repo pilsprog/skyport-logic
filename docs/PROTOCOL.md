@@ -188,6 +188,12 @@ The following actions are currently valid:
 **Upgrade** a weapon:
     
     > {"message":"action", "type":"upgrade", "weapon":"mortar"} // can be "mortar", "laser" or "droid"
+
+**Mine** the current tile:
+
+    > {"message":"action", "type":"mine"}
+    
+### ATTACK/OFFENSIVE.
     
 Shoot the **laser**:
     
@@ -243,3 +249,10 @@ Example:
 Error messages are not machine-readable and mainly meant for human debugging. Hence
 the exact error-messages are not documented and may change. An AI should never rely
 on some behaviour that provokes an error from the server.
+
+
+EXAMPLE SESSIONS
+----------------
+
+The following example session demonstrates the communication between an AI and
+the server in a one-on-one match on a very simple map.
