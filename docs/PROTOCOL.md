@@ -162,12 +162,12 @@ is at position (j,k), the (j,k) is not part of the actual protocol.
 ENTITY-OBJECT
 -------------
 
-TODO
+TODO: What possible types of entities can be on the board, besides players?
 
 PLAYER
 ------
 
-TODO (information about player loadout etc)
+TODO: Player object contains username, health, score, weapon loadout & weapon levels
 
 COMPLETE EXAMPLE
 ----------------
