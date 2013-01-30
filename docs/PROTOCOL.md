@@ -115,13 +115,13 @@ The map-object looks as follows:
     > }
 `TILE(j, k)` is the tile-type at coordinate (j, k).
 `TILE(j, k)` is simply a string of one of the following types:
-    "G" -- "GRASS"
-    "V" -- "VOID"
-    "S" -- "SPAWN"
-    "E" -- "EXPLODIUM"
-    "R" -- "RUBIDIUM"
-    "C" -- "SCRAP"
-    "O" -- "ROCK"
+* "G" -- "GRASS"
+* "V" -- "VOID"
+* "S" -- "SPAWN"
+* "E" -- "EXPLODIUM"
+* "R" -- "RUBIDIUM"
+* "C" -- "SCRAP"
+* "O" -- "ROCK"
 See the docs/GAME file for a description of how each of these behaves.
 The TILE(j,k) notation used here is simply to indicate that this tile
 is at position (j,k), the (j,k) is not part of the actual protocol.
