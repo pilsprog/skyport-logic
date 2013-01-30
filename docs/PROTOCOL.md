@@ -3,11 +3,11 @@ SKYPORT AI COMPETITION PROTOCOL REV. 1
 
 SYNOPSIS
 --------
-This file describes the protocol _used by the AIs to communicate with the
-Server._ The revision described in this protocol is _rev1_.
-Note that lines prefixed with _">"_ describe _"incoming"_ data, that is, data
-sent from the server to the AI client, while lines prefixed with _"<"_
-describe _"outgoing"_ data, that is, data the AI client sends to the server.
+This file describes the protocol **used by the AIs to communicate with the
+Server.** The revision described in this protocol is **rev1**.
+Note that lines prefixed with **">"** describe **"incoming"** data, that is, data
+sent from the server to the AI client, while lines prefixed with **"<"**
+describe **"outgoing"** data, that is, data the AI client sends to the server.
 Note also that messages in this document are broken up into several lines
 for clarity, and are adorned with explanatory comments. however, when they
 are sent to the server, they need to be all on one single line without any
@@ -15,10 +15,10 @@ comments.
 
 TRANSPORT
 --------
-The transport protocol used is _line-based TCP_. The server accepts UNIX-style
+The transport protocol used is **line-based TCP**. The server accepts UNIX-style
 line-endings (\n) and windows-style line-endings (\r\n).
-When reading from the socket, make sure that you _don't limit the length of
-your lines_, as some packets may end up rather large.
+When reading from the socket, make sure that you **don't limit the length of
+your lines**, as some packets may end up rather large.
 
 CODEC & FORMAT
 --------------
