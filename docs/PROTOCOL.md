@@ -233,9 +233,13 @@ ERRORS
 ------    
 
 If the server encounters an error, either due to an invalid protocol command, or due to
-an invalid move, it will send back an error object.
+an invalid move, it will send back an error object. The server may disconnect the AI that
+provoked the error, depending on the severity.
+
 Example:
 
-    > {"error":"You need to send a hanshake first"}
+    > {"error":"You need to send a handshake first"}
 
-Error messages are not machine-readable and mainly meant for human debugging.
+Error messages are not machine-readable and mainly meant for human debugging. Hence
+the exact error-messages are not documented and may change. An AI should never rely
+on some behaviour that provokes an error from the server.
