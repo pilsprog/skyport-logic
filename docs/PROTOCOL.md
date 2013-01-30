@@ -162,12 +162,15 @@ is at position (j,k), the (j,k) is not part of the actual protocol.
 	
 ACTIONS (AI)
 -----------
+
 Actions that can be taken by the AI.
+
     > {"message":"action"
     >  "type":TYPE,
     >  ...
     > }
-    The following actions are currently valid:
+
+The following actions are currently valid:
 
 ### MOVEMENT/TACTICAL:
     
