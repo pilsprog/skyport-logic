@@ -113,6 +113,7 @@ The map-object looks as follows:
     >          [TILE(1,0), TILE(1,1), TILE(1,2), ...],
     >          [TILE(2,0), TILE(2,1), TILE(2,2), ...]]
     > }
+
 `TILE(j, k)` is the tile-type at coordinate (j, k).
 `TILE(j, k)` is simply a string of one of the following types:
 * "G" -- "GRASS"
@@ -215,12 +216,14 @@ and then re-broadcasted to all AIs. For convenience, a "from" field is attached.
 ### EXAMPLES
     
 **Moved** a tile:
+
     > {"message":"action", "type":"move",
     >  "direction":"up", // can be "up", "down", "right-up", "right-down", "left-up", "left-down"
     >  "from":"username" // user who performed the move
     > }
     
 **Upgraded** a weapon:
+    
     > {"message":"action", "type":"upgrade", "weapon":"mortar",
     >  "from":"username" // user who shot the mortar
     > }
@@ -228,8 +231,11 @@ and then re-broadcasted to all AIs. For convenience, a "from" field is attached.
 
 ERRORS
 ------    
+
 If the server encounters an error, either due to an invalid protocol command, or due to
 an invalid move, it will send back an error object.
 Example:
+
     > {"error":"You need to send a hanshake first"}
+
 Error messages are not machine-readable and mainly meant for human debugging.
