@@ -38,14 +38,18 @@ HANDSHAKE
 Handshake sent by the AI to establish the connection.
 Sent immediately upon connecting. If no handshake is sent after 10 seconds,
 the server will drop the connection.
+
     < {"message":"connect",
     <  "revision":REVISION,  // The protocol revision as integer, i.e. 1
     <  "name":NAME // The name of your AI. String with less than 16 letters.
     < }
+    
 If the handshake was successful, the server answers with
+    
     > {"message":"connect",
     >  "status":true
     > }
+    
 Otherwise it will send an error.
 
 
