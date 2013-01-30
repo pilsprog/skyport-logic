@@ -74,14 +74,10 @@ but the third action will likely arrive at the server-end after the cutoff
 and will be discarded. The first two actions will still be carried out for you.
 
     > {"message":"gamestate",
-    "gamestate": TURN-NUMBER,
-    // turn-number starting to count at 1, i.e. this would be the TURN-NUMBERth turn.
-    >  "map": MAP-OBJECT,
-    // mapobject describing all tiles. See MAP-OBJECT below for its detailed structure.
-    >  "entities": ENTITY-OBJECT,
-    // entity-object describing the position of all entities on the map.
-    >  "players":[PLAYER1, PLAYER2, ...]
-    // players active in the game. The first player in the list, is the one to act this turn.
+       "gamestate": TURN-NUMBER, // turn-number starting at 1, i.e. this would be the TURN-NUMBERth turn.
+    >  "map": MAP-OBJECT, // object describing all tiles. See MAP-OBJECT below for details.
+    >  "entities": ENTITY-OBJECT, // entity-object describing the position of all entities on the map.
+    >  "players":[PLAYER1, PLAYER2, ...] // rotating list of AIs in the game. This turn is PLAYER1s.
     > }
 
 MAP-OBJECT
