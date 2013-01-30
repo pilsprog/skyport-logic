@@ -236,16 +236,16 @@ and then re-broadcasted to all AIs. For convenience, a "from" field is attached.
     
 **Moved** a tile:
 
-    > {"message":"action", "type":"move",
-    >  "direction":"up", // can be "up", "down", "right-up", "right-down", "left-up", "left-down"
-    >  "from":"username" // user who performed the move
-    > }
+    < {"message":"action", "type":"move",
+    <  "direction":"up", // can be "up", "down", "right-up", "right-down", "left-up", "left-down"
+    <  "from":"username" // user who performed the move
+    < }
     
 **Upgraded** a weapon:
     
-    > {"message":"action", "type":"upgrade", "weapon":"mortar",
-    >  "from":"username" // user who shot the mortar
-    > }
+    < {"message":"action", "type":"upgrade", "weapon":"mortar",
+    <  "from":"username" // user who shot the mortar
+    < }
         
 
 ERRORS
@@ -257,7 +257,7 @@ provoked the error, depending on the severity.
 
 Example:
 
-    > {"error":"You need to send a handshake first"}
+    < {"error":"You need to send a handshake first"}
 
 Error messages are not machine-readable and mainly meant for human debugging. Hence
 the exact error-messages are not documented and may change. An AI should never rely
