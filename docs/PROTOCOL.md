@@ -56,19 +56,23 @@ Otherwise it will send an error.
 
 GAMESTART
 ---------
-Before the game starts, the server sends an initial gamestate to all AIs, with
-the TURN-NUMBER - 0. This gamestate should not be replied to, and the server
-rejects all replies. 10 seconds after the GAMESTART was sent, the actual
-gameplay starts. The intent is to give all clients time to initialize and process
-the board, resources & starting-positions into datastructures.
+Before the game starts, the server sends an **initial gamestate** to all AIs, with
+the **TURN-NUMBER = 0**. This gamestate looks otherwise **exactly like a normal gamestate**,
+but should not be replied to. The server will reject all replies. **10 seconds after
+the GAMESTART was sent, the actual gameplay starts**. The intent is to give all clients
+time to initialize and process the board, resources & starting-positions into datastructures.
 
 GAMESTATE
 ---------
-Gamestate sent by the server to each of the AIs every round. You may use
+Gamestate sent by the server to each of the AIs **every round**. You may use
 any information contained in this packet to your advantage however you like.
-After you have received the GAMESTATE packet, you have 3 seconds to reply
-with 3 actions. If your reply is late, your actions will be discarded and
-you forfeit your turn.
+If it is your turn (you are the first player in the rotating "players" list,)
+**you have 3 seconds to reply with 3 actions packets.** Any actions you send
+after the 3 seconds are over are discarded. This means for instance that you
+could send one action at 1s, another action at 2s, and the third action at 3s,
+but the third action will likely arrive at the server-end after the cutoff
+and will be discarded. The first two actions will still be carried out for you.
+
     > {"message":"gamestate",
     "gamestate": TURN-NUMBER,
     // turn-number starting to count at 1, i.e. this would be the TURN-NUMBERth turn.
