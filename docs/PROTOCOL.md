@@ -174,33 +174,33 @@ The following actions are currently valid:
 
 ### MOVEMENT/TACTICAL:
     
-Move a tile:
+**Move** a tile:
 
     > {"message":"action", "type":"move",
     >  "direction":"up" // can be "up", "down", "right-up", "right-down", "left-up", "left-down"
     > }
 
-Forfeit the turn:
+**Forfeit** the turn:
 
     > {"message":"action", "type":"pass"}
 
-Upgrade a weapon:
+**Upgrade** a weapon:
     
     > {"message":"action", "type":"upgrade", "weapon":"mortar"} // can be "mortar", "laser" or "droid"
     
-Shoot the laser:
+Shoot the **laser**:
     
     > {"message":"action", "type":"laser",
     >  "direction":"up", // can be "up", "down", "right-up", "right-down", "left-up", "left-down"
     > }
 
-Shoot the mortar:
+Shoot the **mortar**:
     
     > {"message":"action", "type":"mortar",
     >  "coordinates":"3,2" // relative J,K coordinates from the players position
     > }
 
-Launch the droid:
+Launch the **droid**:
     
     > {"message":"action", "type":"droid",
     >  "sequence":["up", "rightUp", "rightDown", "down"] // sequence of directions
@@ -208,18 +208,19 @@ Launch the droid:
 
 ACTIONS (Server)
 ----------------
+
 Actions that are taken by the AI are validated by the server,
 and then re-broadcasted to all AIs. For convenience, a "from" field is attached.
 
 ### EXAMPLES
     
-Move a tile:
+**Moved** a tile:
     > {"message":"action", "type":"move",
     >  "direction":"up", // can be "up", "down", "right-up", "right-down", "left-up", "left-down"
     >  "from":"username" // user who performed the move
     > }
     
-Upgrade a weapon:
+**Upgraded** a weapon:
     > {"message":"action", "type":"upgrade", "weapon":"mortar",
     >  "from":"username" // user who shot the mortar
     > }
