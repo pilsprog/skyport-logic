@@ -2,7 +2,7 @@ SKYPORT AI COMPETITION PROTOCOL REV. 1
 ======================================
 
 SYNOPSIS
-========
+--------
 This file describes the protocol used by the AIs to communicate with the
 Server. The revision described in this protocol is rev1.
 Note that lines prefixed with ">" describe "incoming" data, that is, data
@@ -14,14 +14,14 @@ are sent to the server, they need to be all on one single line without any
 comments.
 
 TRANSPORT
-========
+--------
 The transport protocol used is line-based TCP. The server accepts UNIX-style
 line-endings (\n) and windows-style line-endings (\r\n).
 When reading from the socket, make sure that you don't limit the length of
 your lines, as some packets may end up rather large.
 
 CODEC & FORMAT
-==============
+--------------
 Codec used for all transmissions is a line-based JSON format. This has been
 chosen to avoid the trouble of making a separate format and requiring the
 AIs to implement a parser for it. JSON is a simple, text-based format with
@@ -34,7 +34,7 @@ require you to deal with special characters/unicode. However, chosing a JSON
 parser that is reasonably fast may give you an advantage.
 
 HANDSHAKE
-=========
+---------
 Handshake sent by the AI to establish the connection.
 Sent immediately upon connecting. If no handshake is sent after 10 seconds,
 the server will drop the connection.
@@ -55,15 +55,15 @@ Otherwise it will send an error.
 
 
 GAMESTART
-=========
+---------
 Before the game starts, the server sends an initial gamestate to all AIs, with
-the TURN-NUMBER = 0. This gamestate should not be replied to, and the server
+the TURN-NUMBER - 0. This gamestate should not be replied to, and the server
 rejects all replies. 10 seconds after the GAMESTART was sent, the actual
 gameplay starts. The intent is to give all clients time to initialize and process
 the board, resources & starting-positions into datastructures.
 
 GAMESTATE
-=========
+---------
 Gamestate sent by the server to each of the AIs every round. You may use
 any information contained in this packet to your advantage however you like.
 After you have received the GAMESTATE packet, you have 3 seconds to reply
@@ -81,7 +81,7 @@ you forfeit your turn.
     > }
 
 MAP-OBJECT
-==========
+----------
      J-coordinate                      K-coordinate
       \                               /
        \                             /
