@@ -123,7 +123,7 @@ The map-object looks as follows:
 * "C" -- "SCRAP"
 * "O" -- "ROCK"
 
-See the docs/GAME file for a description of how each of these behaves.
+See the docs/GAME.md file for a description of how each of these behaves.
 The `TILE(j,k)` notation used here is simply to indicate that this tile
 is at position (j,k), the (j,k) is not part of the actual protocol.
     
@@ -207,6 +207,7 @@ ACTIONS (Server)
 ----------------
 Actions that are taken by the AI are validated by the server,
 and then re-broadcasted to all AIs. For convenience, a "from" field is attached.
+
 ### EXAMPLES:
     
 Move a tile:
