@@ -74,8 +74,8 @@ but the third action will likely arrive at the server-end after the cutoff
 and will be discarded. The first two actions will still be carried out for you.
 
     > {"message":"gamestate",
-       "gamestate": TURN-NUMBER, // turn-number starting at 1, i.e. this would be the TURN-NUMBERth turn.
-    >  "map": MAP-OBJECT, // object describing all tiles. See MAP-OBJECT below for details.
+    >  "turn": TURN-NUMBER,  // turn-number starting at 1, i.e. this would be the TURN-NUMBERth turn.
+    >  "map": MAP-OBJECT,         // object describing all tiles. See MAP-OBJECT below for details.
     >  "entities": ENTITY-OBJECT, // entity-object describing the position of all entities on the map.
     >  "players":[PLAYER1, PLAYER2, ...] // rotating list of AIs in the game. This turn is PLAYER1s.
     > }
@@ -113,8 +113,8 @@ The map-object looks as follows:
     >          [TILE(1,0), TILE(1,1), TILE(1,2), ...],
     >          [TILE(2,0), TILE(2,1), TILE(2,2), ...]]
     > }
-TILE(j, k) is the tile-type at coordinate (j, k).
-TILE(j, k) is simply a string of one of the following types:
+`TILE(j, k)` is the tile-type at coordinate (j, k).
+`TILE(j, k)` is simply a string of one of the following types:
     "G" -- "GRASS"
     "V" -- "VOID"
     "S" -- "SPAWN"
