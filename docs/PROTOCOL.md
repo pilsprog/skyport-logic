@@ -158,9 +158,22 @@ is at position (j,k), the (j,k) is not part of the actual protocol.
                .       \       /      .
               .         \_____/        .
              .                          .
-    
-	
-	
+
+ENTITY-OBJECT
+-------------
+
+TODO
+
+PLAYER
+------
+
+TODO (information about player loadout etc)
+
+COMPLETE EXAMPLE
+----------------
+
+TODO
+
 ACTIONS (AI)
 -----------
 
@@ -193,7 +206,7 @@ The following actions are currently valid:
 
     > {"message":"action", "type":"mine"}
     
-### ATTACK/OFFENSIVE.
+### ATTACK/OFFENSIVE:
     
 Shoot the **laser**:
     
@@ -256,3 +269,5 @@ EXAMPLE SESSIONS
 
 The following example session demonstrates the communication between an AI and
 the server in a one-on-one match on a very simple map.
+
+TODO
