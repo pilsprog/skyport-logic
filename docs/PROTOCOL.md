@@ -103,6 +103,8 @@ MAP-OBJECT
               .         \_____/        .
              .                          .
 
+The map-object looks as follows:
+	     
 	
     > {"j-length": MAP-WIDTH-IN-J-DIRECTION // size of the map in the J-direction
     >  "k-length": MAP-WIDTH-IN-K-DIRECTION // size of the map in the K-direction
@@ -111,8 +113,8 @@ MAP-OBJECT
     >          [TILE(1,0), TILE(1,1), TILE(1,2), ...],
     >          [TILE(2,0), TILE(2,1), TILE(2,2), ...]]
     > }
-    TILE(j, k) is the tile-type at coordinate (j, k).
-    TILE(j, k) is simply a string of one of the following types:
+TILE(j, k) is the tile-type at coordinate (j, k).
+TILE(j, k) is simply a string of one of the following types:
     "G" -- "GRASS"
     "V" -- "VOID"
     "S" -- "SPAWN"
@@ -120,17 +122,17 @@ MAP-OBJECT
     "R" -- "RUBIDIUM"
     "C" -- "SCRAP"
     "O" -- "ROCK"
-    See the docs/GAME file for a description of how each of these behaves.
-    The TILE(j,k) notation used here is simply to indicate that this tile
-    is at position (j,k), the (j,k) is not part of the actual protocol.
+See the docs/GAME file for a description of how each of these behaves.
+The TILE(j,k) notation used here is simply to indicate that this tile
+is at position (j,k), the (j,k) is not part of the actual protocol.
     
-    EXAMPLE:
+EXAMPLE:
     >  "data": [                // the map data, one J-column at a time
     >          ["G", "E", "S"], // first J-column
     >          ["G", "R", "V"], // second J-column
     >          ["C", "G", "G"]] // third J-column
     > }
-    extracts to
+extracts to
 
      J-coordinate                      K-coordinate
       \                               /
@@ -156,61 +158,70 @@ MAP-OBJECT
 	
 	
 ACTIONS (AI)
-    Actions that can be taken by the AI.
+-----------
+Actions that can be taken by the AI.
     > {"message":"action"
     >  "type":TYPE,
     >  ...
     > }
     The following actions are currently valid:
 
-    MOVEMENT/TACTICAL:
+### MOVEMENT/TACTICAL:
     
-    Move a tile:
+Move a tile:
+
     > {"message":"action", "type":"move",
     >  "direction":"up" // can be "up", "down", "right-up", "right-down", "left-up", "left-down"
     > }
 
-    Forfeit the turn:
+Forfeit the turn:
+
     > {"message":"action", "type":"pass"}
 
-    Upgrade a weapon:
+Upgrade a weapon:
+    
     > {"message":"action", "type":"upgrade", "weapon":"mortar"} // can be "mortar", "laser" or "droid"
     
-    Shoot the laser:
+Shoot the laser:
+    
     > {"message":"action", "type":"laser",
     >  "direction":"up", // can be "up", "down", "right-up", "right-down", "left-up", "left-down"
     > }
 
-    Shoot the mortar:
+Shoot the mortar:
+    
     > {"message":"action", "type":"mortar",
     >  "coordinates":"3,2" // relative J,K coordinates from the players position
     > }
 
-    Launch the droid:
+Launch the droid:
+    
     > {"message":"action", "type":"droid",
     >  "sequence":["up", "rightUp", "rightDown", "down"] // sequence of directions
     > }
 
 ACTIONS (Server)
-    Actions that are taken by the AI are validated by the server,
-    and then re-broadcasted to all AIs. For convenience, a "from" field is attached.
-    EXAMPLES:
+----------------
+Actions that are taken by the AI are validated by the server,
+and then re-broadcasted to all AIs. For convenience, a "from" field is attached.
+### EXAMPLES:
     
-    Move a tile:
+Move a tile:
     > {"message":"action", "type":"move",
     >  "direction":"up", // can be "up", "down", "right-up", "right-down", "left-up", "left-down"
     >  "from":"username" // user who performed the move
     > }
     
-    Upgrade a weapon:
+Upgrade a weapon:
     > {"message":"action", "type":"upgrade", "weapon":"mortar",
     >  "from":"username" // user who shot the mortar
     > }
         
 
 ERRORS
-    If the server encounters an error, either due to an invalid protocol command, or due to
-    an invalid move, it will send back an error object.
-    Example:
-        > {"error":"You need to send a hanshake first"}
-    Error messages are not machine-readable and mainly meant for human debugging.
+------    
+If the server encounters an error, either due to an invalid protocol command, or due to
+an invalid move, it will send back an error object.
+Example:
+    > {"error":"You need to send a hanshake first"}
+Error messages are not machine-readable and mainly meant for human debugging.
