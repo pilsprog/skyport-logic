@@ -8,12 +8,16 @@ $(BD)/Main.class: $(BD)/Acceptor.class $(BD)/GameThread.class Main.java Makefile
 	$(COMPILER) $(CFLAGS) Main.java
 
 ## Networking
-$(BD)/Acceptor.class: $(BD)/AIConnection.class $(BD)/AIClientHandler.class net/Acceptor.java
+$(BD)/Acceptor.class: $(BD)/AIConnection.class $(BD)/AIClientHandler.class $(BD)/GraphicsClientHandler.class $(BD)/GraphicsConnection.class net/Acceptor.java
 	$(COMPILER) $(CFLAGS) net/Acceptor.java
 $(BD)/AIClientHandler.class: json net/AIClientHandler.java
 	$(COMPILER) $(CFLAGS) net/AIClientHandler.java
 $(BD)/AIConnection.class: $(BD)/StatefulProtocolDecoder.class net/AIConnection.java
 	$(COMPILER) $(CFLAGS) net/AIConnection.java
+$(BD)/GraphicsClientHandler.class: json net/GraphicsClientHandler.java
+	$(COMPILER) $(CFLAGS) net/GraphicsClientHandler.java
+$(BD)/GraphicsConnection.class: $(BD)/StatefulProtocolDecoder.class net/GraphicsConnection.java
+	$(COMPILER) $(CFLAGS) net/GraphicsConnection.java
 $(BD)/StatefulProtocolDecoder.class: json $(BD)/ProtocolException.class net/StatefulProtocolDecoder.java
 	$(COMPILER) $(CFLAGS) net/StatefulProtocolDecoder.java
 $(BD)/ProtocolException.class: net/ProtocolException.java

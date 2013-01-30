@@ -18,8 +18,12 @@ public class Main {
 	}
 
 	ConcurrentLinkedQueue<AIConnection> globalClientList = new ConcurrentLinkedQueue<AIConnection>();
-        Acceptor aiClientAcceptor = new Acceptor(port, globalClientList);
+        Acceptor aiClientAcceptor = new Acceptor(port, globalClientList, minUsers, false);
 	new Thread(aiClientAcceptor).start();
+
+	Acceptor graphicsClientAcceptor = new Acceptor(port+10, null, 1, true);
+	graphicsClientAcceptor.run();
+	
 
 	// the main thread simply becomes the new gamethread.
 	GameThread game = new GameThread(globalClientList, minUsers, gameTimeoutSeconds, roundTimeSeconds);

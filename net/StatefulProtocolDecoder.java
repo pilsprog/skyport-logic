@@ -38,7 +38,6 @@ public class StatefulProtocolDecoder {
 	}
     }
     private String parseNonHandshake(JSONObject obj){
-	
 	return null;
     }
 }

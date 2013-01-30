@@ -1,6 +1,8 @@
 SKYPORT AI COMPETITION PROTOCOL REV. 1
+======================================
 
 SYNOPSIS
+========
     This file describes the protocol used by the AIs to communicate with the
     Server. The revision described in this protocol is rev1.
     Note that lines prefixed with ">" describe "incoming" data, that is, data
@@ -12,12 +14,14 @@ SYNOPSIS
     comments.
 
 TRANSPORT
+========
     The transport protocol used is line-based TCP. The server accepts UNIX-style
     line-endings (\n) and windows-style line-endings (\r\n).
     When reading from the socket, make sure that you don't limit the length of
     your lines, as some packets may end up rather large.
 
 CODEC & FORMAT
+==============
     Codec used for all transmissions is a line-based JSON format. This has been
     chosen to avoid the trouble of making a separate format and requiring the
     AIs to implement a parser for it. JSON is a simple, text-based format with
@@ -30,19 +34,24 @@ CODEC & FORMAT
     parser that is reasonably fast may give you an advantage.
     
 HANDSHAKE
+=========
     Handshake sent by the AI to establish the connection.
     Sent immediately upon connecting. If no handshake is sent after 10 seconds,
     the server will drop the connection.
-        < {"connect":REVISION,   // The protocol revision as integer, i.e. 1
+        < {"message":"connect",
+        <  "revision":REVISION,   // The protocol revision as integer, i.e. 1
         <  "name":NAME           // The name of your AI. String with less than 16 letters.
         < }
     If the handshake was successful, the server answers with
-        > {"connect":true}
+        > {"message":"connect",
+        >  "status":true
+	> }
     Otherwise it will send an error.
 
 	
 
 GAMESTART
+=========
     Before the game starts, the server sends an initial gamestate to all AIs, with
     the TURN-NUMBER = 0. This gamestate should not be replied to, and the server
     rejects all replies. 10 seconds after the GAMESTART was sent, the actual
@@ -50,12 +59,14 @@ GAMESTART
     the board, resources & starting-positions into datastructures.
 
 GAMESTATE
+=========
     Gamestate sent by the server to each of the AIs every round. You may use
     any information contained in this packet to your advantage however you like.
     After you have received the GAMESTATE packet, you have 3 seconds to reply
     with 3 actions. If your reply is late, your actions will be discarded and
     you forfeit your turn.
-        > {"gamestate": TURN-NUMBER,
+        > {"message":"gamestate",
+           "gamestate": TURN-NUMBER,
             // turn-number starting to count at 1, i.e. this would be the TURN-NUMBERth turn.
         >  "map": MAP-OBJECT,
 	    // mapobject describing all tiles. See MAP-OBJECT below for its detailed structure.
@@ -66,6 +77,7 @@ GAMESTATE
         > }
 
 MAP-OBJECT
+==========
      J-coordinate                      K-coordinate
       \                               /
        \                             /
@@ -139,12 +151,58 @@ MAP-OBJECT
     
 	
 	
-ACTIONS
+ACTIONS (AI)
     Actions that can be taken by the AI.
-    > {"action":
-    >  
+    > {"message":"action"
+    >  "type":TYPE,
+    >  ...
+    > }
+    The following actions are currently valid:
+
+    MOVEMENT/TACTICAL:
+    
+    Move a tile:
+    > {"message":"action", "type":"move",
+    >  "direction":"up" // can be "up", "down", "right-up", "right-down", "left-up", "left-down"
+    > }
+
+    Forfeit the turn:
+    > {"message":"action", "type":"pass"}
+
+    Upgrade a weapon:
+    > {"message":"action", "type":"upgrade", "weapon":"mortar"} // can be "mortar", "laser" or "droid"
+    
+    Shoot the laser:
+    > {"message":"action", "type":"laser",
+    >  "direction":"up", // can be "up", "down", "right-up", "right-down", "left-up", "left-down"
+    > }
+
+    Shoot the mortar:
+    > {"message":"action", "type":"mortar",
+    >  "coordinates":"3,2" // relative J,K coordinates from the players position
+    > }
+
+    Launch the droid:
+    > {"message":"action", "type":"droid",
+    >  "sequence":["up", "rightUp", "rightDown", "down"] // sequence of directions
+    > }
+
+ACTIONS (Server)
+    Actions that are taken by the AI are validated by the server,
+    and then re-broadcasted to all AIs. For convenience, a "from" field is attached.
+    EXAMPLES:
+    
+    Move a tile:
+    > {"message":"action", "type":"move",
+    >  "direction":"up", // can be "up", "down", "right-up", "right-down", "left-up", "left-down"
+    >  "from":"username" // user who performed the move
     > }
     
+    Upgrade a weapon:
+    > {"message":"action", "type":"upgrade", "weapon":"mortar",
+    >  "from":"username" // user who shot the mortar
+    > }
+        
 
 ERRORS
     If the server encounters an error, either due to an invalid protocol command, or due to
