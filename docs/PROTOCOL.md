@@ -22,10 +22,10 @@ your lines**, as some packets may end up rather large.
 
 CODEC & FORMAT
 --------------
-Codec used for all transmissions is a line-based JSON format. This has been
+Codec used for all transmissions is a **line-based JSON format**. This has been
 chosen to avoid the trouble of making a separate format and requiring the
-AIs to implement a parser for it. JSON is a simple, text-based format with
-a syntax inspired by javascript.
+AIs to implement a parser for it. **JSON is a simple, text-based format with
+a syntax inspired by javascript**.
 Read about JSON here: http://json.org/
 At the bottom of the page, you will find a list of existing JSON parsers for
 various languages. This protocol does not use any special JSON features, does
@@ -36,7 +36,7 @@ parser that is reasonably fast may give you an advantage.
 HANDSHAKE
 ---------
 Handshake sent by the AI to establish the connection.
-Sent immediately upon connecting. If no handshake is sent after 10 seconds,
+**Sent immediately upon connecting.** If no handshake is sent after 10 seconds,
 the server will drop the connection.
 
     < {"message":"connect",
