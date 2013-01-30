@@ -127,7 +127,7 @@ See the docs/GAME.md file for a description of how each of these behaves.
 The `TILE(j,k)` notation used here is simply to indicate that this tile
 is at position (j,k), the (j,k) is not part of the actual protocol.
     
-EXAMPLE:
+### EXAMPLE:
 
     > {"data": [                 // the map data, one J-column at a time
     >          ["G", "E", "S"],  // first J-column
@@ -208,7 +208,7 @@ ACTIONS (Server)
 Actions that are taken by the AI are validated by the server,
 and then re-broadcasted to all AIs. For convenience, a "from" field is attached.
 
-### EXAMPLES:
+### EXAMPLES
     
 Move a tile:
     > {"message":"action", "type":"move",
