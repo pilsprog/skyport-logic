@@ -76,7 +76,6 @@ and will be discarded. The first two actions will still be carried out for you.
     > {"message":"gamestate",
     >  "turn": TURN-NUMBER,  // turn-number starting at 1, i.e. this would be the TURN-NUMBERth turn.
     >  "map": MAP-OBJECT,         // object describing all tiles. See MAP-OBJECT below for details.
-    >  "entities": ENTITY-OBJECT, // entity-object describing the position of all entities on the map.
     >  "players":[PLAYER1, PLAYER2, ...] // rotating list of AIs in the game. This turn is PLAYER1s.
     > }
 
@@ -135,7 +134,7 @@ is at position (j,k), the (j,k) is not part of the actual protocol.
     >          ["G", "R", "V"],  // second J-column
     >          ["C", "G", "G"]]  // third J-column
     > }
-
+    
 "extracts" to
 
      J-coordinate                      K-coordinate
@@ -159,15 +158,15 @@ is at position (j,k), the (j,k) is not part of the actual protocol.
               .         \_____/        .
              .                          .
 
-ENTITY-OBJECT
--------------
-
-TODO: What possible types of entities can be on the board, besides players?
-
 PLAYER
 ------
-
-TODO: Player object contains username, health, score, weapon loadout & weapon levels
+    > {"name":"players-name",
+    >  "primary-weapon":"laser-1",    // "laser", "mortar", "droid", the number is the tier (1,2 or 3)
+    >  "secondary-weapon":"mortar-1", // ditto
+    >  "health":20,		      // int from 1 to 100
+    >  "score":120,		      // int from 1 to ?
+    >  "position":"j,k"}              // position in j/k coordinates (global)
+    
 
 COMPLETE EXAMPLE
 ----------------
@@ -270,4 +269,39 @@ EXAMPLE SESSIONS
 The following example session demonstrates the communication between an AI and
 the server in a one-on-one match on a very simple map.
 
-TODO
+    < {"message":"connect", "revision":1, "name":"you"}
+
+    > {"message":"connect", "status":true}
+
+    > {"message":"gamestate",
+    >  "turn": 0,
+    >  "map": {"j-length": 5
+    >          "k-length": 5
+    >          "data": [
+    >                  ["R", "G", "V", "G", "V"],
+    >                  ["G", "E", "G", "G", "S"],
+    > 		       ["G", "G", "O", "G", "G"],
+    >		       ["S", "G", "G", "C", "G"]
+    >                  ["V", "G", "V", "G", "G"]]
+    >         },
+    >  "players":[
+    >             {"name":"playerA", "primary-weapon":"laser-1",
+    >               "secondary-weapon":"mortar-1", "health":100,
+    >               "score":0, "position":"4,0"},
+    >		  {"name":"you", "primary-weapon":"laser-1",
+    >              "secondary-weapon":"droid-1", "health":100,
+    >		   "score":0, "position":"0,4"},
+    >		 ]
+    > }
+
+                 __
+              __/R \__
+           __/G \__/G \__
+        __/G \__/E \__/V \__
+     __/S \__/G \__/G \__/G \__
+    /V \__/G \__/O \__/G \__/V \
+    \*_/G \__/G \__/G \__/S \*_/
+       \__/V \__/C \__/G \__/
+          \__/G \__/G \__/
+             \__/G \__/
+                \__/

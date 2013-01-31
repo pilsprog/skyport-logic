@@ -46,4 +46,4 @@ clean:
 jar:
 	jar -c -e Main 
 
-.PHONY: clean
+.PHONY: clean json
