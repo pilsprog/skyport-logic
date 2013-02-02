@@ -1,10 +1,14 @@
 public class AbstractTile {
-    public Tile up;
-    public Tile down;
-    public Tile rightUp;
-    public Tile rightDown;
-    public Tile leftUp;
-    public Tile leftDown;
+    public Tile up = null;
+    public Tile down = null;
+    public Tile rightUp = null;
+    public Tile rightDown = null;
+    public Tile leftUp = null;
+    public Tile leftDown = null;
+    public boolean isAccessible = false;  // can tile be moved onto?
+    public boolean isSpawn = false;       // spawn tiles reflect damage
 
-    public boolean isAccessible;
+    public int explosium = 0;
+    public int rubidium = 0;
+    public int scrap = 0;
 }
