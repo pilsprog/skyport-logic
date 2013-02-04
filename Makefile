@@ -1,6 +1,6 @@
 COMPILER=javac
 BD=bin
-CFLAGS= -cp "$(BD):$(BD)/json/" -d $(BD) -Xlint:all 
+CFLAGS= -g -cp "$(BD):$(BD)/json/" -d $(BD) -Xlint:all 
 
 default:
 	@$(MAKE) $(BD)/Main.class
@@ -22,8 +22,6 @@ $(BD)/StatefulProtocolDecoder.class: json $(BD)/ProtocolException.class net/Stat
 	$(COMPILER) $(CFLAGS) net/StatefulProtocolDecoder.java
 $(BD)/ProtocolException.class: net/ProtocolException.java
 	$(COMPILER) $(CFLAGS) net/ProtocolException.java
-$(BD)/WorldParser.class: world/WorldParser.java
-	$(COMPILER) $(CFLAGS) world/WorldParser.java
 
 ## Logic
 $(BD)/GameThread.class: $(BD)/GameState.class logic/GameThread.java
@@ -34,10 +32,16 @@ $(BD)/Player.class: logic/Player.java
 	$(COMPILER) $(CFLAGS) logic/Player.java
 $(BD)/Action.class: logic/Action.java
 	$(COMPILER) $(CFLAGS) logic/Action.java
+$(BD)/Tile.class: logic/Tile.java
+	$(COMPILER) $(CFLAGS) logic/Tile.java
+
 ## World
+$(BD)/WorldParser.class: $(BD)/Tile.class world/WorldParser.java
+	$(COMPILER) $(CFLAGS) world/WorldParser.java
 
 ## JSON
-json $(BD)/json/JSONWriter.class: json/JSONWriter.java
+json: $(BD)/json/JSONWriter.class
+$(BD)/json/JSONWriter.class: json/JSONWriter.java
 	$(COMPILER) -d $(BD)/json json/*.java
 
 # Some cleanup & convenience stuff

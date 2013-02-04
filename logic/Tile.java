@@ -1,4 +1,7 @@
-public class AbstractTile {
+public class Tile {
+    public Tile(String type){
+	System.out.println("Created tile of type '" + type + "'");
+    }
     public Tile up = null;
     public Tile down = null;
     public Tile rightUp = null;
