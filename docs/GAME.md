@@ -49,9 +49,9 @@ TILES
 ### ACCESSIBLE TILES (These tiles can be moved onto)
 GRASS - normal grassland. No effect. May come in various forms and colors, but
 	robots don't care about aesthetics.
-EXPLODIUM - If you stand on this tile, you can use one action or more to mine
-		explodium. An explodium tile has 2 explodium, which you mine at a rate of
-		one explodium per action. After it is depleted, it turns into grass.
+EXPLOSIUM - If you stand on this tile, you can use one action or more to mine
+		explosium. An explosium tile has 2 explosium, which you mine at a rate of
+		one explosium per action. After it is depleted, it turns into grass.
 	RUBIDIUM - If you stand on this tile, you can use one action or more to mine
 		rubidium. An rubidium tile has 2 rubidium, which you mine at a rate of
 		one rubidium per action. After it is depleted, it turns into grass.

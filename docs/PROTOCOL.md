@@ -118,7 +118,7 @@ The map-object looks as follows:
 * "G" -- "GRASS"
 * "V" -- "VOID"
 * "S" -- "SPAWN"
-* "E" -- "EXPLODIUM"
+* "E" -- "EXPLOSIUM"
 * "R" -- "RUBIDIUM"
 * "C" -- "SCRAP"
 * "O" -- "ROCK"

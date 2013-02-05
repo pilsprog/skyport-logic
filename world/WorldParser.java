@@ -21,8 +21,8 @@ public class WorldParser{
 	System.out.println("[MAPPARSE] size: " + dimensions);
 	System.out.println("[MAPPARSE] description: '" + description + "'");
 	Tile topCorner = parseBody(scanner);
-	System.out.println("[MAPPARSE] Done parsing.");
-	return new World(topCorner);
+	System.out.println("[MAPPARSE] Done parsing. Ignored " + ignoredLines + " empty lines.");
+	return new World(topCorner, file);
     }
     private void parseHeader(Scanner scanner){
 	String playersArray[] = scanner.nextLine().split("\\s");
@@ -95,7 +95,6 @@ public class WorldParser{
 	}
 	currentLength -= 2;
 	// decreasing part of the algorithm
-	System.out.println("descending");
 	Tile cornerTile = rootTile;
 	cornerTile = rootTile;
 	while(cornerTile.leftDown != null){
@@ -131,7 +130,6 @@ public class WorldParser{
 		newTile.rightUp = currentTile;
 		currentTile.leftDown = newTile;
 	    }
-	    System.out.println("put " + tiles + " tiles into row");
 	    currentLength--;
 	}
 	return rootTile;
@@ -145,7 +143,7 @@ public class WorldParser{
 	line = line.replace(" ", "");
 	line = line.replace("\t", "");
 	if(line.equals("")){
-	    System.out.println("ignored empty line");
+	    ignoredLines++;
 	    return new String[0];
 	}
 	String array[] = line.split("");
