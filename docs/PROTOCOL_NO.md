@@ -1,87 +1,55 @@
-SKYPORT AI COMPETITION PROTOCOL REV. 1
+SKYPORT AI KONKURRANSE PROTOKOLL REV.1 NORSK
 ======================================
 
-SYNOPSIS
+SAMMENDRAG
 --------
-This file describes the protocol **used by the AIs to communicate with the
-Server.** The revision described in this protocol is **rev1**.
-Note that lines prefixed with **">"** describe **"incoming"** data, that is, data
-sent from the server to the AI client, while lines prefixed with **"<"**
-describe **"outgoing"** data, that is, data the AI client sends to the server.
-Note also that messages in this document are broken up into several lines
-for clarity, and are adorned with explanatory comments. however, when they
-are sent to the server, they need to be all on one single line without any
-comments.
+Dette dokumentet beskriver protokollen som **AI'en bruker til å kommunisere med serveren.** Revisjonen som blir beskrevet i dette dokumentet er **rev1**. Linjer som starter med **">"** beskriver meldinger som sendes **fra** serveren til AI-klienten (inn-data), mens linjer som starter med **"<"** beskriver meldinger som sendes **til** serveren (ut-data). Legg også merke til at meldingene beskrevet i dette dokumentet er delt opp i flere linjer og forklart med kommentarer. Når meldinger skal sendes til serveren må de sendes som en linje, uten kommentarer.
 
 TRANSPORT
 --------
-The transport protocol used is **line-based TCP**. The server accepts UNIX-style
-line-endings (\n) and windows-style line-endings (\r\n).
-When reading from the socket, make sure that you **don't limit the length of
-your lines**, as some packets may end up rather large.
+Transport protokollen som brukes i dette systemet er **linje-basert TCP**. Serveren aksepterer linjeslutt i både UNIX-format (\n) og Windows-format (\r\n).
 
 CODEC & FORMAT
 --------------
-Codec used for all transmissions is a **line-based JSON format**. This has been
-chosen to avoid the trouble of making a separate format and requiring the
-AIs to implement a parser for it. **JSON is a simple, text-based format with
-a syntax inspired by javascript**.
-Read about JSON here: http://json.org/
-At the bottom of the page, you will find a list of existing JSON parsers for
-various languages. This protocol does not use any special JSON features, does
-not require you to have capabilities like partial JSON parsing, and does not
-require you to deal with special characters/unicode. However, chosing a JSON
-parser that is reasonably fast may give you an advantage.
+Alle overføringene bruker et **linje-basert JSON format**. JSON ble valgt for å unngå at deltakerene skulle måtte lage sin egen parser for et egendefinert format. **JSON er et enkelt, text-basert format med et javascript-inspirert syntax.** Les om JSON her: http://json.org/. Nederst på siden finner du også en liste med eksisterende JSON parsere for flere programmeringsspråk. Denne protokollen bruker ingen spesielle JSON funksjoner; som delvis JSON parsing og spesielle tegn/unicode. Ulempen er at det kan være en fordel å velge en raskere JSON parser.
 
-HANDSHAKE
+TILKOBLING
 ---------
+Et håndtrykk (tilkoblings forespørsel) blir sent av AI'en til serveren for å etablere tilkoblingen.
+**Dette skal sendes umiddelbart** etter forbindelsen er opprettet. Hvis AI'en ikke sender et håndtrykk vil serveren avslutte forbindelsen etter 10 sekunder.
 Handshake sent by the AI to establish the connection.
-**Sent immediately upon connecting.** If no handshake is sent after 10 seconds,
-the server will drop the connection.
 
     < {"message":"connect",
-    <  "revision":REVISION,  // The protocol revision as integer, i.e. 1
-    <  "name":NAME // The name of your AI. String with less than 16 letters.
+    <  "revision":REVISION, //Protokoll revisjon settes til integer, feks. 1
+    <  "name":NAME //Navnet til AI'en. String med mindre enn 16 tegn
     < }
     
-If the handshake was successful, the server answers with
+Hvis håndtrykket godkjennes svarer serveren med:
     
     > {"message":"connect",
     >  "status":true
     > }
     
-Otherwise it will send an error.
+Hvis ikke vil serveren sende en feilmelding.
 
 
 
-GAMESTART
+SPILLSTART
 ---------
-Before the game starts, the server sends an **initial gamestate** to all AIs, with
-the **TURN-NUMBER = 0**. This gamestate looks otherwise **exactly like a normal gamestate**,
-but should not be replied to. The server will reject all replies. **10 seconds after
-the GAMESTART was sent, the actual gameplay starts**. The intent is to give all clients
-time to initialize and process the board, resources & starting-positions into datastructures.
+Før spillet starter sender serveren en **initial gamestate** (status ved oppstart) til alle AI'er, med **TURN-NUMBER = 0**. Denne spillstatusen ser ellers **nøyaktig lik normale spillstatus**, men skal ikke svares av AI'ene. Serveren vil avvise alle svar. **10 sekunder etter oppstartsstatus ble sendt starter spillet.** Formålet er å gi alle klienter tid til å initialisere og prosessere brettet, ressurser og start-posisjonene til datastrukturer.
 
-GAMESTATE
+SPILLSTATUS
 ---------
-Gamestate sent by the server to each of the AIs **every round**. You may use
-any information contained in this packet to your advantage however you like.
-If it is your turn (you are the first player in the rotating "players" list,)
-**you have 3 seconds to reply with 3 actions packets.** Any actions you send
-after the 3 seconds are over are discarded. This means for instance that you
-could send one action at 1s, another action at 2s, and the third action at 3s,
-but the third action will likely arrive at the server-end after the cutoff
-and will be discarded. The first two actions will still be carried out for you.
-
-    > {"message":"gamestate",
-    >  "turn": TURN-NUMBER,  // turn-number starting at 1, i.e. this would be the TURN-NUMBERth turn.
-    >  "map": MAP-OBJECT,         // object describing all tiles. See MAP-OBJECT below for details.
-    >  "players":[PLAYER1, PLAYER2, ...] // rotating list of AIs in the game. This turn is PLAYER1s.
+Spillstatus (gamestate) blir sendt av serveren til individuelle AI'er **hver runde**. du kan bruke all informasjon i denne pakken til din fordel. Hvis det er din tur har du **3 sekunder på å svare med 3 handlingspakker**. Hvis du sender noen pakker etter de 3 sekundene har utgått vil de bli avvist. Dette betyr at du kan feks sende en handling etter 1s, andre handling etter 2s (1s etter den første) og en tredje etter 3s, men den siste handlingen vil sannsynligvis nå serveren etter 3s-grensen og vil bli avvist. De første to handlingene vil fortsatt bli gjennomført for deg. 
+    
+    >  "turn": TURN-NUMBER,  //Rundenr, som starter på 1
+    >  "map": MAP-OBJECT,         //Objekt som beskriver alle fliser. Se Kart-objekt (MAP-OBJECT) for detaljer
+    >  "players":[PLAYER1, PLAYER2, ...] //Roterende liste med AI'er i spillet. I dette eksempelet er det PLAYER1 sin tur
     > }
 
-MAP-OBJECT
+Kart-objekt (MAP-OBJECT)
 ----------
-     J-coordinate                      K-coordinate
+     J-koordinat                       K-koordinat
       \                               /
        \                             /
         \                _____      /
@@ -102,7 +70,7 @@ MAP-OBJECT
               .         \_____/        .
              .                          .
 
-The map-object looks as follows:
+Kart-objektet ser slik ut:
 	     
 	
     > {"j-length": MAP-WIDTH-IN-J-DIRECTION // size of the map in the J-direction
