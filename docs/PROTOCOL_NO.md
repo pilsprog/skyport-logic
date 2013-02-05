@@ -74,7 +74,7 @@ De første to handlingene vil fortsatt bli gjennomført for deg.
     > }
 
 Kart-objekt (MAP-OBJECT)
-----------
+-----------------------
      J-koordinat                       K-koordinat
       \                               /
        \                             /
