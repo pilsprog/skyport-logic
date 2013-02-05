@@ -1,22 +1,36 @@
-SKYPORT AI KONKURRANSE PROTOKOLL REV.1 NORSK
+﻿SKYPORT AI KONKURRANSE PROTOKOLL REV.1 NORSK
 ======================================
 
 SAMMENDRAG
 --------
-Dette dokumentet beskriver protokollen som **AI'en bruker til å kommunisere med serveren.** Revisjonen som blir beskrevet i dette dokumentet er **rev1**. Linjer som starter med **">"** beskriver meldinger som sendes **fra** serveren til AI-klienten (inn-data), mens linjer som starter med **"<"** beskriver meldinger som sendes **til** serveren (ut-data). Legg også merke til at meldingene beskrevet i dette dokumentet er delt opp i flere linjer og forklart med kommentarer. Når meldinger skal sendes til serveren må de sendes som en linje, uten kommentarer.
+Dette dokumentet beskriver protokollen som **AI'en bruker til å kommunisere med serveren.** 
+Revisjonen som blir beskrevet i dette dokumentet er **rev1**. 
+Linjer som starter med **">"** beskriver meldinger som sendes **fra** serveren til AI-klienten (inn-data), 
+mens linjer som starter med **"<"** beskriver meldinger som sendes **til** serveren (ut-data). 
+Legg også merke til at meldingene beskrevet i dette dokumentet er delt opp i flere linjer og forklart med kommentarer. 
+Når meldinger skal sendes til serveren må de sendes som en linje, uten kommentarer.
 
 TRANSPORT
 --------
-Transport protokollen som brukes i dette systemet er **linje-basert TCP**. Serveren aksepterer linjeslutt i både UNIX-format (\n) og Windows-format (\r\n).
+Transport protokollen som brukes i dette systemet er **linje-basert TCP**. 
+Serveren aksepterer linjeslutt i både UNIX-format (\n) og Windows-format (\r\n).
 
 CODEC & FORMAT
 --------------
-Alle overføringene bruker et **linje-basert JSON format**. JSON ble valgt for å unngå at deltakerene skulle måtte lage sin egen parser for et egendefinert format. **JSON er et enkelt, text-basert format med et javascript-inspirert syntax.** Les om JSON her: http://json.org/. Nederst på siden finner du også en liste med eksisterende JSON parsere for flere programmeringsspråk. Denne protokollen bruker ingen spesielle JSON funksjoner; som delvis JSON parsing og spesielle tegn/unicode. Ulempen er at det kan være en fordel å velge en raskere JSON parser.
+Alle overføringene bruker et **linje-basert JSON format**. 
+JSON ble valgt for å unngå at deltakerene skulle måtte lage sin egen parser for et egendefinert format. 
+**JSON er et enkelt, text-basert format med et javascript-inspirert syntax.** 
+Les om JSON her: http://json.org/. 
+Nederst på siden finner du også en liste med eksisterende JSON parsere for flere programmeringsspråk. 
+Denne protokollen bruker ingen spesielle JSON funksjoner; som delvis JSON parsing og spesielle tegn/unicode. 
+Ulempen er at det kan være en fordel å velge en raskere JSON parser.
 
 TILKOBLING
 ---------
 Et håndtrykk (tilkoblings forespørsel) blir sent av AI'en til serveren for å etablere tilkoblingen.
-**Dette skal sendes umiddelbart** etter forbindelsen er opprettet. Hvis AI'en ikke sender et håndtrykk vil serveren avslutte forbindelsen etter 10 sekunder.
+**Dette skal sendes umiddelbart** etter forbindelsen er opprettet. 
+Hvis AI'en ikke sender et håndtrykk vil serveren avslutte forbindelsen etter 10 sekunder.
+
 Handshake sent by the AI to establish the connection.
 
     < {"message":"connect",
@@ -36,11 +50,23 @@ Hvis ikke vil serveren sende en feilmelding.
 
 SPILLSTART
 ---------
-Før spillet starter sender serveren en **initial gamestate** (status ved oppstart) til alle AI'er, med **TURN-NUMBER = 0**. Denne spillstatusen ser ellers **nøyaktig lik normale spillstatus**, men skal ikke svares av AI'ene. Serveren vil avvise alle svar. **10 sekunder etter oppstartsstatus ble sendt starter spillet.** Formålet er å gi alle klienter tid til å initialisere og prosessere brettet, ressurser og start-posisjonene til datastrukturer.
+Før spillet starter sender serveren en **initial gamestate** (status ved oppstart) til alle AI'er, 
+med **TURN-NUMBER = 0**. Denne spillstatusen ser ellers **nøyaktig lik normale spillstatus**, 
+men skal ikke svares av AI'ene. Serveren vil avvise alle svar. 
+**10 sekunder etter oppstartsstatus ble sendt starter spillet.** 
+Formålet er å gi alle klienter tid til å initialisere og prosessere brettet, 
+ressurser og start-posisjonene til datastrukturer.
 
 SPILLSTATUS
 ---------
-Spillstatus (gamestate) blir sendt av serveren til individuelle AI'er **hver runde**. du kan bruke all informasjon i denne pakken til din fordel. Hvis det er din tur har du **3 sekunder på å svare med 3 handlingspakker**. Hvis du sender noen pakker etter de 3 sekundene har utgått vil de bli avvist. Dette betyr at du kan feks sende en handling etter 1s, andre handling etter 2s (1s etter den første) og en tredje etter 3s, men den siste handlingen vil sannsynligvis nå serveren etter 3s-grensen og vil bli avvist. De første to handlingene vil fortsatt bli gjennomført for deg. 
+Spillstatus (gamestate) blir sendt av serveren til individuelle AI'er **hver runde**. 
+Du kan bruke all informasjon i denne pakken til din fordel. 
+Hvis det er din tur har du **3 sekunder på å svare med 3 handlingspakker**. 
+Hvis du sender noen pakker etter de 3 sekundene har utgått vil de bli avvist. 
+Dette betyr at du kan feks sende en handling etter 1s, 
+andre handling etter 2s (1s etter den første) og en tredje etter 3s, 
+men den siste handlingen vil sannsynligvis nå serveren etter 3s-grensen og vil bli avvist. 
+De første to handlingene vil fortsatt bli gjennomført for deg. 
     
     >  "turn": TURN-NUMBER,  //Rundenr, som starter på 1
     >  "map": MAP-OBJECT,         //Objekt som beskriver alle fliser. Se Kart-objekt (MAP-OBJECT) for detaljer
