@@ -13,15 +13,16 @@ public class WorldParser{
     public WorldParser(String filename){
 	file = filename;
     }
-    public void parseFile() throws FileNotFoundException {
+    public World parseFile() throws FileNotFoundException {
 	System.out.println("[MAPPARSE] Parsing map '" + file + "'");
 	Scanner scanner = new Scanner(new File(file));
 	parseHeader(scanner);
 	System.out.println("[MAPPARSE] Players: " + players);
 	System.out.println("[MAPPARSE] size: " + dimensions);
 	System.out.println("[MAPPARSE] description: '" + description + "'");
-	parseBody(scanner);
+	Tile topCorner = parseBody(scanner);
 	System.out.println("[MAPPARSE] Done parsing.");
+	return new World(topCorner);
     }
     private void parseHeader(Scanner scanner){
 	String playersArray[] = scanner.nextLine().split("\\s");
@@ -47,12 +48,12 @@ public class WorldParser{
 	dimensions = dimensionsInteger;
     }
 
-    private void parseBody(Scanner scanner){
+    private Tile parseBody(Scanner scanner){
 	Tile rootTile = null;
 	int currentLength = 1;
 	int i = 0;
 	// increasing part of the algorithm
-	while(i < 16){
+	while(i < dimensions){
 	    String lines[] = getScannedLine(scanner);
 	    if(lines.length == 0){
 		continue;
@@ -102,6 +103,7 @@ public class WorldParser{
 	}
 	Tile lowerCornerTile = cornerTile;
 	while(currentLength > 0){
+	    lowerCornerTile = cornerTile;
 	    while(lowerCornerTile.rightDown != null){
 		lowerCornerTile = lowerCornerTile.rightDown;
 	    }
@@ -115,7 +117,7 @@ public class WorldParser{
 				   + currentLength + ", but got " + lines.length);
 		continue;
 	    }
-	    Tile currentTile = cornerTile;
+	    Tile currentTile = lowerCornerTile;
 	    int tiles = 0;
 	    for(String tileType: lines){
 		tiles++;
@@ -132,7 +134,7 @@ public class WorldParser{
 	    System.out.println("put " + tiles + " tiles into row");
 	    currentLength--;
 	}
-
+	return rootTile;
     }
 
     private String[] getScannedLine(Scanner scanner){

@@ -4,7 +4,8 @@ CFLAGS= -g -cp "$(BD):$(BD)/json/" -d $(BD) -Xlint:all
 
 default:
 	@$(MAKE) $(BD)/Main.class
-$(BD)/Main.class: $(BD)/Acceptor.class $(BD)/GameThread.class $(BD)/WorldParser.class Main.java Makefile
+$(BD)/Main.class: $(BD)/World.class $(BD)/Acceptor.class $(BD)/GameThread.class \
+$(BD)/WorldParser.class Main.java Makefile
 	$(COMPILER) $(CFLAGS) Main.java
 
 ## Networking
@@ -36,8 +37,10 @@ $(BD)/Tile.class: logic/Tile.java
 	$(COMPILER) $(CFLAGS) logic/Tile.java
 
 ## World
-$(BD)/WorldParser.class: $(BD)/Tile.class world/WorldParser.java
+$(BD)/WorldParser.class: $(BD)/Tile.class $(BD)/World.class world/WorldParser.java
 	$(COMPILER) $(CFLAGS) world/WorldParser.java
+$(BD)/World.class: world/World.java
+	$(COMPILER) $(CFLAGS) world/World.java
 
 ## JSON
 json: $(BD)/json/JSONWriter.class
