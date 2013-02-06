@@ -269,8 +269,8 @@ the server in a one-on-one match on a very simple map.
 
     > {"message":"gamestate",
     >  "turn": 0,
-    >  "map": {"j-length": 5
-    >          "k-length": 5
+    >  "map": {"j-length": 5,
+    >          "k-length": 5,
     >          "data": [
     >                  ["R", "G", "V", "G", "V"],
     >                  ["G", "E", "G", "G", "S"],
