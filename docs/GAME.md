@@ -42,26 +42,31 @@ the K-coordinate second. For instance, you may send the server a message
 such as "go to 1,0" and then "fire mortar at 2,2". The server would then
 first move you to the tile [1, 0], and then perform your mortar shot,
 assuming it is in range.
+You can move from tile to tile in the fashion you would expect (crossing edges),
+and you can move up to 3 tiles in one round.
 There are seven different types of tiles, as described in the next section.
 
 TILES
 -----
 ### ACCESSIBLE TILES (These tiles can be moved onto)
-* GRASS - normal grassland. No effect. May come in various forms and colors, but
+
+* **GRASS** - normal grassland. No effect. May come in various forms and colors, but
 	  robots don't care about aesthetics.
-* EXPLOSIUM - If you stand on this tile, you can use one action or more to mine
+* **EXPLOSIUM** - If you stand on this tile, you can use one action or more to mine
 		explosium. An explosium tile has 2 explosium, which you mine at a rate of
 		one explosium per action. After it is depleted, it turns into grass.
-* RUBIDIUM - If you stand on this tile, you can use one action or more to mine
+* **RUBIDIUM** - If you stand on this tile, you can use one action or more to mine
 		rubidium. An rubidium tile has 2 rubidium, which you mine at a rate of
 		one rubidium per action. After it is depleted, it turns into grass.
-* SCRAP - If you stand on this tile, you can use one action or more to mine
+* **SCRAP** - If you stand on this tile, you can use one action or more to mine
 		scrap. An scrap tile has 2 scrap, which you mine at a rate of
 		one scrap per action. After it is depleted, it turns into grass.
-* INACCESSIBLE TILES (These tiles cannot be moved onto, but the server may place you on them.)
-* VOID  - No tile at all.	
-* SPAWN - protected spawn area. Once you move away from it, you can't re-enter.
-* ROCK  - A rock is blocking the way.
+		
+### INACCESSIBLE TILES (These tiles cannot be moved onto, but the server may place you on them.)
+		
+* **VOID**  - No tile at all.	
+* **SPAWN** - protected spawn area. Once you move away from it, you can't re-enter.
+* **ROCK**  - A rock is blocking the way.
 
 TURNS
 -----
@@ -158,8 +163,8 @@ moves (if any) for a damage bonus.
 MOVEMENT
 --------
 An action may be used for moving in one of the six cardinal directions.
-Only grass-tiles may be moved onto, attempting to move onto any other
-tile is an invalid move and hence discarded by the server.
+Only accessible tiles may be moved onto, attempting to move onto an
+inaccessible tile is an invalid move and hence discarded by the server.
 
 POINTS
 ------
@@ -178,6 +183,7 @@ Respawning takes one full turn.
 
 ARITHMETIC & STATS
 ------------------
+
 *Upgrading a weapon from lvl 1 to lvl 2: 4 resources
 *Upgrading a weapon from lvl 2 to lvl 3: 5 resources
 *hp = -dmg
