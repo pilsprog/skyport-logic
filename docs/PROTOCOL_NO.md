@@ -99,39 +99,39 @@ Kart-objekt (MAP-OBJECT)
 Kart-objektet ser slik ut:
 	     
 	
-    > {"j-length": MAP-WIDTH-IN-J-DIRECTION // size of the map in the J-direction
-    >  "k-length": MAP-WIDTH-IN-K-DIRECTION // size of the map in the K-direction
-    >  "data": [ // the map data, one J-column at a time
+    > {"j-length": MAP-WIDTH-IN-J-DIRECTION // Størrelsen på kartet i J-koordinatet
+    >  "k-length": MAP-WIDTH-IN-K-DIRECTION // Størrelsen på kartet i K-koordinatet
+    >  "data": [ // Kart-dataen, en J-kolonne om gangen
     >          [TILE(0,0), TILE(0,1), TILE(0,2), ...],
     >          [TILE(1,0), TILE(1,1), TILE(1,2), ...],
     >          [TILE(2,0), TILE(2,1), TILE(2,2), ...]]
     > }
 
-`TILE(j, k)` is the tile-type at coordinate (j, k).
-`TILE(j, k)` is simply a string of one of the following types:
-* "G" -- "GRASS"
-* "V" -- "VOID"
-* "S" -- "SPAWN"
+`TILE(j, k)` er rute-typen til ruten ved koordinatene (j, k).
+`TILE(j, k)` er en streng av en av følgende typer:
+* "G" -- "GRASS" (Gress)
+* "V" -- "VOID" (Tom rute)
+* "S" -- "SPAWN" (Startsted)
 * "E" -- "EXPLODIUM"
 * "R" -- "RUBIDIUM"
-* "C" -- "SCRAP"
-* "O" -- "ROCK"
+* "C" -- "SCRAP" (Skrap)
+* "O" -- "ROCK" (Stein)
 
-See the docs/GAME.md file for a description of how each of these behaves.
-The `TILE(j,k)` notation used here is simply to indicate that this tile
-is at position (j,k), the (j,k) is not part of the actual protocol.
+Se docs/GAME.md dokumentet for en beskrivelse av hvordan rutetypene oppfører seg.
+'Tile(j,k)' notasjonen som blir brukt her indikerer at ruten har posisjonen (j,k),
+dette er ikke en del av den egentlige protokollen.
     
-### EXAMPLE:
+### EKSEMPEL:
 
-    > {"data": [                 // the map data, one J-column at a time
-    >          ["G", "E", "S"],  // first J-column
-    >          ["G", "R", "V"],  // second J-column
-    >          ["C", "G", "G"]]  // third J-column
+    > {"data": [                 // Kart-dataen, en J-kolonne om gangen
+    >          ["G", "E", "S"],  // første J-kolonne
+    >          ["G", "R", "V"],  // andre J-kolonne
+    >          ["C", "G", "G"]]  // tredje J-kolonne
     > }
     
-"extracts" to
+utgjør dette kartet:
 
-     J-coordinate                      K-coordinate
+     J-koordinat                       K-koordinat
       \                               /
        \                             /
         \                _____      /
@@ -152,74 +152,74 @@ is at position (j,k), the (j,k) is not part of the actual protocol.
               .         \_____/        .
              .                          .
 
-PLAYER
+SPILLER
 ------
     > {"name":"players-name",
-    >  "primary-weapon":"laser-1",    // "laser", "mortar", "droid", the number is the tier (1,2 or 3)
-    >  "secondary-weapon":"mortar-1", // ditto
-    >  "health":20,		      // int from 1 to 100
-    >  "score":120,		      // int from 1 to ?
-    >  "position":"j,k"}              // position in j/k coordinates (global)
+    >  "primary-weapon":"laser-1",    // "laser", "mortar", "droid", nummeret indikerer nivå (1,2 eller 3)
+    >  "secondary-weapon":"mortar-1", // samme som forrige linje
+    >  "health":20,		      // int fra 1 til 100
+    >  "score":120,		      // int fra 1 til ?
+    >  "position":"j,k"}              // posisjon i j/k koordinater (globalt)
     
 
-COMPLETE EXAMPLE
+KOMPLETT EKSEMPEL
 ----------------
 
 TODO
 
-ACTIONS (AI)
+HANDLINGER (AI)
 -----------
 
-Actions that can be taken by the AI.
+Handlinger AI'en kan utføre.
 
     > {"message":"action"
     >  "type":TYPE,
     >  ...
     > }
 
-The following actions are currently valid:
+Følgende handlinger er for øyeblikket gyldige:
 
-### MOVEMENT/TACTICAL:
+### BEVEGELSE/TAKTISK:
     
-**Move** a tile:
+**Flytt** spilleren en rute:
 
     > {"message":"action", "type":"move",
-    >  "direction":"up" // can be "up", "down", "right-up", "right-down", "left-up", "left-down"
+    >  "direction":"up" // kan være "up" (opp), "down" (ned), "right-up" (opp-høyre), "right-down" (ned-høyre), "left-up" (venstre-opp), "left-down" (venstre-ned)
     > }
 
-**Forfeit** the turn:
+**Stå over** turen:
 
     > {"message":"action", "type":"pass"}
 
-**Upgrade** a weapon:
+**Oppgrader** ett våpen:
     
-    > {"message":"action", "type":"upgrade", "weapon":"mortar"} // can be "mortar", "laser" or "droid"
+    > {"message":"action", "type":"upgrade", "weapon":"mortar"} // kan være "mortar", "laser" eller "droid"
 
-**Mine** the current tile:
+**Hent ressurser** fra ruten:
 
     > {"message":"action", "type":"mine"}
     
-### ATTACK/OFFENSIVE:
+### ANGREP/OFFENSIV:
     
-Shoot the **laser**:
+Skyt **laseren**:
     
     > {"message":"action", "type":"laser",
-    >  "direction":"up", // can be "up", "down", "right-up", "right-down", "left-up", "left-down"
+    >  "direction":"up", // kan være "up", "down", "right-up", "right-down", "left-up", "left-down"
     > }
 
-Shoot the **mortar**:
+Skyt **mortar**:
     
     > {"message":"action", "type":"mortar",
-    >  "coordinates":"3,2" // relative J,K coordinates from the players position
+    >  "coordinates":"3,2" // relative J/K koordinatene fra spillerens posisjon
     > }
 
-Launch the **droid**:
+aktiver **droiden**:
     
     > {"message":"action", "type":"droid",
-    >  "sequence":["up", "rightUp", "rightDown", "down"] // sequence of directions
+    >  "sequence":["up", "rightUp", "rightDown", "down"] // bevegelses-sekvens
     > }
 
-ACTIONS (Server)
+HANDLINGER (Server)
 ----------------
 
 Actions that are taken by the AI are validated by the server,
