@@ -184,20 +184,20 @@ Respawning takes one full turn.
 ARITHMETIC & STATS
 ------------------
 
-*Upgrading a weapon from lvl 1 to lvl 2: 4 resources
-*Upgrading a weapon from lvl 2 to lvl 3: 5 resources
-*hp = -dmg
-*Player at full health: 100hp
-*laser lvl 1: 16dmg
-*laser lvl 2: 18dmg
-*laser lvl 3: 22dmg
-*mortar lvl 1: 20dmg
-*mortar lvl 2: 20dmg
-*mortar lvl 3: 25dmg
-*mortar AoE damage: 2dmg
-*droid lvl 1: 22dmg
-*droid lvl 2: 24dmg
-*droid lvl 3: 26dmg
-*droid AoE damage: 10dmg
-*player_damage = weapon_damage
+* Upgrading a weapon from lvl 1 to lvl 2: 4 resources
+* Upgrading a weapon from lvl 2 to lvl 3: 5 resources
+* hp = -dmg
+* Player at full health: 100hp
+* laser lvl 1: 16dmg
+* laser lvl 2: 18dmg
+* laser lvl 3: 22dmg
+* mortar lvl 1: 20dmg
+* mortar lvl 2: 20dmg
+* mortar lvl 3: 25dmg
+* mortar AoE damage: 2dmg
+* droid lvl 1: 22dmg
+* droid lvl 2: 24dmg
+* droid lvl 3: 26dmg
+* droid AoE damage: 10dmg
+* player_damage = weapon_damage
 	       + AoE_damage + unused_turns*(0.2*weapon_damage) + unused_turns*(0.2*AoE_damage)
