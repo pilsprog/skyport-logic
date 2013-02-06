@@ -13,14 +13,16 @@ public class StatefulProtocolDecoder {
 	    try {
 		int version = (int)obj.get("connect");
 		if(version != supportedProtocolVersion){
-		    throw new ProtocolException("Wrong protocol version: expected " + supportedProtocolVersion + ", got " + version);
+		    throw new ProtocolException("Wrong protocol version: expected "
+						+ supportedProtocolVersion + ", got " + version);
 		}
 		else {
 		    hasHandshake = true;
 		    String jsonReturnMessage = null;
 		    JSONStringer stringer = new JSONStringer();
 		    try {
-			jsonReturnMessage = stringer.object().key("connect").value(true).endObject().toString();
+			jsonReturnMessage =
+			    stringer.object().key("connect").value(true).endObject().toString();
 		    }
 		    catch (JSONException e){}
 		    return jsonReturnMessage;
@@ -30,14 +32,14 @@ public class StatefulProtocolDecoder {
 		if(!hasHandshake){
 		    throw new ProtocolException("You need to send a hanshake first");
 		}
-		return parseNonHandshake(obj);
+		return parseAction(obj);
 	    }
 	}
 	catch (JSONException e) {
 	    throw new ProtocolException(e.toString());
 	}
     }
-    private String parseNonHandshake(JSONObject obj){
+    private String parseAction(JSONObject obj){
 	return null;
     }
 }

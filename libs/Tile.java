@@ -19,8 +19,10 @@ public class Tile {
     public Tile leftDown = null;
     public int resources = 0;
     public TileType tileType;
+    public String id = null;
 
     public Tile(String type){
+	id = type;
 	if(type.equals("G")){
 	    tileType = TileType.GRASS;
 	    grassTiles++;

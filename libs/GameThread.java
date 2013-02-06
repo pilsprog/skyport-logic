@@ -6,8 +6,9 @@ public class GameThread {
     int gameTimeoutSeconds;
     int roundTimeSeconds;
     GameState gamestate;
+    World world;
     public GameThread(ConcurrentLinkedQueue<AIConnection> globalClientsArg,
-		      int minUsersArg, int gameTimeoutSecondsArg, int roundTimeSecondsArg){
+		      int minUsersArg, int gameTimeoutSecondsArg, int roundTimeSecondsArg, World world){
 	globalClients = globalClientsArg;
 	minUsers = minUsersArg;
 	gameTimeoutSeconds = gameTimeoutSecondsArg;

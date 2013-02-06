@@ -22,7 +22,7 @@ public class WorldParser{
 	System.out.println("[MAPPARSE] description: '" + description + "'");
 	Tile topCorner = parseBody(scanner);
 	System.out.println("[MAPPARSE] Done parsing. Ignored " + ignoredLines + " empty lines.");
-	return new World(topCorner, file);
+	return new World(topCorner, file, dimensions);
     }
     private void parseHeader(Scanner scanner){
 	String playersArray[] = scanner.nextLine().split("\\s");

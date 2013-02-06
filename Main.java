@@ -3,7 +3,7 @@ import java.io.FileNotFoundException;
 
 public class Main {
     static int roundTimeSeconds = 3;
-    public static void main(String[] args) {
+    public static void main(String args[]) {
         int port = 54321;
 	int minUsers = 2;
 	int gameTimeoutSeconds = 600;
@@ -19,13 +19,14 @@ public class Main {
 	    System.out.println("Usage: ./run.sh <port> <number of users> <game time> <mapfile>");
 	    System.exit(1);	    
 	}
-
+	World world = null;
 	try {
 	    WorldParser wp = new WorldParser(mapfile);
-	    wp.parseFile();
+	    world = wp.parseFile();
 	}
 	catch(FileNotFoundException e){
 	    System.out.println("File not found: '" + mapfile + "'");
+	    System.exit(1);
 	}
 	
 	ConcurrentLinkedQueue<AIConnection> globalClientList = new ConcurrentLinkedQueue<AIConnection>();
@@ -37,7 +38,8 @@ public class Main {
 	
 
 	// the main thread simply becomes the new gamethread.
-	GameThread game = new GameThread(globalClientList, minUsers, gameTimeoutSeconds, roundTimeSeconds);
+	GameThread game =
+	    new GameThread(globalClientList, minUsers, gameTimeoutSeconds, roundTimeSeconds, world);
 	game.run(gameTimeoutSeconds);
     }
 }

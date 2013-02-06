@@ -5,8 +5,10 @@ public class World {
     Tile bottomTile;
     Tile leftTile;
     Tile rightTile;
+    int dimension;
     LinkedList<Tile> freeSpawnPoints = new LinkedList<Tile>();
-    public World(Tile topTileArg, String filename){
+    public World(Tile topTileArg, String filename, int dimensionArg){
+	dimension = dimensionArg;
 	topTile = topTileArg;
 	leftTile = topTile;
 	while(leftTile.leftDown != null){
@@ -34,6 +36,29 @@ public class World {
 	System.out.println("\tExplosium tiles: " + Tile.explosiumTiles + ", total explosium: "
 			   + Tile.explosiumTiles*2);
 	performStructureConsistencyVerification(topTile);
+	returnAsRowMajorMatrix();
+    }
+    public void returnAsRowMajorMatrix(){
+	Tile currentJTile = topTile;
+	String matrix[][] = new String[dimension][dimension];
+	for(int j = 0; j < dimension; j++){
+	    Tile currentKTile = currentJTile;
+	    for(int k = 0; k < dimension; k++){
+		matrix[j][k] = currentKTile.id;
+		currentKTile = currentKTile.rightDown;
+	    }
+	    currentJTile = currentJTile.leftDown;
+	}
+	System.out.print("[");
+	for(int l = 0; l < dimension; l++){
+	    System.out.print("[");
+	    for(String s: matrix[l]){
+		System.out.print(s + ", ");
+	    }
+	    System.out.print("],\n");
+	}
+	System.out.println("]");
+	
     }
     public void performStructureConsistencyVerification(Tile topTile){
 	int jWidthTop = 0;
