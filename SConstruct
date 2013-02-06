@@ -1,5 +1,9 @@
 import os
+import glob
+import re
+
 env = Environment()
+env.Replace(JAVAVERSION = env['javaver'])
 
 # Workaround for windows
 newpath = os.environ.get('PATH')
