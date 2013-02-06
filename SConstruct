@@ -1,20 +1,12 @@
 env = Environment()
-env.Append(JAVACFLAGS="-cp bin:bin/json")
+env.Append(JAVACFLAGS="-cp bin:bin/json -Xlint:all")
 
-JSON = env.Java("bin/json", "json")
-Tile = env.Java("bin", "logic/Tile.java")
-WorldParser = env.Java("bin", "world/WorldParser.java")
-AIConnection = env.Java("bin", "net/AIConnection.java")
-Acceptor = env.Java("bin", "net/Acceptor.java")
-GameThread = env.Java("bin", "logic/GameThread.java")
+JSON = Environment().Java("bin/json", "json")
+Libs = env.Java("bin", "libs")
 Main = env.Java("bin", "Main.java")
 
-# Necessary requirements
-Depends(Main, JSON)
-Depends(Main, WorldParser)
-Depends(Main, AIConnection)
-Depends(Main, Acceptor)
-Depends(Main, GameThread)
-Depends(WorldParser, Tile)
+Depends(Libs, JSON)
+Depends(Main, Libs)
 
 Default(Main)
+Clean(JSON, "bin/json/org/json/JSONObject$1.class")
