@@ -52,6 +52,15 @@ If the handshake was successful, the server answers with
     
 Otherwise it will send an error.
 
+LOADOUT
+-------
+
+This is the loadout used by the AI to chose the weapons.
+
+    < {"message":"loadout",
+    <  "primary-weapon":"laser",    // can be "laser", "mortar", "droid"
+    <  "secondary-weapon":"mortar", // ditto
+    < }
 
 
 GAMESTART
