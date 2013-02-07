@@ -244,7 +244,7 @@ and then re-broadcasted to all AIs. For convenience, a "from" field is attached.
 **Upgraded** a weapon:
     
     < {"message":"action", "type":"upgrade", "weapon":"mortar",
-    <  "from":"username" // user who shot the mortar
+    <  "from":"username" // user who upgraded the mortar
     < }
         
 

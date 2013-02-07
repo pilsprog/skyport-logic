@@ -222,46 +222,46 @@ aktiver **droiden**:
 HANDLINGER (Server)
 ----------------
 
-Actions that are taken by the AI are validated by the server,
-and then re-broadcasted to all AIs. For convenience, a "from" field is attached.
+Handlinger som AI'ene utfører må bli validert av serveren, før de blir kringkastet
+på nytt til alle AI'er. For praktiske årsaker inkluderer vi et "from" (fra) felt.
 
-### EXAMPLES
+### EKSEMPLER
     
-**Moved** a tile:
+**Flytt** til en rute:
 
     < {"message":"action", "type":"move",
-    <  "direction":"up", // can be "up", "down", "right-up", "right-down", "left-up", "left-down"
-    <  "from":"username" // user who performed the move
+    <  "direction":"up", // Kan være "up", "down", "right-up", "right-down", "left-up", "left-down"
+    <  "from":"username" // AI'en som utførte handlingen
     < }
     
-**Upgraded** a weapon:
+**Oppgradere** et våpen:
     
     < {"message":"action", "type":"upgrade", "weapon":"mortar",
-    <  "from":"username" // user who shot the mortar
+    <  "from":"username" // AI'en som utførte handlingen
     < }
         
 
-ERRORS
+FEILMELDINGER
 ------    
 
-If the server encounters an error, either due to an invalid protocol command, or due to
-an invalid move, it will send back an error object. The server may disconnect the AI that
-provoked the error, depending on the severity.
+Hvis det oppstår en feil, enten på grunn av en ugyldig kommando eller en ugyldig handling,
+vil serveren sende en feilmelding i form av et feilmeldings-objekt. Hvis feilen er alvorlig
+kan serveren frakoble AI'en som forårsaket den.
 
-Example:
+Eksempel:
 
     < {"error":"You need to send a handshake first"}
 
-Error messages are not machine-readable and mainly meant for human debugging. Hence
-the exact error-messages are not documented and may change. An AI should never rely
-on some behaviour that provokes an error from the server.
+Feilmeldingene er ikke maskinlesbare og er hovedsakling ment for menneskelig feilsøking.
+Derfor er ikke feilmeldingene dokumentert og kan bli endret i utviklingen av systemet.
+En AI burde aldri være avhengig av feilmeldinger fra serveren.
 
 
-EXAMPLE SESSIONS
+EKSEMPEL ØKTER
 ----------------
 
-The following example session demonstrates the communication between an AI and
-the server in a one-on-one match on a very simple map.
+Disse eksempel øktene demonstrer kommunikasjonen mellom en AI og serveren i en 1-mot-1 kamp
+på et simplifisert kart.
 
     < {"message":"connect", "revision":1, "name":"you"}
 
