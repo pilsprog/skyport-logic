@@ -49,13 +49,27 @@ Hvis ikke vil serveren sende en feilmelding.
 
 
 SPILLSTART
----------
+----------
 Før spillet starter sender serveren en **initial gamestate** (status ved oppstart) til alle AI'er, 
 med **TURN-NUMBER = 0**. Denne spillstatusen ser ellers **nøyaktig lik normale spillstatus**, 
 men skal ikke svares av AI'ene. Serveren vil avvise alle svar. 
 **10 sekunder etter oppstartsstatus ble sendt starter spillet.** 
 Formålet er å gi alle klienter tid til å initialisere og prosessere brettet, 
 ressurser og start-posisjonene til datastrukturer.
+
+
+VÅPENVALG
+---------
+
+AI'en må selv velge hvilke våpen den skal bruke i spillet. Dette gjøres etter oppstarts-meldingen
+er sendt (initial gamestate) og før spillet starter. Hvis en AI ikke har sendt sitt våpenvalg før
+første spillstatus sendes fra serveren; vil AI'en bli **frakoblet fra serveren**.
+
+    < {"message":"loadout",
+    <  "primary-weapon":"laser",    // Kan være "laser", "mortar", "droid"
+    <  "secondary-weapon":"mortar", // ditto
+    < }
+
 
 SPILLSTATUS
 ---------
