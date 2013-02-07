@@ -252,16 +252,16 @@ Eksempel:
 
     < {"error":"You need to send a handshake first"}
 
-Error messages are not machine-readable and mainly meant for human debugging. Hence
-the exact error-messages are not documented and may change. An AI should never rely
-on some behaviour that provokes an error from the server.
+Feilmeldingene er ikke maskinlesbare og er hovedsakling ment for menneskelig feilsøking.
+Derfor er ikke feilmeldingene dokumentert og kan bli endret i utviklingen av systemet.
+En AI burde aldri være avhengig av feilmeldinger fra serveren.
 
 
-EXAMPLE SESSIONS
+EKSEMPEL ØKTER
 ----------------
 
-The following example session demonstrates the communication between an AI and
-the server in a one-on-one match on a very simple map.
+Disse eksempel øktene demonstrer kommunikasjonen mellom en AI og serveren i en 1-mot-1 kamp
+på et simplifisert kart.
 
     < {"message":"connect", "revision":1, "name":"you"}
 
