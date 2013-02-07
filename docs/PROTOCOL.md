@@ -52,6 +52,15 @@ If the handshake was successful, the server answers with
     
 Otherwise it will send an error.
 
+
+GAMESTART
+---------
+Before the game starts, the server sends an **initial gamestate** to all AIs, with
+the **TURN-NUMBER = 0**. This gamestate looks otherwise **exactly like a normal gamestate**,
+but should not be replied to. The server will reject all replies. **10 seconds after
+the GAMESTART was sent, the actual gameplay starts**. The intent is to give all clients
+time to initialize and process the board, resources & starting-positions into datastructures.
+
 LOADOUT
 -------
 
@@ -62,14 +71,9 @@ This is the loadout used by the AI to chose the weapons.
     <  "secondary-weapon":"mortar", // ditto
     < }
 
-
-GAMESTART
----------
-Before the game starts, the server sends an **initial gamestate** to all AIs, with
-the **TURN-NUMBER = 0**. This gamestate looks otherwise **exactly like a normal gamestate**,
-but should not be replied to. The server will reject all replies. **10 seconds after
-the GAMESTART was sent, the actual gameplay starts**. The intent is to give all clients
-time to initialize and process the board, resources & starting-positions into datastructures.
+The weapon loadout should be sent to the server by the AI after the GAMESTART
+packet was sent, and before the first GAMESTATE packet is sent. If no loadout
+is sent before the first GAMESTATE is sent, you are kicked off the server.
 
 GAMESTATE
 ---------
