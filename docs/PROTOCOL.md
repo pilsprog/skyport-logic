@@ -161,7 +161,8 @@ is at position (j,k), the (j,k) is not part of the actual protocol.
 PLAYER
 ------
     > {"name":"players-name",
-    >  "primary-weapon":"laser-1",    // "laser", "mortar", "droid", the number is the tier (1,2 or 3)
+    >  "primary-weapon":
+    >    {"name":"laser", "level":1}, // "laser", "mortar", "droid", the number is the tier (1,2 or 3)
     >  "secondary-weapon":"mortar-1", // ditto
     >  "health":20,		      // int from 1 to 100
     >  "score":120,		      // int from 1 to ?
