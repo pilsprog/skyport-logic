@@ -286,11 +286,11 @@ the server in a one-on-one match on a very simple map.
     >                  ["V", "G", "V", "G", "G"]]
     >         },
     >  "players":[
-    >             {"name":"playerA", "primary-weapon":"laser-1",
-    >               "secondary-weapon":"mortar-1", "health":100,
+    >             {"name":"playerA", "primary-weapon":{"name":"laser", "level":1},
+    >               "secondary-weapon":{"name":"laser", "level":1}, "health":100,
     >               "score":0, "position":"4,0"},
-    >		  {"name":"you", "primary-weapon":"laser-1",
-    >              "secondary-weapon":"droid-1", "health":100,
+    >		  {"name":"you", "primary-weapon":{"name":"laser", "level":1},
+    >              "secondary-weapon":{"name":"droid", "level":1}, "health":100,
     >		   "score":0, "position":"0,4"},
     >		 ]
     > }
