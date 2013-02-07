@@ -155,7 +155,8 @@ utgjør dette kartet:
 SPILLER
 ------
     > {"name":"players-name",
-    >  "primary-weapon":"laser-1",    // "laser", "mortar", "droid", nummeret indikerer nivå (1,2 eller 3)
+    >  "primary-weapon":
+    >    {"name":"laser", "level":1},    // "laser", "mortar", "droid", nummeret indikerer nivå (1,2 eller 3)
     >  "secondary-weapon":"mortar-1", // samme som forrige linje
     >  "health":20,		      // int fra 1 til 100
     >  "score":120,		      // int fra 1 til ?
@@ -279,12 +280,12 @@ på et simplifisert kart.
     >                  ["V", "G", "V", "G", "G"]]
     >         },
     >  "players":[
-    >             {"name":"playerA", "primary-weapon":"laser-1",
-    >               "secondary-weapon":"mortar-1", "health":100,
-    >               "score":0, "position":"4,0"},
-    >		  {"name":"you", "primary-weapon":"laser-1",
-    >              "secondary-weapon":"droid-1", "health":100,
-    >		   "score":0, "position":"0,4"},
+    >             {"name":"playerA", "primary-weapon":{"name":"laser", "level":1},
+    >               "secondary-weapon": {"name": "mortar", "level":1},
+    >               "health":100, "score":0, "position":"4,0"},
+    >		  {"name":"you", "primary-weapon":{"name":"laser", "level": 1},
+    >              "secondary-weapon":{"name":"droid", "level":1},
+    >              "health":100, "score":0, "position":"0,4"},
     >		 ]
     > }
 
