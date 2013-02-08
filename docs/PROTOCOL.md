@@ -57,9 +57,10 @@ GAMESTART
 ---------
 Before the game starts, the server sends an **initial gamestate** to all AIs, with
 the **TURN-NUMBER = 0**. This gamestate looks otherwise **exactly like a normal gamestate**,
-but should not be replied to. The server will reject all replies. **10 seconds after
-the GAMESTART was sent, the actual gameplay starts**. The intent is to give all clients
-time to initialize and process the board, resources & starting-positions into datastructures.
+but should not be replied to. The server will reject all replies.
+After the operator presses a button, an ENDTURN packet is sent, and the actual gameplay starts**.
+The intent is to give all clients time to initialize and process the board, resources &
+starting-positions into datastructures.
 
 LOADOUT
 -------
