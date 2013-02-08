@@ -122,7 +122,7 @@ public class GameThread {
     public void initializeBoardWithPlayers(){
 	// Associate AIs with players
 	for(AIConnection client: globalClients){
-	    Coordinate spawn = world.getRandomSpawnpoint();
+	    Tile spawn = world.getRandomSpawnpoint();
 	    client.setSpawnpoint(spawn);
 	}
     }

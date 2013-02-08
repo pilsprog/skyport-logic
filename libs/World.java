@@ -1,4 +1,5 @@
 import java.util.LinkedList;
+import java.util.Collections;
 
 public class World {
     Tile topTile;
@@ -6,7 +7,7 @@ public class World {
     Tile leftTile;
     Tile rightTile;
     int dimension;
-    LinkedList<Tile> freeSpawnPoints = new LinkedList<Tile>();
+    LinkedList<Tile> freeSpawnpoints = new LinkedList<Tile>();
     public World(Tile topTileArg, String filename, int dimensionArg){
 	dimension = dimensionArg;
 	topTile = topTileArg;
@@ -36,6 +37,7 @@ public class World {
 	System.out.println("\tExplosium tiles: " + Tile.explosiumTiles + ", total explosium: "
 			   + Tile.explosiumTiles*2);
 	enumerateCoordinates(topTile);
+	findAndRandomizeSpawnpoints(topTile);
 	performStructureConsistencyVerification(topTile);
 	returnAsRowMajorMatrix();
     }
@@ -71,6 +73,21 @@ public class World {
 	    }
 	    currentJTile = currentJTile.leftDown;
 	}
+    }
+    public void findAndRandomizeSpawnpoints(Tile topTile){
+	Tile currentJTile = topTile;
+	for(int j = 0; j < dimension; j++){
+	    Tile currentKTile = currentJTile;
+	    for(int k = 0; k < dimension; k++){
+		if(currentKTile.tileType == TileType.SPAWN){
+		    freeSpawnpoints.add(currentKTile);
+		}
+		currentKTile = currentKTile.rightDown;
+	    }
+	    currentJTile = currentJTile.leftDown;
+	}
+	System.out.println("Found " + freeSpawnpoints.size() + " spawnpoints. Randomizing...");
+	Collections.shuffle(freeSpawnpoints);
     }
     public void performStructureConsistencyVerification(Tile topTile){
 	int jWidthTop = 0;
@@ -141,8 +158,8 @@ public class World {
 	
     }
 
-    public Coordinate getRandomSpawnpoint(){
-	System.out.println("SPAWN RANDOMIZER STUB");
-	return new Coordinate(0, 0);
+    public Tile getRandomSpawnpoint(){
+	
+	return freeSpawnpoints.poll();
     }
 }
