@@ -34,10 +34,11 @@ public class Main {
 	new Thread(aiClientAcceptor).start();
 
 	Acceptor graphicsClientAcceptor = new Acceptor(port+10, null, 1, true);
-	graphicsClientAcceptor.run();
+	new Thread(graphicsClientAcceptor).start();
 	
 
 	// the main thread simply becomes the new gamethread.
+	System.out.println("Starting gamethread...");
 	GameThread game =
 	    new GameThread(globalClientList, minUsers, gameTimeoutSeconds, roundTimeSeconds, world);
 	game.run(gameTimeoutSeconds);

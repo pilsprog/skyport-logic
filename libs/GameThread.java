@@ -43,7 +43,6 @@ public class GameThread {
 		Thread.sleep(500);
 	    }
 	    catch(InterruptedException e){}
-	    // todo: prevent acceptor from accepting more clients than we want.
 	    if(globalClients.size() == minUsers){
 		System.out.println("[GAMETHRD] Got " + minUsers + " users, starting the round");
 		break;
@@ -53,15 +52,32 @@ public class GameThread {
 	    JSONObject o = conn.getNextMessage();
 	    System.out.println("[GAMETHRD] stub: got new message");
 	}
-	System.out.println("[GAMETHRD] running game for " + gameTimeoutSeconds + " seconds.");
+	System.out.println("[GAMETHRD] Initializing game");
 	gameMainloop();
     }
     public void gameMainloop(){
+	System.out.println("All clients connected.");
+	Util.pressEnterToContinue("Press enter to send the initial gamestate");
 	System.out.println("[GAMETHRD] Sending initial gamestate");
 	sendGamestate();
-	letClientsThink();
-	letClientsThink();
-	letClientsThink();
+	// we just loop until everyone has selected a loadout.
+	while(true){
+	    boolean allAreReady = true;
+	    for(AIConnection conn: globalClients){
+		if(!conn.gotLoadout.get()){
+		    System.out.println("Waiting for loadout from " + conn.username);
+		    allAreReady = false;
+		}
+	    }
+	    if(allAreReady){
+		break;
+	    }
+	    letClientsThink();
+	    letClientsThink();
+	    letClientsThink();
+	}
+	System.out.println("All clients have sent a loadout");
+	Util.pressEnterToContinue("Press enter to start the game");
 	long startTime = System.nanoTime();
 	long gtsAsLong = gameTimeoutSeconds;
 	while(true){

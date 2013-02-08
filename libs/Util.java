@@ -1,4 +1,5 @@
 import java.util.regex.Pattern;
+import java.io.IOException;
 
 public class Util {
     public static boolean validateWeapon(String weapon){
@@ -18,5 +19,13 @@ public class Util {
 	    throw new ProtocolException("Username contains invalid characters. May only contain "
 					+ "a-z, A-Z, 0-9, -, _, +.");
 	}
+    }
+    public static void pressEnterToContinue(String reason){
+	System.out.print(reason + ": ");
+	System.out.flush();
+	try {
+	    System.in.read();
+	}
+	catch (IOException e){}
     }
 }

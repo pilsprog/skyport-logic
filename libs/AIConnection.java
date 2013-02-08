@@ -12,7 +12,7 @@ public class AIConnection {
     public AtomicBoolean gotLoadout = new AtomicBoolean(false);
     public String primaryWeapon = null;
     public String secondaryWeapon = null;
-    private String username;
+    public String username;
     
     public AIConnection(Socket clientSocket){
 	messages = new ConcurrentLinkedQueue<JSONObject>();
