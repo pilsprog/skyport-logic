@@ -40,11 +40,10 @@ public class PlayerSelector {
     }
     
     public AIConnection[] getListInTurnOrderAndMoveToNextTurn(){
-	System.out.println("PlayerSelector.java:20: TODO: implement disappearing clients");
-	// when a client disappears, we need to remove it from the ringbuffer 
-	// without otherwise disturbing the turn order.
+	// purge dead players
+	purgeDeadPlayersFromRing();
 	LinkedList<AIConnection> templist = new LinkedList<AIConnection>();
-	RingNode tempPlayer = currentPlayer;
+	RingNode tempPlayer = currentPlayer; // it's currentPlayers turn.
 	do {
 	    templist.add(tempPlayer.connection);
 	    tempPlayer = tempPlayer.next;
@@ -53,5 +52,19 @@ public class PlayerSelector {
 	currentPlayer = currentPlayer.next;
 	AIConnection[] connectionArrayWorkaroundForJavasStupidTypeSystem = new AIConnection[0];
 	return templist.toArray(connectionArrayWorkaroundForJavasStupidTypeSystem);
+    }
+    public void purgeDeadPlayersFromRing(){
+	RingNode tempPlayer = currentPlayer;
+	do {
+	    if(!tempPlayer.connection.isAlive){
+		System.out.println("Found dead player '" + tempPlayer.connection.username
+				   + "' in ring, purging...");
+		tempPlayer.prev.next = tempPlayer.next;
+		if(tempPlayer == currentPlayer){
+		    currentPlayer = currentPlayer.next;
+		}
+	    }
+	    tempPlayer = tempPlayer.next;
+	} while(tempPlayer != currentPlayer);
     }
 }

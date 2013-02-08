@@ -118,7 +118,6 @@ public class GameThread {
 	// TODO: visualization needs to be integrated here
 	String matrix[][] = world.returnAsRowMajorMatrix();
 	AIConnection playerTurnOrder[] = playerSelector.getListInTurnOrderAndMoveToNextTurn();
-	System.out.println("Turn order (" + playerTurnOrder.length + ":");
 	for(AIConnection client: globalClients){
 	    client.sendGamestate(roundNumber, world.dimension, matrix, playerTurnOrder);
 	}
