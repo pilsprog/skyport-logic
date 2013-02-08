@@ -3,7 +3,6 @@ import java.net.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.json.*;
-import java.util.regex.Pattern;
 
 public class AIConnection {
     private Socket socket;
@@ -97,7 +96,7 @@ public class AIConnection {
 		throw new ProtocolException("Wrong protocol revision: supporting 1, but got " +
 					    o.getInt("revision"));
 	    }
-	    validateUsername(o.getString("name"));
+	    Util.validateUsername(o.getString("name"));
 	    username = o.getString("name");
 	    gotHandshake = true;
 	    return true;
@@ -107,20 +106,6 @@ public class AIConnection {
 	}
     }
 
-    private void validateUsername(String username) throws ProtocolException {
-	if(username.length() < 3){
-	    throw new ProtocolException("Username too short: needs to be 3 characters or longer.");
-	}
-	if(username.length() > 16){
-	    throw new ProtocolException("Username too long: needs to be 16 characters or less.");
-	}
-	if(!Pattern.matches("[a-zA-Z0-9-_+]+", username)){
-	    throw new ProtocolException("Username contains invalid characters. May only contain "
-					+ "a-z, A-Z, 0-9, -, _, +.");
-	}
-    }
-    
-    
     public void sendMessage(JSONObject o) throws IOException{
 	socket.getOutputStream().write((o.toString() + "\n").getBytes());
     }
