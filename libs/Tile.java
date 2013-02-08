@@ -20,6 +20,7 @@ public class Tile {
     public int resources = 0;
     public TileType tileType;
     public String id = null;
+    public Coordinate coords;
 
     public Tile(String type){
 	id = type;

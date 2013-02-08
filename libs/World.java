@@ -35,6 +35,7 @@ public class World {
 			   + Tile.rubidiumTiles*2);
 	System.out.println("\tExplosium tiles: " + Tile.explosiumTiles + ", total explosium: "
 			   + Tile.explosiumTiles*2);
+	enumerateCoordinates(topTile);
 	performStructureConsistencyVerification(topTile);
 	returnAsRowMajorMatrix();
     }
@@ -59,6 +60,17 @@ public class World {
 	}
 	System.out.println("]");
 	
+    }
+    public void enumerateCoordinates(Tile topTile){
+	Tile currentJTile = topTile;
+	for(int j = 0; j < dimension; j++){
+	    Tile currentKTile = currentJTile;
+	    for(int k = 0; k < dimension; k++){
+		currentKTile.coords = new Coordinate(j, k);
+		currentKTile = currentKTile.rightDown;
+	    }
+	    currentJTile = currentJTile.leftDown;
+	}
     }
     public void performStructureConsistencyVerification(Tile topTile){
 	int jWidthTop = 0;
@@ -127,5 +139,10 @@ public class World {
 			       + bottomToTopCounter + " steps");
 	}
 	
+    }
+
+    public Coordinate getRandomSpawnpoint(){
+	System.out.println("SPAWN RANDOMIZER STUB");
+	return new Coordinate(0, 0);
     }
 }

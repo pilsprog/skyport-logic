@@ -13,6 +13,7 @@ public class AIConnection {
     public String primaryWeapon = null;
     public String secondaryWeapon = null;
     public String username;
+    public Coordinate position;
     
     public AIConnection(Socket clientSocket){
 	messages = new ConcurrentLinkedQueue<JSONObject>();
@@ -134,5 +135,9 @@ public class AIConnection {
     }
     public JSONObject getNextMessage(){
 	return messages.poll();
+    }
+    public synchronized void setSpawnpoint(Coordinate coordinates){
+	System.out.println("[AICONHND] Player '" + username + "' spawns at " + coordinates.getString());
+	position = coordinates;
     }
 }

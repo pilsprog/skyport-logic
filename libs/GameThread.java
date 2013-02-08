@@ -23,7 +23,9 @@ public class GameThread {
     World world;
     AtomicInteger readyUsers = new AtomicInteger(0); // for loadouts
     public GameThread(ConcurrentLinkedQueue<AIConnection> globalClientsArg,
-		      int minUsersArg, int gameTimeoutSecondsArg, int roundTimeSecondsArg, World world){
+		      int minUsersArg, int gameTimeoutSecondsArg, int roundTimeSecondsArg,
+		      World worldArg){
+	world = worldArg;
 	globalClients = globalClientsArg;
 	minUsers = minUsersArg;
 	gameTimeoutSeconds = gameTimeoutSecondsArg;
@@ -57,7 +59,8 @@ public class GameThread {
     }
     public void gameMainloop(){
 	System.out.println("All clients connected.");
-	Util.pressEnterToContinue("Press enter to send the initial gamestate");
+	Util.pressEnterToContinue("Press enter to randomize spawns and send the initial gamestate");
+	initializeBoardWithPlayers();
 	System.out.println("[GAMETHRD] Sending initial gamestate");
 	sendGamestate();
 	// we just loop until everyone has selected a loadout.
@@ -114,6 +117,13 @@ public class GameThread {
     public void sendDeadline(){
 	for(AIConnection client: globalClients){
 	    client.sendDeadline();
+	}
+    }
+    public void initializeBoardWithPlayers(){
+	// Associate AIs with players
+	for(AIConnection client: globalClients){
+	    Coordinate spawn = world.getRandomSpawnpoint();
+	    client.setSpawnpoint(spawn);
 	}
     }
 }
