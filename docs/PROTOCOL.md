@@ -85,6 +85,7 @@ after the 3 seconds are over are discarded. This means for instance that you
 could send one action at 1s, another action at 2s, and the third action at 3s,
 but the third action will likely arrive at the server-end after the cutoff
 and will be discarded. The first two actions will still be carried out for you.
+After a turn is over, the ENDTURN packet is sent.
 
     > {"message":"gamestate",
     >  "turn": TURN-NUMBER,  // turn-number starting at 1, i.e. this would be the TURN-NUMBERth turn.
@@ -92,6 +93,7 @@ and will be discarded. The first two actions will still be carried out for you.
     >  "players":[PLAYER1, PLAYER2, ...] // rotating list of AIs in the game. This turn is PLAYER1s.
     > }
 
+    
 MAP-OBJECT
 ----------
      J-coordinate                      K-coordinate
@@ -181,7 +183,15 @@ PLAYER
     >  "score":120,		      // int from 1 to ?
     >  "position":"j,k"}              // position in j/k coordinates (global)
     
+ENDTURN
+-------
+After a turn is over (the three-seconds deadline is over), a ENDTURN packet is sent. It is not
+really necessary to react to the ENDTURN message in any way, it's merely a convenience message
+so that all AIs know that the deadline for sending actions by the active player is over.
 
+    > {"message":"endturn"}
+
+    
 COMPLETE EXAMPLE
 ----------------
 
@@ -319,3 +329,5 @@ the server in a one-on-one match on a very simple map.
           \__/G \__/G \__/
              \__/G \__/
                 \__/
+
+		
