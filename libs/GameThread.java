@@ -110,8 +110,9 @@ public class GameThread {
     public void sendGamestate(){
 	// TODO: collect gamestate here
 	// TODO: visualization needs to be integrated here
+	String matrix[][] = world.returnAsRowMajorMatrix();
 	for(AIConnection client: globalClients){
-	    client.sendGamestate(0, null, null);
+	    client.sendGamestate(0, world.dimension, matrix, null);
 	}
     }
     public void sendDeadline(){

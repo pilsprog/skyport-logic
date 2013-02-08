@@ -41,7 +41,7 @@ public class World {
 	performStructureConsistencyVerification(topTile);
 	returnAsRowMajorMatrix();
     }
-    public void returnAsRowMajorMatrix(){
+    public String[][] returnAsRowMajorMatrix(){
 	Tile currentJTile = topTile;
 	String matrix[][] = new String[dimension][dimension];
 	for(int j = 0; j < dimension; j++){
@@ -61,7 +61,7 @@ public class World {
 	    System.out.print("],\n");
 	}
 	System.out.println("]");
-	
+	return matrix;
     }
     public void enumerateCoordinates(Tile topTile){
 	Tile currentJTile = topTile;
@@ -159,7 +159,6 @@ public class World {
     }
 
     public Tile getRandomSpawnpoint(){
-	
 	return freeSpawnpoints.poll();
     }
 }
