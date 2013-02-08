@@ -105,7 +105,30 @@ public class AIConnection {
 	    throw new ProtocolException("Invalid or incomplete packet: " + e.getMessage());
 	}
     }
-
+    public void sendGamestate(int turnNumber, String map[][], Player playerlist[]){
+	JSONObject o = new JSONObject();
+	try {
+	    o.put("message", "gamestate");
+	    o.put("turn", turnNumber);
+	}
+	catch (JSONException e){}
+	try {
+	    sendMessage(o);
+	}
+	catch (IOException e) {
+	    System.out.println("Error writing to '" + username + "': " + e.getMessage());
+	}
+    }
+    public void sendDeadline(){
+	JSONObject o = new JSONObject();
+	try {
+	    o.put("message", "endturn");
+	    sendMessage(o);
+	} catch (JSONException e){}
+	catch (IOException e){
+	    System.out.println("Error writing to '" + username + "': " + e.getMessage());
+	}
+    }
     public void sendMessage(JSONObject o) throws IOException{
 	socket.getOutputStream().write((o.toString() + "\n").getBytes());
     }

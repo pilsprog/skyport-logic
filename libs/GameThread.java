@@ -87,8 +87,10 @@ public class GameThread {
 		System.exit(0);
 	    }
 	    System.out.println("[GAMETHRD] Sending gamestate...");
+	    // TODO: clear out message queue of the player whos turn it is
 	    sendGamestate();
 	    letClientsThink();
+	    sendDeadline();
 	    System.out.println("[GAMETHRD] Deadline! Processing actions...");
 	    // processing actions here
 	}
@@ -103,6 +105,15 @@ public class GameThread {
 	}
     }
     public void sendGamestate(){
-	
+	// TODO: collect gamestate here
+	// TODO: visualization needs to be integrated here
+	for(AIConnection client: globalClients){
+	    client.sendGamestate(0, null, null);
+	}
+    }
+    public void sendDeadline(){
+	for(AIConnection client: globalClients){
+	    client.sendDeadline();
+	}
     }
 }
