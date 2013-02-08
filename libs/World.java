@@ -7,6 +7,7 @@ public class World {
     Tile leftTile;
     Tile rightTile;
     int dimension;
+    boolean debugWorld = false;
     LinkedList<Tile> freeSpawnpoints = new LinkedList<Tile>();
     public World(Tile topTileArg, String filename, int dimensionArg){
 	dimension = dimensionArg;
@@ -52,15 +53,17 @@ public class World {
 	    }
 	    currentJTile = currentJTile.leftDown;
 	}
-	System.out.print("[");
-	for(int l = 0; l < dimension; l++){
+	if(debugWorld){
 	    System.out.print("[");
-	    for(String s: matrix[l]){
-		System.out.print(s + ", ");
+	    for(int l = 0; l < dimension; l++){
+		System.out.print("[");
+		for(String s: matrix[l]){
+		    System.out.print(s + ", ");
+		}
+		System.out.print("],\n");
 	    }
-	    System.out.print("],\n");
+	    System.out.println("]");
 	}
-	System.out.println("]");
 	return matrix;
     }
     public void enumerateCoordinates(Tile topTile){

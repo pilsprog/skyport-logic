@@ -24,6 +24,7 @@ public class AIClientHandler implements Runnable {
 		globalClientList.remove(connection);
 		System.out.println("[AIREADER] Disconnect from " + connection.getIp() + ". "
 				   + globalClientList.size() + " clients active.");
+		connection.isAlive = false;
 		return;
 	    }
 	    catch (ProtocolException e){

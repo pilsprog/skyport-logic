@@ -21,6 +21,7 @@ public class GameThread {
     int roundTimeSeconds;
     GameState gamestate;
     World world;
+    PlayerSelector playerSelector;
     AtomicInteger readyUsers = new AtomicInteger(0); // for loadouts
     public GameThread(ConcurrentLinkedQueue<AIConnection> globalClientsArg,
 		      int minUsersArg, int gameTimeoutSecondsArg, int roundTimeSecondsArg,
@@ -61,8 +62,9 @@ public class GameThread {
 	System.out.println("All clients connected.");
 	Util.pressEnterToContinue("Press enter to randomize spawns and send the initial gamestate");
 	initializeBoardWithPlayers();
+	playerSelector = new PlayerSelector(globalClients);
 	System.out.println("[GAMETHRD] Sending initial gamestate");
-	sendGamestate();
+	sendGamestate(0);
 	// we just loop until everyone has selected a loadout.
 	while(true){
 	    boolean allAreReady = true;
@@ -79,10 +81,12 @@ public class GameThread {
 	    letClientsThink();
 	    letClientsThink();
 	}
+	sendDeadline();
 	System.out.println("All clients have sent a loadout");
 	Util.pressEnterToContinue("Press enter to start the game");
 	long startTime = System.nanoTime();
 	long gtsAsLong = gameTimeoutSeconds;
+	int roundNumber = 1;
 	while(true){
 	    long roundStartTime = System.nanoTime();
 	    if((roundStartTime - startTime) > gtsAsLong*1000000000){
@@ -91,11 +95,13 @@ public class GameThread {
 	    }
 	    System.out.println("[GAMETHRD] Sending gamestate...");
 	    // TODO: clear out message queue of the player whos turn it is
-	    sendGamestate();
+	    sendGamestate(roundNumber);
 	    letClientsThink();
 	    sendDeadline();
 	    System.out.println("[GAMETHRD] Deadline! Processing actions...");
 	    // processing actions here
+
+	    roundNumber++;
 	}
 	
     }
@@ -107,12 +113,14 @@ public class GameThread {
 	    System.out.println("INTTERUPTED!");
 	}
     }
-    public void sendGamestate(){
+    public void sendGamestate(int roundNumber){
 	// TODO: collect gamestate here
 	// TODO: visualization needs to be integrated here
 	String matrix[][] = world.returnAsRowMajorMatrix();
+	AIConnection playerTurnOrder[] = playerSelector.getListInTurnOrderAndMoveToNextTurn();
+	System.out.println("Turn order (" + playerTurnOrder.length + ":");
 	for(AIConnection client: globalClients){
-	    client.sendGamestate(0, world.dimension, matrix, null);
+	    client.sendGamestate(roundNumber, world.dimension, matrix, playerTurnOrder);
 	}
     }
     public void sendDeadline(){

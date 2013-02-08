@@ -12,8 +12,11 @@ public class AIConnection {
     public AtomicBoolean gotLoadout = new AtomicBoolean(false);
     public String primaryWeapon = null;
     public String secondaryWeapon = null;
+    public int primaryWeaponLevel = 1;
+    public int secondaryWeaponLevel = 1;
     public String username;
     public Tile position;
+    public boolean isAlive = true;
     
     public AIConnection(Socket clientSocket){
 	messages = new ConcurrentLinkedQueue<JSONObject>();
@@ -106,11 +109,35 @@ public class AIConnection {
 	    throw new ProtocolException("Invalid or incomplete packet: " + e.getMessage());
 	}
     }
-    public void sendGamestate(int turnNumber, int dimension, String mapData[][], Player playerlist[]){
+    public void sendGamestate(int turnNumber, int dimension, String mapData[][],
+			      AIConnection playerlist[]){
+	// TODO: correct turn number
 	JSONObject root = new JSONObject();
 	try {
 	    root.put("message", "gamestate");
 	    root.put("turn", turnNumber);
+	    JSONArray players = new JSONArray();
+	    for(AIConnection ai: playerlist){
+		JSONObject playerObject = new JSONObject();
+		playerObject.put("name", ai.username);
+		// TODO: fill in actual values for health, score, primary-weapon, secondary-weapon ...
+		playerObject.put("health", 100);
+		playerObject.put("score", 0);
+		playerObject.put("position", ai.position.coords.getCompactString());
+		JSONObject primaryWeaponObject = new JSONObject();
+		primaryWeaponObject.put("name", ai.primaryWeapon);
+		primaryWeaponObject.put("level", ai.primaryWeaponLevel);
+		playerObject.put("primary-weapon", primaryWeaponObject);
+		
+		JSONObject secondaryWeaponObject = new JSONObject();
+		secondaryWeaponObject.put("name", ai.secondaryWeapon);
+		secondaryWeaponObject.put("level", ai.secondaryWeaponLevel);
+		playerObject.put("secondary-weapon", secondaryWeaponObject);
+		
+		players.put(playerObject);
+	    }
+	    root.put("players", players);	    
+
 	    JSONObject map = new JSONObject();
 	    map.put("j-length", dimension);
 	    map.put("k-length", dimension);

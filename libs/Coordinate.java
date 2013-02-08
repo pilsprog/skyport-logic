@@ -8,4 +8,7 @@ public class Coordinate {
     public String getString(){
 	return "[" + j + ", " + k + "]";
     }
+    public String getCompactString(){
+	return j + ", " + k;
+    }
 }
