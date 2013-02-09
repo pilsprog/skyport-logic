@@ -30,11 +30,9 @@ NAME = "randomwalker"
 class SkyportConnection(LineReceiver):
     receiver = None
     transmitter = None
-
-    def dataReceived(self, data):
-        # for some reason lineReceived() seems to be broken
-        # so I guess we'll have to use this instead. works.
-        self.receiver.parseLine(data)
+    delimiter = "\n" # need to set this
+    def lineReceived(self, line):
+        self.receiver.parseLine(line)
         
     def gotHandshake(self):
         print("AI got handshake!")
@@ -44,9 +42,8 @@ class SkyportConnection(LineReceiver):
         
     def gotGamestate(self, turnNumber, mapObject, playerList):
         print("AI got gamestate!")
-        print("turn number: %d" % turnNumber)
-        print("map object: %r" % mapObject)
-        print("players: %r" % playerList)
+        if playerList[0]["name"] == NAME:
+            print("my turn! I should probably do something!")
         
     def gotGamestart(self, turnNumber, mapObject, playerList):
         self.transmitter.sendLoadout("droid", "mortar")

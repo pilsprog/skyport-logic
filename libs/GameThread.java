@@ -98,6 +98,10 @@ public class GameThread {
 	    sendGamestate(roundNumber);
 	    letClientsThink();
 	    sendDeadline();
+	    // simulate the GUI working -- we will have to wait for it later
+	    letClientsThink();
+	    letClientsThink();
+	    // end GUI working
 	    System.out.println("[GAMETHRD] Deadline! Processing actions...");
 	    // processing actions here
 
@@ -117,6 +121,7 @@ public class GameThread {
 	// TODO: visualization needs to be integrated here
 	String matrix[][] = world.returnAsRowMajorMatrix();
 	AIConnection playerTurnOrder[] = playerSelector.getListInTurnOrderAndMoveToNextTurn();
+	playerTurnOrder[0].giveNewMoves();
 	for(AIConnection client: globalClients){
 	    client.sendGamestate(roundNumber, world.dimension, matrix, playerTurnOrder);
 	}
@@ -124,6 +129,7 @@ public class GameThread {
     public void sendDeadline(){
 	for(AIConnection client: globalClients){
 	    client.sendDeadline();
+	    client.resetMoves();
 	}
     }
     public void initializeBoardWithPlayers(){

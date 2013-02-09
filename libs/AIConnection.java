@@ -17,6 +17,7 @@ public class AIConnection {
     public String username;
     public Tile position;
     public boolean isAlive = true;
+    public int movesLeft = 0;
     
     public AIConnection(Socket clientSocket){
 	messages = new ConcurrentLinkedQueue<JSONObject>();
@@ -172,5 +173,23 @@ public class AIConnection {
 	System.out.println("[AICONHND] Player '" + username
 			   + "' spawns at " + spawnpoint.coords.getString());
 	position = spawnpoint;
+    }
+    public synchronized void giveNewMoves(){
+	System.out.println("giving " + username + " new moves");
+	movesLeft = 3;
+    }
+    public synchronized void resetMoves(){
+	if(movesLeft > 0){
+	    System.out.println("removing " + movesLeft + " un-used moves from " + username);
+	}
+	movesLeft = 0;
+    }
+    public synchronized boolean doMove(JSONObject o){
+	if(movesLeft == 0){
+	    return false;
+	}
+	else {
+	    return true;
+	}
     }
 }
