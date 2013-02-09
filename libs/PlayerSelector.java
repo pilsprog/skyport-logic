@@ -57,6 +57,9 @@ public class PlayerSelector {
 	RingNode tempPlayer = currentPlayer;
 	do {
 	    if(!tempPlayer.connection.isAlive){
+		if(tempPlayer.next == tempPlayer){
+		    Util.pressEnterToContinue("Last player disconnected, press enter to quit");
+		}
 		System.out.println("Found dead player '" + tempPlayer.connection.username
 				   + "' in ring, purging...");
 		tempPlayer.prev.next = tempPlayer.next;

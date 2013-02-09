@@ -114,7 +114,6 @@ public class GameThread {
 	}
     }
     public void sendGamestate(int roundNumber){
-	// TODO: collect gamestate here
 	// TODO: visualization needs to be integrated here
 	String matrix[][] = world.returnAsRowMajorMatrix();
 	AIConnection playerTurnOrder[] = playerSelector.getListInTurnOrderAndMoveToNextTurn();
