@@ -72,12 +72,15 @@ Hvis du sender noen pakker etter de 3 sekundene har utgått vil de bli avvist.
 Dette betyr at du kan feks sende en handling etter 1s, 
 andre handling etter 2s (1s etter den første) og en tredje etter 3s, 
 men den siste handlingen vil sannsynligvis nå serveren etter 3s-grensen og vil bli avvist. 
-De første to handlingene vil fortsatt bli gjennomført for deg. 
-    
+De første to handlingene vil fortsatt bli gjennomført for deg. Etter turen er ferdig vil det bli
+sendt en ENDTURN pakke.    
+  
+    > {"message":"gamestate",
     >  "turn": TURN-NUMBER,  //Rundenr, som starter på 1
     >  "map": MAP-OBJECT,         //Objekt som beskriver alle fliser. Se Kart-objekt (MAP-OBJECT) for detaljer
     >  "players":[PLAYER1, PLAYER2, ...] //Roterende liste med AI'er i spillet. I dette eksempelet er det PLAYER1 sin tur
     > }
+
 
 ##KART-OBJEKT (MAP-OBJECT)##
      J-koordinat                       K-koordinat
