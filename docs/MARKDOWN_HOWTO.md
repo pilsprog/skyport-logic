@@ -89,10 +89,13 @@ in the same list as the example above. This is subject to change however.
 	3. Item 1  
 	9. Item 2  
 	3. ITEM 3  
+
 To add paragraphs to a list item you will need to indent the first line of the paragraph. This
-includes the use of blockquotes, but they need indentation on all lines.  
+includes the use of blockquotes, but they need indentation on all lines.
+
 Lists can be triggered by any number with a punctuation behind, accidentally or not.  
 100\. place goes to "indentation!" (this will still trigger a list)  
+
 This can be avoided by escaping the punctuation.  
 100\\. place goes to "indentaion!" (This will not trigger a list)
 
@@ -140,7 +143,7 @@ This also works with emails. As an extra bonus; Markdown will obfuscate (using d
 Escapes to generate literal characters.  
 Works on:  
 \\   Backslash  
-\'   Backtick  
+'   Backtick  
 \*   Asterisk  
 \_   Underscore  
 \{}  curly braces  
