@@ -13,7 +13,6 @@ class SkyportReceiver:
     def parseLine(self, line):
         try:
             json_line = json.loads(line)
-            print(json_line)
             self._parseJsonPacket(json_line)
         except ValueError as e:
             print("Error decoding JSON packet: %s" % e)

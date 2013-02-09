@@ -95,9 +95,30 @@ public class GameThread {
 	    }
 	    System.out.println("[GAMETHRD] Sending gamestate...");
 	    // TODO: clear out message queue of the player whos turn it is
-	    sendGamestate(roundNumber);
+	    AIConnection currentPlayer = sendGamestate(roundNumber);
+	    
+	    System.out.println("sent gamestate. Current player: " + currentPlayer.username);
 	    letClientsThink();
 	    sendDeadline();
+	    JSONObject first = currentPlayer.getNextMessage();
+	    JSONObject second = currentPlayer.getNextMessage();
+	    JSONObject third = currentPlayer.getNextMessage();
+	    int validMoves = 0;
+	    if(letPlayerPerformMove(first, currentPlayer)){
+		System.out.println("First move was valid, broadcasting... (STUB)");
+		validMoves++;
+	    }
+	    if(letPlayerPerformMove(second, currentPlayer)){
+		System.out.println("Second move was valid, broadcasting... (STUB)");
+		validMoves++;
+	    }
+	    if(letPlayerPerformMove(third, currentPlayer)){
+		System.out.println("Third move was valid, broadcasting... (STUB)");
+		validMoves++;
+	    }
+	    
+	    System.out.println("[GAMETHRD] player performed " + validMoves + " valid moves");
+
 	    // simulate the GUI working -- we will have to wait for it later
 	    letClientsThink();
 	    letClientsThink();
@@ -109,6 +130,17 @@ public class GameThread {
 	}
 	
     }
+    private boolean letPlayerPerformMove(JSONObject move, AIConnection currentPlayer){
+	if(move != null){
+	    if(currentPlayer.doMove(move)){
+		return true;
+	    }
+	    else {
+		return false;
+	    }
+	}
+	return false;
+    }
     public void letClientsThink(){
 	try {
 	    Thread.sleep(roundTimeSeconds*1000);
@@ -117,19 +149,19 @@ public class GameThread {
 	    System.out.println("INTTERUPTED!");
 	}
     }
-    public void sendGamestate(int roundNumber){
+    public AIConnection sendGamestate(int roundNumber){
 	// TODO: visualization needs to be integrated here
 	String matrix[][] = world.returnAsRowMajorMatrix();
 	AIConnection playerTurnOrder[] = playerSelector.getListInTurnOrderAndMoveToNextTurn();
-	playerTurnOrder[0].giveNewMoves();
+	playerTurnOrder[0].clearAllMessages();
 	for(AIConnection client: globalClients){
 	    client.sendGamestate(roundNumber, world.dimension, matrix, playerTurnOrder);
 	}
+	return playerTurnOrder[0];
     }
     public void sendDeadline(){
 	for(AIConnection client: globalClients){
 	    client.sendDeadline();
-	    client.resetMoves();
 	}
     }
     public void initializeBoardWithPlayers(){
