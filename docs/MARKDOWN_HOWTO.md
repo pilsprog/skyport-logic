@@ -23,6 +23,7 @@ Atx-style headers have six layers. To create a header with the desired level, ju
 >	##H2  
 >	###H3  
 >	######H6  
+
 You can also add "end" hash characters, but this is purely cosmetic and it doesnt even have to
 match the number of hashes used to create the header.
 >	#H1#  
@@ -34,13 +35,13 @@ Setext-style headers have two layers. To create a H1 you simply underline the te
 some equal signs.
 >	H1  
 >	=====  
-H2 is the same, but using dashes. Note that the number of dashes or equal signs is not important.
->	H2  
->	--------------------
+
+H2 is the same, but using dashes (--). Note that the number of dashes or equal signs is not important.
 
 ###BOLD AND EMPHASIS
 Bold text is simply triggered by wrapping the desired text with two asterisks on both sides.
 >	**BOLD TEXT**
+
 Emphasis is the same, but with only one asterisk.
 >	*EMPHASIZED TEXT*
 
@@ -50,10 +51,12 @@ line.
 >	> BLOCKQUOTE
 >	>
 >	> WITH TWO PARAGRAPHS
+
 Blockquotes can also be nested.
 >	> BLOCKQUOTE
 >	> > NESTED BLOCKQUOTE
 >	> BLOCKQUOTE
+
 Blockquotes can contain Markdown syntax
 >	> ##BLOCKQUOTE H2 HEADER
 >	>
@@ -67,10 +70,12 @@ each line.
 >	Unordered list:
 >	- Item 1
 >	- Item 2
+
 Ordered lists are the same but with numbers followed by a period.
 >	Ordered list:
 >	1. Item 1
 >	2. Item 2
+
 Note that Markdown recognizes them as a part of a syntax for creating lists, not as numbers
 themselves. Therefore it does not matter which numbers you use and the example below will result
 in the same list as the example above. This is subject to change however.
@@ -82,6 +87,7 @@ in the same list as the example above. This is subject to change however.
 Hyperlinks are created by wrapping the desired text with brackets and the link right beside that
 (without a separating space between), wrapped with parenteses.
 >	[MY HYPERLINK TO GOOGLE](www.google.com)
+
 To insert an image; do the same but with an exclamation mark at the beginning of the link to the 
 image.
 
