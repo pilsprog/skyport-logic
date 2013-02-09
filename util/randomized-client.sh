@@ -8,6 +8,7 @@ do
 EOT
     )
 
-    echo -e $MESSAGE | nc localhost 54321 -vv
+    echo -e $MESSAGE | nc localhost 54321
+    echo "###############################"
     sleep 10s
 done

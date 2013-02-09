@@ -18,6 +18,8 @@
 
 import sys
 import json
+import random
+
 from twisted.internet import reactor
 from twisted.internet.protocol import ClientFactory
 from twisted.protocols.basic import LineReceiver
@@ -43,7 +45,9 @@ class SkyportConnection(LineReceiver):
     def gotGamestate(self, turnNumber, mapObject, playerList):
         print("AI got gamestate!")
         if playerList[0]["name"] == NAME:
-            print("my turn! I should probably do something!")
+            direction = random.choice(["up", "down", "left-down", "left-up", "right-down", "right-up"])
+            print("my turn! moving %s-wards." % direction)
+            self.transmitter.sendMove(direction);
         
     def gotGamestart(self, turnNumber, mapObject, playerList):
         self.transmitter.sendLoadout("droid", "mortar")

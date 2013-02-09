@@ -53,7 +53,13 @@ public class GameThread {
 	}
 	for(AIConnection conn: globalClients){
 	    JSONObject o = conn.getNextMessage();
-	    System.out.println("[GAMETHRD] stub: got new message");
+	    if(o != null){
+		System.out.println("[GAMETHRD] stub: got new message");
+		try {
+		    System.out.println("MESSAGE: " + o.get("message"));
+		}
+		catch(JSONException e){}
+	    }
 	}
 	System.out.println("[GAMETHRD] Initializing game");
 	gameMainloop();
@@ -153,7 +159,9 @@ public class GameThread {
 	// TODO: visualization needs to be integrated here
 	String matrix[][] = world.returnAsRowMajorMatrix();
 	AIConnection playerTurnOrder[] = playerSelector.getListInTurnOrderAndMoveToNextTurn();
-	playerTurnOrder[0].clearAllMessages();
+	if(roundNumber != 0){
+	    playerTurnOrder[0].clearAllMessages();
+	}
 	for(AIConnection client: globalClients){
 	    client.sendGamestate(roundNumber, world.dimension, matrix, playerTurnOrder);
 	}

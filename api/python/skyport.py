@@ -20,6 +20,10 @@ class SkyportReceiver:
             print("Invalid message: %s" % e)
 
     def _parseJsonPacket(self, json_packet):
+        print(json_packet)
+        if "error" in json_packet:
+            self.cb_error(json_packet["error"])
+            return
         if json_packet["message"] == "connect":
             self.cb_handshake_successful()
         elif json_packet["message"] == "gamestate":
@@ -45,4 +49,4 @@ class SkyportTransmitter:
         self.cb_send(json.dumps({"message":"connect", "revision": 1, "name": name}))
     
     def sendMove(self, whereto):
-        self.cb_send(json.dumps({"not":"implemented"}))
+        self.cb_send(json.dumps({"message":"action", "type": "move", "direction": whereto}))

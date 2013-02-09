@@ -53,6 +53,20 @@ public class AIConnection {
 	else if(!gotLoadout.get()){
 	    parseLoadout(o);
 	}
+	else if(o.has("message")){
+	    try {
+		if(o.get("message").equals("action")){
+		    messages.add(o);
+		}
+		else {
+		    throw new ProtocolException("Unexpected message, got '" + o.get("message")
+						+ "' but expected 'action'");
+		}
+	    }
+	    catch (JSONException e){
+		throw new ProtocolException("Invalid or incomplete packet: " + e.getMessage());
+	    }
+	}
 	else {
 	    try {
 		throw new ProtocolException("Unexpected packet: '" + o.get("message") + "'");
@@ -178,7 +192,33 @@ public class AIConnection {
 	messages.clear();
     }
     public synchronized boolean doMove(JSONObject o){
-	System.out.println("Performing move!");
-	return true;
+	try {
+	    String direction = o.getString("direction");
+	    if(!direction.equals("up") && !direction.equals("down")
+	       && !direction.equals("left-down") && !direction.equals("left-up")
+	       && !direction.equals("right-down") && !direction.equals("right-up")){
+		throw new ProtocolException("Invalid direction: '" + direction + "'");
+	    }
+	    System.out.println("Moving in direction " + direction);
+	    return true;
+	}
+	catch (JSONException e){
+	    try {
+		JSONObject errorMessage
+		    = new JSONObject().put("error", "Invalid move packet: " + e.getMessage());
+		    sendMessage(errorMessage);
+	    } catch (JSONException f){}
+	    catch (IOException g){}
+	    return false;
+	}
+	catch (ProtocolException e){
+	    try {
+		JSONObject errorMessage
+		    = new JSONObject().put("error", "Invalid move packet: " + e.getMessage());
+		sendMessage(errorMessage);
+	    } catch (JSONException f){}
+	    catch (IOException g){}
+	    return false;
+	}
     }
 }
