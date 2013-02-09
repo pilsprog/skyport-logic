@@ -19,23 +19,23 @@ Markdown supports Setext and atx headers.
 ####ATX
 Atx-style headers have six layers. To create a header with the desired level, just prefix it with 
 1-6 hash characters:
->	#H1
->	##H2
->	###H3
->	######H6
+>	#H1  
+>	##H2  
+>	###H3  
+>	######H6  
 You can also add "end" hash characters, but this is purely cosmetic and it doesnt even have to
 match the number of hashes used to create the header.
->	#H1#
->	##H2#
->	###H3############
+>	#H1#  
+>	##H2#  
+>	###H3############  
 
 ####SETEXT
 Setext-style headers have two layers. To create a H1 you simply underline the text with
 some equal signs.
->	H1
->	=====
+>	H1  
+>	=====  
 H2 is the same, but using dashes. Note that the number of dashes or equal signs is not important.
->	H2
+>	H2  
 >	--------------------
 
 ###BOLD AND EMPHASIS
