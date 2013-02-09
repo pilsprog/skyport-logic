@@ -24,7 +24,7 @@ class SkyportReceiver:
         if json_packet["message"] == "connect":
             self.cb_handshake_successful()
         elif json_packet["message"] == "gamestate":
-            if json_packet.turn == 0:
+            if json_packet["turn"] == 0:
                 self.cb_gamestart(json_packet["turn"], json_packet["map"], json_packet["players"])
             else:
                 self.cb_gamestate(json_packet["turn"], json_packet["map"], json_packet["players"])    
