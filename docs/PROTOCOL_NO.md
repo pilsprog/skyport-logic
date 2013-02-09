@@ -164,8 +164,13 @@ utgjør dette kartet:
     >  "secondary-weapon":"mortar-1", // samme som forrige linje
     >  "health":20,		      // int fra 1 til 100
     >  "score":120,		      // int fra 1 til ?
-    >  "position":"j,k"}              // posisjon i j/k koordinater (globalt)
-    
+    >  "position":"j,k"}              // posisjon i j/k koordinater (globalt)  
+
+##TURSLUTT (ENDTURN)
+Etter at en tur er over (tre-sekunders-fristen er over) sendes det en "ENDTURN" melding. Det er
+ikke nødvendig å svare denne meldingen. Formålet er å si ifra til AI'en at turen er ferdig.
+En ENDTURN pakke ser slik ut:
+	> {"message":"endturn"}
 
 ##KOMPLETT EKSEMPEL##
 
