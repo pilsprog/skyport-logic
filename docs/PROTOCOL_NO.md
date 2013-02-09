@@ -1,8 +1,7 @@
 ﻿#SKYPORT AI KONKURRANSE PROTOKOLL REV.1 NORSK
 ***
 
-##SAMMENDRAG
-***
+##SAMMENDRAG##
 Dette dokumentet beskriver protokollen som **AI'en bruker til å kommunisere med serveren.** 
 Revisjonen som blir beskrevet i dette dokumentet er **rev1**. 
 Linjer som starter med **">"** beskriver meldinger som sendes **fra** serveren til AI-klienten (inn-data), 
@@ -10,13 +9,11 @@ mens linjer som starter med **"<"** beskriver meldinger som sendes **til** serve
 Legg også merke til at meldingene beskrevet i dette dokumentet er delt opp i flere linjer og forklart med kommentarer. 
 Når meldinger skal sendes til serveren må de sendes som en linje, uten kommentarer.
 
-##TRANSPORT
-***
+##TRANSPORT##
 Transport protokollen som brukes i dette systemet er **linje-basert TCP**. 
 Serveren aksepterer linjeslutt i både UNIX-format (\n) og Windows-format (\r\n).
 
-##CODEC & FORMAT
-***
+##CODEC & FORMAT##
 Alle overføringene bruker et **linje-basert JSON format**. 
 JSON ble valgt for å unngå at deltakerene skulle måtte lage sin egen parser for et egendefinert format. 
 **JSON er et enkelt, text-basert format med et javascript-inspirert syntax.** 
@@ -25,13 +22,12 @@ Nederst på siden finner du også en liste med eksisterende JSON parsere for fle
 Denne protokollen bruker ingen spesielle JSON funksjoner; som delvis JSON parsing og spesielle tegn/unicode. 
 Ulempen er at det kan være en fordel å velge en raskere JSON parser.
 
-TILKOBLING
----------
+##TILKOBLING##
 Et håndtrykk (tilkoblings forespørsel) blir sent av AI'en til serveren for å etablere tilkoblingen.
 **Dette skal sendes umiddelbart** etter forbindelsen er opprettet. 
 Hvis AI'en ikke sender et håndtrykk vil serveren avslutte forbindelsen etter 10 sekunder.
 
-Handshake sent by the AI to establish the connection.
+Håndtrykk sendt av AI for å etablere tilkoblingen til serveren.
 
     < {"message":"connect",
     <  "revision":REVISION, //Protokoll revisjon settes til integer, feks. 1
@@ -48,8 +44,7 @@ Hvis ikke vil serveren sende en feilmelding.
 
 
 
-SPILLSTART
-----------
+##SPILLSTART##
 Før spillet starter sender serveren en **initial gamestate** (status ved oppstart) til alle AI'er, 
 med **TURN-NUMBER = 0**. Denne spillstatusen ser ellers **nøyaktig lik normale spillstatus**, 
 men skal ikke svares av AI'ene. Serveren vil avvise alle svar.
@@ -58,9 +53,7 @@ spillet vil begynne. Formålet er å gi alle klienter tid til å initialisere og
 ressurser og start-posisjonene til datastrukturer.
 
 
-VÅPENVALG
----------
-
+##VÅPENVALG##
 AI'en må selv velge hvilke våpen den skal bruke i spillet. Dette gjøres etter oppstarts-meldingen
 er sendt (initial gamestate) og før spillet starter. Hvis en AI ikke har sendt sitt våpenvalg før
 første spillstatus sendes fra serveren; vil AI'en bli **frakoblet fra serveren**.
@@ -71,8 +64,7 @@ første spillstatus sendes fra serveren; vil AI'en bli **frakoblet fra serveren*
     < }
 
 
-SPILLSTATUS
----------
+##SPILLSTATUS##
 Spillstatus (gamestate) blir sendt av serveren til individuelle AI'er **hver runde**. 
 Du kan bruke all informasjon i denne pakken til din fordel. 
 Hvis det er din tur har du **3 sekunder på å svare med 3 handlingspakker**. 
@@ -87,8 +79,7 @@ De første to handlingene vil fortsatt bli gjennomført for deg.
     >  "players":[PLAYER1, PLAYER2, ...] //Roterende liste med AI'er i spillet. I dette eksempelet er det PLAYER1 sin tur
     > }
 
-Kart-objekt (MAP-OBJECT)
------------------------
+##KART-OBJEKT (MAP-OBJECT)##
      J-koordinat                       K-koordinat
       \                               /
        \                             /
@@ -166,8 +157,7 @@ utgjør dette kartet:
               .         \_____/        .
              .                          .
 
-SPILLER
-------
+##SPILLER##
     > {"name":"players-name",
     >  "primary-weapon":
     >    {"name":"laser", "level":1},    // "laser", "mortar", "droid", nummeret indikerer nivå (1,2 eller 3)
@@ -177,13 +167,11 @@ SPILLER
     >  "position":"j,k"}              // posisjon i j/k koordinater (globalt)
     
 
-KOMPLETT EKSEMPEL
-----------------
+##KOMPLETT EKSEMPEL##
 
 TODO
 
-HANDLINGER (AI)
------------
+##HANDLINGER (AI)##
 
 Handlinger AI'en kan utføre.
 
@@ -234,9 +222,7 @@ aktiver **droiden**:
     >  "sequence":["up", "rightUp", "rightDown", "down"] // bevegelses-sekvens
     > }
 
-HANDLINGER (Server)
-----------------
-
+##HANDLINGER (Server)##
 Handlinger som AI'ene utfører må bli validert av serveren, før de blir kringkastet
 på nytt til alle AI'er. For praktiske årsaker inkluderer vi et "from" (fra) felt.
 
@@ -256,9 +242,7 @@ på nytt til alle AI'er. For praktiske årsaker inkluderer vi et "from" (fra) fe
     < }
         
 
-FEILMELDINGER
-------    
-
+##FEILMELDINGER##   
 Hvis det oppstår en feil, enten på grunn av en ugyldig kommando eller en ugyldig handling,
 vil serveren sende en feilmelding i form av et feilmeldings-objekt. Hvis feilen er alvorlig
 kan serveren frakoble AI'en som forårsaket den.
@@ -272,9 +256,7 @@ Derfor er ikke feilmeldingene dokumentert og kan bli endret i utviklingen av sys
 En AI burde aldri være avhengig av feilmeldinger fra serveren.
 
 
-EKSEMPEL ØKTER
-----------------
-
+##EKSEMPEL ØKTER##
 Disse eksempel øktene demonstrer kommunikasjonen mellom en AI og serveren i en 1-mot-1 kamp
 på et simplifisert kart.
 
