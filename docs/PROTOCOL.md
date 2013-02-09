@@ -1,6 +1,5 @@
-SKYPORT AI COMPETITION PROTOCOL REV. 1
-======================================
-
+#SKYPORT AI COMPETITION PROTOCOL REV. 1
+***
 SYNOPSIS
 --------
 This file describes the protocol **used by the AIs to communicate with the
@@ -64,7 +63,6 @@ starting-positions into datastructures.
 
 LOADOUT
 -------
-
 This is the loadout used by the AI to chose the weapons.
 
     < {"message":"loadout",
@@ -200,7 +198,6 @@ TODO
 
 ACTIONS (AI)
 -----------
-
 Actions that can be taken by the AI.
 
     > {"message":"action"
@@ -252,7 +249,6 @@ Launch the **droid**:
 
 ACTIONS (Server)
 ----------------
-
 Actions that are taken by the AI are validated by the server,
 and then re-broadcasted to all AIs. For convenience, a "from" field is attached.
 
@@ -274,7 +270,6 @@ and then re-broadcasted to all AIs. For convenience, a "from" field is attached.
 
 ERRORS
 ------    
-
 If the server encounters an error, either due to an invalid protocol command, or due to
 an invalid move, it will send back an error object. The server may disconnect the AI that
 provoked the error, depending on the severity.
@@ -290,7 +285,6 @@ on some behaviour that provokes an error from the server.
 
 EXAMPLE SESSIONS
 ----------------
-
 The following example session demonstrates the communication between an AI and
 the server in a one-on-one match on a very simple map.
 
