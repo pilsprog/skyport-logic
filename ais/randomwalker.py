@@ -24,16 +24,44 @@ from twisted.internet import reactor
 from twisted.internet.protocol import ClientFactory
 from twisted.protocols.basic import LineReceiver
 
-sys.path.append("../api/python")
-import skyport
+sys.path.append("../api/python") # add the folder with the API to pythons path
+import skyport # the API.
 
+# The name for our "AI"
 NAME = "randomwalker"
 
-class SkyportConnection(LineReceiver):
-    receiver = None
-    transmitter = None
-    delimiter = "\n" # need to set this
+class SkyportConnection(LineReceiver): # twisted-specific things
+    receiver = None     # the SkyportReceiver object
+    transmitter = None  # the SkyportTransmitter object
+    delimiter = "\n"    # need to set this so that twisted parses the line endings correctly
+
+    def connectionMade(self): # twisted has successfully established the connection for us
+        # instantiate the receiver
+        self.receiver = skyport.SkyportReceiver()
+        # Set up callbacks for the receiver
+        # self.gotHandshake is called when the handshake is completed successfully
+        self.receiver.cb_handshake_successful = self.gotHandshake
+        # self.gotError is called whenever the server replies with an error packet
+        self.receiver.cb_error = self.gotError
+        # self.gotGamestate is called whenever the server sends the gamestate (not gamestart!)
+        self.receiver.cb_gamestate = self.gotGamestate
+        # self.gameStart is called when the server sends the initial gamestate (gamestart)
+        self.receiver.cb_gamestart = self.gotGamestart
+        # self.gotAction is called when the server re-broadcasts an action someone has taken
+        self.receiver.cb_action = self.gotAction
+        # self.gotEndturn is called when the server announces a turn has ended (3 seconds)
+        self.receiver.cb_endturn = self.gotEndturn
+
+        # instantiate the transmitter. It will use the self.sendLine() function to send things.
+        self.transmitter = skyport.SkyportTransmitter(self.sendLine)
+        # the transmitter only needs to know what function to call
+        # to actually send the data to the socket (self.sendLine)
+        # send the initial handshake
+        self.transmitter.sendHandshake(NAME)
+        
     def lineReceived(self, line):
+        # simply send the received line to the SkyportReceiver.
+        # it will then accordingly call the appropriate callbacks registered.
         self.receiver.parseLine(line)
         
     def gotHandshake(self):
@@ -58,21 +86,6 @@ class SkyportConnection(LineReceiver):
         
     def gotEndturn(self):
         print("AI got endturn!")
-        
-    def connectionMade(self):
-        self.receiver = skyport.SkyportReceiver()
-        # Set up callbacks for the receiver
-        self.receiver.cb_handshake_successful = self.gotHandshake
-        self.receiver.cb_error = self.gotError
-        self.receiver.cb_gamestate = self.gotGamestate
-        self.receiver.cb_gamestart = self.gotGamestart
-        self.receiver.cb_action = self.gotAction
-        self.receiver.cb_endturn = self.gotEndturn
-        self.transmitter = skyport.SkyportTransmitter(self.sendLine)
-        # the transmitter only needs to know what function to call
-        # to actually send the data to the socket (self.sendLine)
-        self.transmitter.sendHandshake(NAME)
-        # send the initial handshake
 
 class SkyportConnectionFactory(ClientFactory):
     protocol = SkyportConnection

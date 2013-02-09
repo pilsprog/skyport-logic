@@ -22,19 +22,25 @@ class SkyportReceiver:
     def _parseJsonPacket(self, json_packet):
         print(json_packet)
         if "error" in json_packet:
-            self.cb_error(json_packet["error"])
+            if self.cb_error != None:
+                self.cb_error(json_packet["error"])
             return
         if json_packet["message"] == "connect":
-            self.cb_handshake_successful()
+            if self.cb_handshake_successful != None:
+                self.cb_handshake_successful()
         elif json_packet["message"] == "gamestate":
             if json_packet["turn"] == 0:
-                self.cb_gamestart(json_packet["turn"], json_packet["map"], json_packet["players"])
+                if self.cb_gamestart != None:
+                    self.cb_gamestart(json_packet["turn"], json_packet["map"], json_packet["players"])
             else:
-                self.cb_gamestate(json_packet["turn"], json_packet["map"], json_packet["players"])    
+                if self.cb_gamestate != None:
+                    self.cb_gamestate(json_packet["turn"], json_packet["map"], json_packet["players"])    
         elif json_packet["message"] == "action":
-            self.cb_action()
+            if self.cb_action != None:
+                self.cb_action()
         elif json_packet["message"] == "endturn":
-            self.cb_endturn()
+            if self.cb_endturn != None:
+                self.cb_endturn()
         else:
             print("unknown message type: '%s'" % json_packet["message"])
         
