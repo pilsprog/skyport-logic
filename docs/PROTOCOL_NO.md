@@ -1,8 +1,8 @@
-﻿SKYPORT AI KONKURRANSE PROTOKOLL REV.1 NORSK
-======================================
+﻿#SKYPORT AI KONKURRANSE PROTOKOLL REV.1 NORSK
+***
 
-SAMMENDRAG
---------
+##SAMMENDRAG
+***
 Dette dokumentet beskriver protokollen som **AI'en bruker til å kommunisere med serveren.** 
 Revisjonen som blir beskrevet i dette dokumentet er **rev1**. 
 Linjer som starter med **">"** beskriver meldinger som sendes **fra** serveren til AI-klienten (inn-data), 
@@ -10,13 +10,13 @@ mens linjer som starter med **"<"** beskriver meldinger som sendes **til** serve
 Legg også merke til at meldingene beskrevet i dette dokumentet er delt opp i flere linjer og forklart med kommentarer. 
 Når meldinger skal sendes til serveren må de sendes som en linje, uten kommentarer.
 
-TRANSPORT
---------
+##TRANSPORT
+***
 Transport protokollen som brukes i dette systemet er **linje-basert TCP**. 
 Serveren aksepterer linjeslutt i både UNIX-format (\n) og Windows-format (\r\n).
 
-CODEC & FORMAT
---------------
+##CODEC & FORMAT
+***
 Alle overføringene bruker et **linje-basert JSON format**. 
 JSON ble valgt for å unngå at deltakerene skulle måtte lage sin egen parser for et egendefinert format. 
 **JSON er et enkelt, text-basert format med et javascript-inspirert syntax.** 
