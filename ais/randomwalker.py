@@ -74,8 +74,8 @@ class SkyportConnection(LineReceiver): # twisted-specific things
         print("AI got gamestate!")
         if playerList[0]["name"] == NAME:
             print("thinking...")
-            for x in range(0, 5):
-                reactor.callLater(x, self.doRandomMovement)
+            for x in range(0, 3):
+                reactor.callLater(x/2.0, self.doRandomMovement)
 
     def doRandomMovement(self):
         direction = random.choice(["up", "down", "left-down", "left-up", "right-down", "right-up"])

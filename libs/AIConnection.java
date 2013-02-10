@@ -186,6 +186,7 @@ public class AIConnection {
 	System.out.println("[AICONHND] Player '" + username
 			   + "' spawns at " + spawnpoint.coords.getString());
 	position = spawnpoint;
+	position.playerOnTile = this;
     }
     public void clearAllMessages(){
 	if(messages.size() > 0){
@@ -195,62 +196,90 @@ public class AIConnection {
     }
     public synchronized boolean doMove(JSONObject o){
 	// TODO verify that this is all exactly right
-	// TODO tiles need to know if a player is standing on them. Re-gister with tile as you move onto it,
-	//      unregister from it as you move away. refuse moving onto tiles someone is already on.
 	try {
 	    String direction = o.getString("direction");
 	    if(direction.equals("up")){
 		if(position.up != null && position.up.isAccessible()){
+		    if(position.up.playerOnTile != null)
+			throw new ProtocolException("Player " + position.up.playerOnTile.username
+						    + " is already on this tile.");
+		    position.playerOnTile = null;
 		    position = position.up;
+		    position.playerOnTile = this;
 		    return true;
 		}
 		else {
-		    throw new ProtocolException("Invalid direction: tile above is not accessible.");
+		    throw Util.throwInaccessibleTileException("up", position.up);
 		}
 	    }
 	    else if(direction.equals("down")){
 		if(position.down != null && position.down.isAccessible()){
+		    if(position.down.playerOnTile != null)
+			throw new ProtocolException("Player " + position.down.playerOnTile.username
+						    + " is already on this tile.");
+		    position.playerOnTile = null;
 		    position = position.down;
+		    position.playerOnTile = this;
 		    return true;
 		}
 		else {
-		    throw new ProtocolException("Invalid direction: tile below is not accessible.");
+		    throw Util.throwInaccessibleTileException("down", position.down);
 		}
 	    }
 	    else if(direction.equals("left-down")){
 		if(position.leftDown != null && position.leftDown.isAccessible()){
+		    if(position.leftDown.playerOnTile != null)
+			throw new ProtocolException("Player " + position.leftDown.playerOnTile.username
+						    + " is already on this tile.");
+		    position.playerOnTile = null;
 		    position = position.leftDown;
+		    position.playerOnTile = this;
 		    return true;
 		}
 		else {
-		    throw new ProtocolException("Invalid direction: tile to the left-down is not accessible.");
+		    throw Util.throwInaccessibleTileException("left-down", position.leftDown);
 		}
 	    }
 	    else if(direction.equals("left-up")){
 		if(position.leftUp != null && position.leftUp.isAccessible()){
+		    if(position.leftUp.playerOnTile != null)
+			throw new ProtocolException("Player " + position.leftUp.playerOnTile.username
+						    + " is already on this tile.");
+		    position.playerOnTile = null;
 		    position = position.leftUp;
+		    position.playerOnTile = this;
 		    return true;
 		}
 		else {
-		    throw new ProtocolException("Invalid direction: tile to the left-up is not accessible");
+		    throw Util.throwInaccessibleTileException("left-up", position.leftUp);
 		}
 	    }
 	    else if(direction.equals("right-down")) {
 		if(position.rightDown != null && position.rightDown.isAccessible()){
+		    if(position.rightDown.playerOnTile != null)
+			throw new ProtocolException("Player " + position.rightDown.playerOnTile.username
+						    + " is already on this tile.");
+		    position.playerOnTile = null;
 		    position = position.rightDown;
+		    position.playerOnTile = this;
 		    return true;
 		}
 		else {
-		    throw new ProtocolException("Invalid direction: tile to the right-down is not accessible");
+		    throw Util.throwInaccessibleTileException("right-down", position.rightDown);
 		}
 	    }
 	    else if(direction.equals("right-up")){
 		if(position.rightUp != null && position.rightUp.isAccessible()){
+		    if(position.rightUp.playerOnTile != null)
+			throw new ProtocolException("Player " + position.rightUp.playerOnTile.username
+						    + " is already on this tile.");
+		    position.playerOnTile = null;
 		    position = position.rightUp;
+		    position.playerOnTile = this;
 		    return true;
 		}
 		else {
-		    throw new ProtocolException("Invalid direction: tile to the right-up is not accessible");
+		    throw Util.throwInaccessibleTileException("right-up", position.rightUp);
 		}
 	    }
 	    else {

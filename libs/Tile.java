@@ -21,6 +21,7 @@ public class Tile {
     public TileType tileType;
     public String id = null;
     public Coordinate coords;
+    public AIConnection playerOnTile = null;
 
     public Tile(String type){
 	id = type;
