@@ -99,6 +99,7 @@ Range at level 1: 2 tiles
 Range at level 2: 3 tiles
 Range at level 3: 4 tiles
 See range-mortar.png for a visualization.
+![range of the mortar](./range-mortar.png)
 
 LASER
 -----
