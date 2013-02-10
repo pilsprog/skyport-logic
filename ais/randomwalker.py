@@ -73,15 +73,20 @@ class SkyportConnection(LineReceiver): # twisted-specific things
     def gotGamestate(self, turnNumber, mapObject, playerList):
         print("AI got gamestate!")
         if playerList[0]["name"] == NAME:
-            direction = random.choice(["up", "down", "left-down", "left-up", "right-down", "right-up"])
-            print("my turn! moving %s-wards." % direction)
-            self.transmitter.sendMove(direction);
+            print("thinking...")
+            for x in range(0, 5):
+                reactor.callLater(x, self.doRandomMovement)
+
+    def doRandomMovement(self):
+        direction = random.choice(["up", "down", "left-down", "left-up", "right-down", "right-up"])
+        print("moving %s-wards." % direction)
+        self.transmitter.sendMove(direction);
         
     def gotGamestart(self, turnNumber, mapObject, playerList):
         self.transmitter.sendLoadout("droid", "mortar")
         print("AI got gamestart!")
         
-    def gotAction(self, actionType, restData):
+    def gotAction(self, actionType, who, restData):
         print("AI got action: %s" % actionType)
         
     def gotEndturn(self):

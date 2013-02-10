@@ -1,18 +1,7 @@
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.json.*;
-/*
- * Program flow:
- *
- * 1) Load world
- * 2) Start acceptors
- * 3) Wait for the given number of players to connect
- * 4) Randomize spawnpoints on the board
- * 4) Send initial GAMESTART
- * 5) Wait for players to select loadout
- * 6) Start ticking
- *
- */
+import java.io.IOException;
 
 public class GameThread {
     ConcurrentLinkedQueue<AIConnection> globalClients;
@@ -109,41 +98,58 @@ public class GameThread {
 	    JSONObject first = currentPlayer.getNextMessage();
 	    JSONObject second = currentPlayer.getNextMessage();
 	    JSONObject third = currentPlayer.getNextMessage();
-	    int validMoves = 0;
-	    if(letPlayerPerformMove(first, currentPlayer)){
-		System.out.println("First move was valid, broadcasting... (STUB)");
-		validMoves++;
+	    int validAction = 0;
+	    if(letPlayerPerformAction(first, currentPlayer)){
+		broadcastAction(first, currentPlayer);
+		validAction++;
 	    }
-	    if(letPlayerPerformMove(second, currentPlayer)){
-		System.out.println("Second move was valid, broadcasting... (STUB)");
-		validMoves++;
+	    else {System.out.println("Action was invalid.");}
+	    if(letPlayerPerformAction(second, currentPlayer)){
+		broadcastAction(second, currentPlayer);
+		validAction++;
 	    }
-	    if(letPlayerPerformMove(third, currentPlayer)){
-		System.out.println("Third move was valid, broadcasting... (STUB)");
-		validMoves++;
+	    else {System.out.println("Action was invalid.");}
+	    if(letPlayerPerformAction(third, currentPlayer)){
+		broadcastAction(third, currentPlayer);
+		validAction++;
 	    }
+	    else {System.out.println("Action was invalid.");}
+	    System.out.println("[GAMETHRD] player performed " + validAction + " valid actions");
 	    
-	    System.out.println("[GAMETHRD] player performed " + validMoves + " valid moves");
-
 	    // simulate the GUI working -- we will have to wait for it later
 	    letClientsThink();
 	    letClientsThink();
 	    // end GUI working
 	    System.out.println("[GAMETHRD] Deadline! Processing actions...");
 	    // processing actions here
-
+	    
 	    roundNumber++;
 	}
 	
     }
-    private boolean letPlayerPerformMove(JSONObject move, AIConnection currentPlayer){
-	if(move != null){
-	    if(currentPlayer.doMove(move)){
-		return true;
+    private void broadcastAction(JSONObject action, AIConnection playerWhoPerformedTheAction){
+	// TODO: AIs can use this to inject extranous JSON fields into other peoples
+	// receiver stream. Write a function that sanitizes the attribute first before
+	// sending them off again.
+	System.out.println("Action was valid, re-broadcasting (FIXME)");
+	try {
+	    action.put("from", playerWhoPerformedTheAction.username);
+	}
+	catch (JSONException e){
+	}
+	for(AIConnection player: globalClients){
+	    try {
+		player.sendMessage(action);
 	    }
-	    else {
-		return false;
+	    catch (IOException e){
+		System.out.println("Warning: Failed to broadcast action to " + player.username);
 	    }
+	}
+    }
+    private boolean letPlayerPerformAction(JSONObject action, AIConnection currentPlayer){
+	// TODO: switch on the type of action here
+	if(action != null){
+	    return currentPlayer.doMove(action);
 	}
 	return false;
     }

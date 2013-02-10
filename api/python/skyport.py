@@ -20,7 +20,6 @@ class SkyportReceiver:
             print("Invalid message: %s" % e)
 
     def _parseJsonPacket(self, json_packet):
-        print(json_packet)
         if "error" in json_packet:
             if self.cb_error != None:
                 self.cb_error(json_packet["error"])
@@ -36,8 +35,13 @@ class SkyportReceiver:
                 if self.cb_gamestate != None:
                     self.cb_gamestate(json_packet["turn"], json_packet["map"], json_packet["players"])    
         elif json_packet["message"] == "action":
+            # def gotAction(self, actionType, who, restData):
             if self.cb_action != None:
-                self.cb_action()
+                packet_type = json_packet["type"]
+                who = json_packet["from"]
+                del json_packet["type"]
+                del json_packet["from"]
+                self.cb_action(packet_type, who, json_packet)
         elif json_packet["message"] == "endturn":
             if self.cb_endturn != None:
                 self.cb_endturn()

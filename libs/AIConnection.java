@@ -188,19 +188,74 @@ public class AIConnection {
 	position = spawnpoint;
     }
     public void clearAllMessages(){
-	System.out.println("Clearing message inbox from player " + username);
+	if(messages.size() > 0){
+	    System.out.println("Message inbox of " + username + " contained " + messages.size() + " extra messages, discarding...");
+	}
 	messages.clear();
     }
     public synchronized boolean doMove(JSONObject o){
+	// TODO verify that this is all exactly right
+	// TODO tiles need to know if a player is standing on them. Re-gister with tile as you move onto it,
+	//      unregister from it as you move away. refuse moving onto tiles someone is already on.
 	try {
 	    String direction = o.getString("direction");
-	    if(!direction.equals("up") && !direction.equals("down")
-	       && !direction.equals("left-down") && !direction.equals("left-up")
-	       && !direction.equals("right-down") && !direction.equals("right-up")){
+	    if(direction.equals("up")){
+		if(position.up != null && position.up.isAccessible()){
+		    position = position.up;
+		    return true;
+		}
+		else {
+		    throw new ProtocolException("Invalid direction: tile above is not accessible.");
+		}
+	    }
+	    else if(direction.equals("down")){
+		if(position.down != null && position.down.isAccessible()){
+		    position = position.down;
+		    return true;
+		}
+		else {
+		    throw new ProtocolException("Invalid direction: tile below is not accessible.");
+		}
+	    }
+	    else if(direction.equals("left-down")){
+		if(position.leftDown != null && position.leftDown.isAccessible()){
+		    position = position.leftDown;
+		    return true;
+		}
+		else {
+		    throw new ProtocolException("Invalid direction: tile to the left-down is not accessible.");
+		}
+	    }
+	    else if(direction.equals("left-up")){
+		if(position.leftUp != null && position.leftUp.isAccessible()){
+		    position = position.leftUp;
+		    return true;
+		}
+		else {
+		    throw new ProtocolException("Invalid direction: tile to the left-up is not accessible");
+		}
+	    }
+	    else if(direction.equals("right-down")) {
+		if(position.rightDown != null && position.rightDown.isAccessible()){
+		    position = position.rightDown;
+		    return true;
+		}
+		else {
+		    throw new ProtocolException("Invalid direction: tile to the right-down is not accessible");
+		}
+	    }
+	    else if(direction.equals("right-up")){
+		if(position.rightUp != null && position.rightUp.isAccessible()){
+		    position = position.rightUp;
+		    return true;
+		}
+		else {
+		    throw new ProtocolException("Invalid direction: tile to the right-up is not accessible");
+		}
+	    }
+	    else {
 		throw new ProtocolException("Invalid direction: '" + direction + "'");
 	    }
-	    System.out.println("Moving in direction " + direction);
-	    return true;
 	}
 	catch (JSONException e){
 	    try {
