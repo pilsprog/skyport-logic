@@ -95,9 +95,10 @@ in any direction. Any tile it can reach in that number of steps, is in
 range". The mortar is unaffected by gaps and rocks, but shooting at them
 has no effect. The mortar carries a small explosive load, and hence has
 a very weak AoE bonus damage at a radius of one tile.
-Range at level 1: 2 tiles
-Range at level 2: 3 tiles
-Range at level 3: 4 tiles
+* Range at level 1: 2 tiles
+* Range at level 2: 3 tiles
+* Range at level 3: 4 tiles
+
 See the following image for a visualization:
 ![range of the mortar](./range-mortar.png)
 
@@ -106,9 +107,10 @@ LASER
 The laser has the longest range, and shoots straight. That means there
 are tiles it cannot reach, without moving into a different position first.
 The laser can shoot over gaps, but not through rocks.
-Range at level 1: 5 tiles
-Range at level 2: 6 tiles
-Range at level 3: 7 tiles
+* Range at level 1: 5 tiles
+* Range at level 2: 6 tiles
+* Range at level 3: 7 tiles
+
 See the following image for a visualization:
 ![range of the laser](./range-laser.png)
 
@@ -123,6 +125,7 @@ one tile.
 * Range at level 1: 3 steps
 * Range at level 2: 4 steps
 * Range at level 3: 5 steps
+
 See the following image for a visualization:
 ![range of the droid](./range-droid.png)
 
