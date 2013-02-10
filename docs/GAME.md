@@ -98,7 +98,7 @@ a very weak AoE bonus damage at a radius of one tile.
 Range at level 1: 2 tiles
 Range at level 2: 3 tiles
 Range at level 3: 4 tiles
-See range-mortar.png for a visualization.
+See the following image for a visualization:
 ![range of the mortar](./range-mortar.png)
 
 LASER
@@ -109,7 +109,8 @@ The laser can shoot over gaps, but not through rocks.
 Range at level 1: 5 tiles
 Range at level 2: 6 tiles
 Range at level 3: 7 tiles
-See range-laser.png for a visualization.
+See the following image for a visualization:
+![range of the laser](./range-laser.png)
 
 DROID
 -----
@@ -122,7 +123,8 @@ one tile.
 * Range at level 1: 3 steps
 * Range at level 2: 4 steps
 * Range at level 3: 5 steps
-See range-droid.png for a visualization.
+See the following image for a visualization:
+![range of the droid](./range-droid.png)
 
    
 RESOURCES
