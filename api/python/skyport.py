@@ -60,3 +60,13 @@ class SkyportTransmitter:
     
     def sendMove(self, whereto):
         self.cb_send(json.dumps({"message":"action", "type": "move", "direction": whereto}))
+
+    def attackLaser(self, direction):
+	self.cb_send(json.dumps({"message":"attack", "weapon":"laser", "direction":direction}))
+
+    def attackMortar(self, jCoordinate, kCoordinate):
+	coordinates = "%i,%i" % (jCoordinate, kCoordinate);
+	self.cb_send(json.dumps({"message":"attack", "weapon":"mortar", "coordinates":coordinates}))
+
+    def attackDroid(self, **sequence):
+	self.cb_send(json.dumps({"message":"attack", "weapon":"droid", "sequence":sequence}))
