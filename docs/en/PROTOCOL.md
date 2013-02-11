@@ -177,7 +177,8 @@ PLAYER
     > {"name":"players-name",
     >  "primary-weapon":
     >    {"name":"laser", "level":1}, // "laser", "mortar", "droid", the number is the tier (1,2 or 3)
-    >  "secondary-weapon":"mortar-1", // ditto
+    >  "secondary-weapon":
+    >    {"name":"mortar", "level":1},// ditto
     >  "health":20,		      // int from 1 to 100
     >  "score":120,		      // int from 1 to ?
     >  "position":"j,k"}              // position in j/k coordinates (global)
