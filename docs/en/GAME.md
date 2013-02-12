@@ -177,8 +177,11 @@ inaccessible tile is an invalid move and hence discarded by the server.
 
 POINTS
 ------
-Killing another player awards you with a certain amount of points. You
-may lose varying amounts of points by performing certain actions that
+Damaging a player awards you with the amount of points equivalent to
+the damage you inflicted on the player. Killing another player in
+addition awards you with a 20 bonus points bounty. Dying gives you a
+point penality of 80 points.
+You may also lose varying amounts of points by performing certain actions that
 incur a penality, such as not moving a turn and standing on a spawn
 tile beyond the initial round. After a fixed amount of time has passed,
 the round ends, and the player with the highest score wins.
