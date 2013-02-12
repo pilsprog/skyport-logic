@@ -1,4 +1,5 @@
-include $(COMMONS)
+include ../commons.mk
+#include $(COMMONS)
 
 COMPILER:=javac
 BD:=../bin
