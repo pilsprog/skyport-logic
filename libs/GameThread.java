@@ -12,21 +12,32 @@ public class GameThread {
     World world;
     PlayerSelector playerSelector;
     AtomicInteger readyUsers = new AtomicInteger(0); // for loadouts
+    GraphicsContainer graphicsContainer = null;
     public GameThread(ConcurrentLinkedQueue<AIConnection> globalClientsArg,
 		      int minUsersArg, int gameTimeoutSecondsArg, int roundTimeSecondsArg,
-		      World worldArg){
+		      World worldArg, GraphicsContainer graphicsContainerArg){
+	graphicsContainer = graphicsContainerArg;
 	world = worldArg;
 	globalClients = globalClientsArg;
 	minUsers = minUsersArg;
 	gameTimeoutSeconds = gameTimeoutSecondsArg;
 	roundTimeSeconds = roundTimeSecondsArg;
-	//	gamestate = new GameState("testworld.skyportmap");
     }
     public void run(int gameSecondsTimeout){
 	try {
 	    Thread.sleep(500);
 	}
 	catch(InterruptedException e){}
+	System.out.println("[GAMETHRD] waiting for graphics engine to connect");
+	while(true){
+	    try {
+		Thread.sleep(100);
+	    } catch (InterruptedException e){}
+	    if(graphicsContainer.get() != null){
+		break;
+	    }
+	}
+	System.out.println("[GAMETHRD] got graphics engine connection");
 	System.out.println("[GAMETHRD] waiting for " + minUsers + " users to connect");
 	int waitIteration = 0;
 	while(true){
@@ -38,16 +49,6 @@ public class GameThread {
 	    if(globalClients.size() == minUsers){
 		System.out.println("[GAMETHRD] Got " + minUsers + " users, starting the round");
 		break;
-	    }
-	}
-	for(AIConnection conn: globalClients){
-	    JSONObject o = conn.getNextMessage();
-	    if(o != null){
-		System.out.println("[GAMETHRD] stub: got new message");
-		try {
-		    System.out.println("MESSAGE: " + o.get("message"));
-		}
-		catch(JSONException e){}
 	    }
 	}
 	System.out.println("[GAMETHRD] Initializing game");
@@ -77,6 +78,7 @@ public class GameThread {
 	    letClientsThink();
 	}
 	sendDeadline();
+	graphicsContainer.get().waitForGraphics();
 	System.out.println("All clients have sent a loadout");
 	Util.pressEnterToContinue("Press enter to start the game");
 	long startTime = System.nanoTime();
@@ -117,6 +119,7 @@ public class GameThread {
 	    System.out.println("[GAMETHRD] player performed " + validAction + " valid actions");
 	    
 	    // simulate the GUI working -- we will have to wait for it later
+	    graphicsContainer.get().waitForGraphics();
 	    letClientsThink();
 	    letClientsThink();
 	    // end GUI working
@@ -136,6 +139,12 @@ public class GameThread {
 	    action.put("from", playerWhoPerformedTheAction.username);
 	}
 	catch (JSONException e){
+	}
+	try {
+	    graphicsContainer.get().sendMessage(action);
+	}
+	catch (IOException e) {
+	    System.out.println("Warning: failed to broadcast action to graphics");
 	}
 	for(AIConnection player: globalClients){
 	    try {
@@ -168,12 +177,14 @@ public class GameThread {
 	if(roundNumber != 0){
 	    playerTurnOrder[0].clearAllMessages();
 	}
+	graphicsContainer.get().sendGamestate(roundNumber, world.dimension, matrix, playerTurnOrder);
 	for(AIConnection client: globalClients){
 	    client.sendGamestate(roundNumber, world.dimension, matrix, playerTurnOrder);
 	}
 	return playerTurnOrder[0];
     }
     public void sendDeadline(){
+	graphicsContainer.get().sendDeadline();
 	for(AIConnection client: globalClients){
 	    client.sendDeadline();
 	}

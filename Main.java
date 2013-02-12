@@ -30,17 +30,19 @@ public class Main {
 	}
 	
 	ConcurrentLinkedQueue<AIConnection> globalClientList = new ConcurrentLinkedQueue<AIConnection>();
-        Acceptor aiClientAcceptor = new Acceptor(port, globalClientList, minUsers, false);
+	GraphicsContainer graphicsContainer = new GraphicsContainer();
+        Acceptor aiClientAcceptor = new Acceptor(port, globalClientList, minUsers, false, null);
 	new Thread(aiClientAcceptor).start();
 
-	Acceptor graphicsClientAcceptor = new Acceptor(port+10, null, 1, true);
+	Acceptor graphicsClientAcceptor = new Acceptor(port+10, null, 1, true, graphicsContainer);
 	new Thread(graphicsClientAcceptor).start();
 	
 
 	// the main thread simply becomes the new gamethread.
 	System.out.println("Starting gamethread...");
 	GameThread game =
-	    new GameThread(globalClientList, minUsers, gameTimeoutSeconds, roundTimeSeconds, world);
+	    new GameThread(globalClientList, minUsers, gameTimeoutSeconds,
+			   roundTimeSeconds, world, graphicsContainer);
 	game.run(gameTimeoutSeconds);
     }
 }

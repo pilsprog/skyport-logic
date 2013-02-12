@@ -8,10 +8,12 @@ public class Acceptor implements Runnable {
     private int backlog;
     private int clientsAccepted = 0;
     private boolean isGraphicsManager = false;
-    public Acceptor(int port, ConcurrentLinkedQueue<AIConnection> globalClients, int backlogArg, boolean isGraphicsManagerArg){
+    public GraphicsContainer graphics;
+    public Acceptor(int port, ConcurrentLinkedQueue<AIConnection> globalClients, int backlogArg, boolean isGraphicsManagerArg, GraphicsContainer graphicsContainer){
 	try {
 	    acceptorSocket = new ServerSocket(port);
 	    acceptorSocket.setReuseAddress(true);
+	    graphics = graphicsContainer;
 	    backlog = backlogArg;
 	    globalClientList = globalClients;
 	    isGraphicsManager = isGraphicsManagerArg;
@@ -49,7 +51,7 @@ public class Acceptor implements Runnable {
 
     public GraphicsConnection spawnGraphicsHandlerThread(Socket clientSocket){
 	System.out.println("Spawning graphics handler!");
-	GraphicsConnection conn = new GraphicsConnection(clientSocket);
+	GraphicsConnection conn = new GraphicsConnection(clientSocket, graphics);
 	GraphicsClientHandler handler = new GraphicsClientHandler(conn);
 	Thread thread = new Thread(handler);
 	thread.start();
