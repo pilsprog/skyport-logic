@@ -8,7 +8,6 @@ public class GameThread {
     int minUsers;
     int gameTimeoutSeconds;
     int roundTimeSeconds;
-    GameState gamestate;
     World world;
     PlayerSelector playerSelector;
     AtomicInteger readyUsers = new AtomicInteger(0); // for loadouts

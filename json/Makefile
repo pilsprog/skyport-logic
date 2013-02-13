@@ -1,16 +1,11 @@
 include ../commons.mk
-#include $(COMMONS)
-
-COMPILER:=javac
-BD:=../bin
-CFLAGS:= -d $(call path,$(BD))
-
-TARGET:=$(call path,$(BD)/org/json/JSONWriter.class)
-SOURCE:=$(call path,JSONWriter.java)
+BINDIR:=../bin/
+TARGET:=$(BINDIR)/org/json/JSONWriter.class
+SOURCE:=JSONWriter.java
 
 default: $(TARGET)
 
 $(TARGET): $(SOURCE)
-	$(COMPILER) -d $(BD) *.java
+	@$(JC) $(JAVAFLAGS)
 
-.PHONY: clean
+.PHONY: clean $(TARGET)

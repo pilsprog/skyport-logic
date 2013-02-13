@@ -1,11 +1,21 @@
 include commons.mk
 BINDIR=bin
 JSONDIR=json
+LIBDIR=libs
 
 default: json
 
 json:
-	$(MAKE) -C $(JSONDIR) COMMONS=$(call path,../commons.mk)
-	exit
+	$(MAKE) -C $(JSONDIR)
 
+lib:
+	$(MAKE) -C $(LIBDIR)
 
+main:
+	$(JC) $(JAVAFLAGS) Main.java
+
+jar:
+	cd bin/
+	jar cfe skyport-server.jar Main *
+
+.PHONY: json
