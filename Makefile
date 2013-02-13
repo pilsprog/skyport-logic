@@ -15,7 +15,9 @@ main:
 	$(JC) $(JAVAFLAGS) Main.java
 
 jar:
-	cd bin/
+	cd bin
 	jar cfe skyport-server.jar Main *
+	cp skyport-server.jar ..
+	cd ..
 
 .PHONY: json
