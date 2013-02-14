@@ -77,6 +77,7 @@ public class GameThread {
 	    letClientsThink();
 	}
 	sendDeadline();
+	graphicsContainer.get().sendEndActions();
 	graphicsContainer.get().waitForGraphics();
 	System.out.println("All clients have sent a loadout");
 	Util.pressEnterToContinue("Press enter to start the game");
@@ -96,6 +97,7 @@ public class GameThread {
 	    System.out.println("sent gamestate. Current player: " + currentPlayer.username);
 	    letClientsThink();
 	    sendDeadline();
+	    System.out.println("[GAMETHRD] Deadline! Processing actions...");
 	    JSONObject first = currentPlayer.getNextMessage();
 	    JSONObject second = currentPlayer.getNextMessage();
 	    JSONObject third = currentPlayer.getNextMessage();
@@ -116,14 +118,10 @@ public class GameThread {
 	    }
 	    else {System.out.println("Action was invalid.");}
 	    System.out.println("[GAMETHRD] player performed " + validAction + " valid actions");
-	    
+	    graphicsContainer.get().sendEndActions();
 	    // simulate the GUI working -- we will have to wait for it later
 	    graphicsContainer.get().waitForGraphics();
-	    letClientsThink();
-	    letClientsThink();
 	    // end GUI working
-	    System.out.println("[GAMETHRD] Deadline! Processing actions...");
-	    // processing actions here
 	    
 	    roundNumber++;
 	}

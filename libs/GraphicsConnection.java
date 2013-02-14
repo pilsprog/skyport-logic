@@ -149,6 +149,16 @@ public class GraphicsConnection {
 	    System.out.println("Error writing to graphics: " + e.getMessage());
 	}
     }
+    public void sendEndActions(){
+	JSONObject o = new JSONObject();
+	try {
+	    o.put("message", "endactions");
+	    sendMessage(o);
+	} catch (JSONException e){}
+	catch (IOException e){
+	    System.out.println("Error writing to graphics: " + e.getMessage());
+	}
+    }
     public void sendMessage(JSONObject o) throws IOException{
 	socket.getOutputStream().write((o.toString() + "\n").getBytes());
     }
