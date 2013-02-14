@@ -1,22 +1,19 @@
-SKYPORT REV 1 SPILL REGLER
+#SKYPORT REV 1 SPILL REGLER
 ========================
 
-SYNOPSIS
---------
+##SAMMENDRAG
 
-This file describes the game rules as implemented by the server.
-
-
-MAP
----
-
-The map is a hexagonal grid of tiles. See PROTOCOL/MAP-OBJECT for an exact description
-of the map format used. In short, the tiles have a normal coordinate system
-imposed on them:
+Dette dokumentet tar for seg reglene i spillet, implementert av serveren.
 
 
+##KART
 
-     J-coordinate                      K-coordinate
+Kartet er et sekskantet rutenett. Se PROTOCOL_NO/KART-OBJEKT for videre
+informasjon. Kartet bruker et koordinatsystem likt det i et vanlig firkantet
+rutenett:
+
+
+     J-Koordinat                       K-Koordinat
       \                               /
        \                             /
         \                _____      /
@@ -37,52 +34,53 @@ imposed on them:
               .         \_____/        .
              .                          .
 	      
-Positions are always written in [J, K] notation, i.e. the J-coordinate comes first,
-the K-coordinate second. For instance, you may send the server a message
-such as "go to 1,0" and then "fire mortar at 2,2". The server would then
-first move you to the tile [1, 0], and then perform your mortar shot,
-assuming it is in range.
-You can move from tile to tile in the fashion you would expect (crossing edges),
-and you can move up to 3 tiles in one round.
-There are seven different types of tiles, as described in the next section.
+Rutenes posisjon er alltid skrevet [J,K]; J-koordinatet kommer alltid først og
+K-koordinatet sist. For eksempel; en AI vil kanskje sende en melding om å "flytte
+til posisjonen 1,0" og så "angrip med mortar (granatkaster) på posisjonen
+2,2". Serveren vil da flytte AI'en til posisjon [2,0] og angripe posisjonen
+[2,2].  
+Du kan bevege deg mellom ruter over grensene mellom rutene, og opp til 3 ruter på
+en tur.
+Det er syv forskjellige rute typer, dette vil bli forklart nærmere i neste avsnitt.
 
-TILES
------
-### ACCESSIBLE TILES (These tiles can be moved onto)
+##RUTER
 
-* **GRASS** - normal grassland. No effect. May come in various forms and colors, but
-	  robots don't care about aesthetics.
-* **EXPLOSIUM** - If you stand on this tile, you can use one action or more to mine
-		explosium. An explosium tile has 2 explosium, which you mine at a rate of
-		one explosium per action. After it is depleted, it turns into grass.
-* **RUBIDIUM** - If you stand on this tile, you can use one action or more to mine
-		rubidium. An rubidium tile has 2 rubidium, which you mine at a rate of
-		one rubidium per action. After it is depleted, it turns into grass.
-* **SCRAP** - If you stand on this tile, you can use one action or more to mine
-		scrap. An scrap tile has 2 scrap, which you mine at a rate of
-		one scrap per action. After it is depleted, it turns into grass.
-		
-### INACCESSIBLE TILES (These tiles cannot be moved onto, but the server may place you on them.)
-		
-* **VOID**  - No tile at all.	
-* **SPAWN** - protected spawn area. Once you move away from it, you can't re-enter.
-* **ROCK**  - A rock is blocking the way.
+###FARBARE RUTER (ruter du kan flytte til)
+* **GRESS**	- Gressrute. Ingen spesiell effekt. Kan komme i flere farger og
+former, men roboter er ikke opptatt av estetikk.  
+* **EXPLOSIUM**	- Hvis du står på denne ruten kan du bruke en eller flere 
+handlinger på å utvinne explosium ressurs, 1 ressurs per handling. Hver explosium
+ rute har maksimum 2 tilgjengelige ressurser. Etter at en rute er oppbrukt vil
+ den forvandles til en gress rute.  vis du er it is depleted, it turns into
+ grass.
+* **RUBIDIUM**	- Hvis du står på denne ruten kan du bruke en eller flere 
+handlinger på å utvinne rubidium ressurs, 1 ressurs per handling. Hver rubidium 
+rute har maksimum 2 tilgjengelige ressurser. Etter at en rute er oppbrukt vil den
+forvandles til en gress rute.
+* **SKRAP**	- Hvis du står på denne ruten kan du bruke en eller flere 
+handlinger på å utvinne metall, 1 ressurs per handling. Hver skrap rute har
+maksimum 2 tilgjengelige ressurser. Etter at en rute er oppbrukt vil den 
+forvandles til en gress rute.
 
-TURNS
------
-Each round, each player gets three turns. In a turn, he may move to any
-adjacent tile, covering a maximal distance of three tiles per turn. A
-player may chose to use an action for something else, such as firing a
-weapon or simply waiting. Firing a weapon immediately ends the turn, but
-any left-over actions give your attack an extra damage bonus.
-Waiting incurrs a small point/health penality, so that inactive AIs will
-get kicked out after a while.
-After a players turn is over, the gamestate is sent to all clients, and
-the next player may make his turn.
+###UFARBARE RUTER
+* **VOID**(TOM)	- Tomme ruter.
+* **SPAWN**(START)	- Beskyttet startområde. Det vil ikke være mulig å gå 
+tilbake til disse rutene etter at du har gått av dem.
+* **ROCK**(STEIN)	- En stein som stenger for veien.
+
+##TUR
+Hver runde får hver AI tre handlinger. En AI kan bruke handlingene til å flytte
+seg (1 rute per handling), skyte ett våpen, vente eller utvinne ressurser. Å 
+skyte et våpen vil avslutte runden og bruke de resterende handlingene på skuddet.
+De ekstra handlingene vil øke skaden som skuddet gjør. Venting vil gi en liten 
+poeng- og helse- straff, dette betyr også at inaktive AI'er vil bli kastet ut 
+etter en stund.
+Etter at AI'ens runde er over; vil en spillstatus bli sendt til alle AI'er, og 
+det vil være neste AI sin tur.
 		
-WEAPONS
--------
-There are three basic weapons, the laser, the mortar and the battle droid.
+##VÅPEN
+Det er tre forskjellige våpen i spillet; laser, granatkaster og kamp-droider. 
+Hvert våpen kan bli oppgradert tre ganger for å øke rekkevidden og skaden.
 Each weapon may be upgraded three times, to increase its range and damage,
 see the next sections.
 
