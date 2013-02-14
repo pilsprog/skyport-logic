@@ -81,41 +81,37 @@ det vil være neste AI sin tur.
 ##VÅPEN
 Det er tre forskjellige våpen i spillet; laser, granatkaster og kamp-droider. 
 Hvert våpen kan bli oppgradert tre ganger for å øke rekkevidden og skaden.
-Each weapon may be upgraded three times, to increase its range and damage,
-see the next sections.
 
-MORTAR
-------
-The mortar is the easiest to use; it simply has a radius/range, and it
-hit any tile inside that range. An alternative interpretation (resulting
-in the same tiles) is to say "the mortar can move a fixed number of steps
-in any direction. Any tile it can reach in that number of steps, is in
-range". The mortar is unaffected by gaps and rocks, but shooting at them
-has no effect. The mortar carries a small explosive load, and hence has
-a very weak AoE bonus damage at a radius of one tile.
-* Range at level 1: 2 tiles
-* Range at level 2: 3 tiles
-* Range at level 3: 4 tiles
+###GRANATKASTER (Mortar)
+Granatkasteren er det enkleste våpenet å bruke; den har en radius/rekkevidde, og
+kan treffe alle ruter innen denne rekkevidden. Du kan også tenke deg at skuddet
+kan "gå" et antall steg over alle typer ruter, i alle retninger. Granatkasteren
+blir ikke påvirket av steiner eller tomme ruter, men det har heller ingen effekt å
+skyte på dem. Skuddet (granaten) fra granatkasteren har en liten, eksplosiv ladning
+og vil eksplodere ved sammenstøt, derfor har granatkasteren også en liten AoE 
+(områdeskade) en rute rundt målet
+* Rekkevidde ved nivå 1: 2 ruter
+* Rekkevidde ved nivå 2: 3 ruter
+* Rekkevidde ved nivå 3: 4 ruter
 
-See the following image for a visualization:
+Se bildet under for illustrasjon:
 
 ![range of the mortar](../range-mortar.png)
 
-LASER
------
-The laser has the longest range, and shoots straight. That means there
-are tiles it cannot reach, without moving into a different position first.
-The laser can shoot over gaps, but not through rocks.
-* Range at level 1: 5 tiles
-* Range at level 2: 6 tiles
-* Range at level 3: 7 tiles
+###LASER
+Laseren er våpenet med den lengste rekkevidden, men den kan bare skyte i rette
+linjer, våpenet pekes altså i en retning og fyres av. Dette betyr også at det er
+flere områder som man ikke kan treffe uten å bevege seg til en annen posisjon.
+Laseren kan skyte over tomme ruter, men ikke gjennom steiner.
+* Rekkevidde ved nivå 1: 5 ruter
+* Rekkevidde ved nivå 2: 6 ruter
+* Rekkevidde ved nivå 3: 7 ruter
 
-See the following image for a visualization:
+Se bildet under for illustrasjon:
 
 ![range of the laser](../range-laser.png)
 
-DROID
------
+###KAMP-DROIDER
 The droid requires the player to send a list of directional steps.
 It has a fixed number of steps it can walk, after which it will explode,
 whether it has reached its target or not. The droid cannot walk over gaps
