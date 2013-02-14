@@ -89,7 +89,7 @@ kan "gå" et antall steg over alle typer ruter, i alle retninger. Granatkasteren
 blir ikke påvirket av steiner eller tomme ruter, men det har heller ingen effekt å
 skyte på dem. Skuddet (granaten) fra granatkasteren har en liten, eksplosiv ladning
 og vil eksplodere ved sammenstøt, derfor har granatkasteren også en liten AoE 
-(områdeskade) en rute rundt målet
+(områdeskade) en rute rundt målet (1 rute).
 * Rekkevidde ved nivå 1: 2 ruter
 * Rekkevidde ved nivå 2: 3 ruter
 * Rekkevidde ved nivå 3: 4 ruter
@@ -112,98 +112,91 @@ Se bildet under for illustrasjon:
 ![range of the laser](../range-laser.png)
 
 ###KAMP-DROIDER
-The droid requires the player to send a list of directional steps.
-It has a fixed number of steps it can walk, after which it will explode,
-whether it has reached its target or not. The droid cannot walk over gaps
-or rocks, so it has to navigate around them. The droid carries a big
-explosive payload and induces a massive AoE damage bonus, at a radius of
-one tile.
-* Range at level 1: 3 steps
-* Range at level 2: 4 steps
-* Range at level 3: 5 steps
+Kamp-droidene krever at AI'en sender en serie med retninger som viser hvilke steg 
+de skal ta. En kamp-droide har et begrenset antall steg den kan ta, etter den har 
+gått det antallet steg vil den eksplodere, uansett om den har fullført alle stegene
+eller ikke. Droider kan ikke gå over tomme ruter eller gjennom stein, derfor må de 
+navigeres rundt dem. Droider som møter tomme ruter eller steiner vil eksplodere.
+Droider har en stor ksplosiv ladning og vil forårsake stor AoE (områdeskade) skade
+rundt målet (1 rute).
+* Rekkevidde ved nivå: 3 steg
+* Rekkevidde ved nivå: 4 steg
+* Rekkevidde ved nivå: 5 steg
 
-See the following image for a visualization:
+Se bildet under for illustrasjon:
 
 ![range of the droid](../range-droid.png)
 
    
-RESOURCES
----------
-There are three basic types of resources: rubidium, explosium and scrap.
-rubidium is used to upgrade lasers, explosium is used to upgrade the
-mortar, and scrap is used to upgrade the battle droid.
-Resources are obtained by standing on a resource-tile and using an action
-to mine the resource. If a player has collected enough of one type of resource,
-he can use a turn to upgrade his weapon to the next-highest tier. Once a weapon has
-reached level 3, it cannot be upgraded anymore.
+##RESURSER
+Det er tre forskjellige typer ressurser i Skyport: rubidium, explosium og 
+skrap-metall. Rubidium blir brukt til å oppgradere lasere, explosium; granatkastere
+ og skrap-metall; kamp-droider.
+Du kan utvinne ressurser ved å stå på en russurs-rute og bruke en handling på å
+utvinne ressursen. Hvis en AI har samlet nok ressurser av en type vil det være
+mulig å oppgradere det tilsvarende våpenet til det neste nivået. Hvert våpen kan 
+ikke bli oppgradert forbi nivå 3.
 
 
-LOADOUT
--------
-Upon gamestart, the AI can chose two weapons to use for the entire game.
-Any combinations of weapons can be chosen. Some maps may contain an un-
-even distribution of resources, having more resources of one type on one
-end, or lacking a resource alltogether. It is hence probably wise to
-scan the map thoroughly before chosing a loadout.
+##VÅPENVALG
+Ved spillstart vil AI'ene velge hvilke to våpen de skal bruke for resten av
+spillet. Alle kombinasjoner av de tre våpene er tilgjengelige. Noen kart kan 
+inneholde en ujevnt distribuert mengde av ressurser, som kan påvirke hvor nyttig
+hvert våpen er. Det er derfor lurt å gå nøye gjennom kartet før våpenvalget sendes
 
 
-STARTING
---------
-Upon gamestart, each AI is set to a protected starting-tile. A starting-
-tile can be moved off of, but cannot be moved onto. Hence only the server
-may place a player on a starting tile.
-Attacking a player on a starting tile incurs damage to the player
-performing the attack. A player on a starting-tile may not perform any
-moves other than moving away from the starting tile. Standing on the
-starting-tile incurs a health/point penality.
+##SPILLSTART
+Ved spillstart vil hver AI bli satt på hver sin **"STARTPOSISJON"-rute** (SPAWN) 
+eller "start-ruter". Det vil ikke være mulig å gå tilbake på start-ruten etter at
+man har flyttet seg av den. Derfor er det bare serveren som kan flytte AI'er til 
+start-rutene. Et angrep mot en AI på en startrute vil *returnere skaden* til 
+angriperen i stedet for målet. En AI som står på en startrute kan ikke utføre
+andre handlinger enn å bevege seg av ruten. Å vente på en startrute vil også føre
+til poeng- og helse-straffer.
 
-ACTIONS
--------
-Each round, each client gets three actions to use. An offensive move
-immediately terminates the players turn, and uses up the remaining
-moves (if any) for a damage bonus. 
+##HANDLINGER
+Hver runde får hver AI muligheten til å utføre tre handlinger. En angreps-handling
+vil avslutte turen og bruke de resterende handlingene til å styrke angrepet.
 
-MOVEMENT
---------
-An action may be used for moving in one of the six cardinal directions.
-Only accessible tiles may be moved onto, attempting to move onto an
-inaccessible tile is an invalid move and hence discarded by the server.
+##BEVEGELSE
+En handling kan bli brukt til å flytte AI'en fra en rute til en av de tilstøtende 
+rutene; en AI kan altså bare bevege seg en rute om gangen og bare i seks retninger.
+AI'er kan heller ikke bevege seg til stein eller tomme ruter.
+Alle ugyldige bevegelser vil bli forkastet av serveren.
 
-POINTS
-------
-Damaging a player awards you with the amount of points equivalent to
-the damage you inflicted on the player. Killing another player in
-addition awards you with a 20 bonus points bounty. Dying gives you a
-point penality of 80 points.
-You may also lose varying amounts of points by performing certain actions that
-incur a penality, such as not moving a turn and standing on a spawn
-tile beyond the initial round. After a fixed amount of time has passed,
-the round ends, and the player with the highest score wins.
+##POENG
+Å **skade en motstander** gir deg poeng tilsvarende skaden du påførte.
+Hvis du **dreper en motstander** gir det en ekstra 20-poengs bonus.
 
-DESTRUCTION
------------
-Each player starts with a certain amount of health. Health does not
-replenish, but upon destruction, a player may respawn from his spawn-
-point and continue playing without losing their upgraded weapons.
-Respawning takes one full turn.
+Hvis du **dør vil du miste 80 poeng**.
+Du kan også miste poeng på andre måter, som for eksempel å bruke handlinger på å
+vente eller å stå på en startrute etter den første runden.
+
+Ved spillets slutt vil den med den høyeste poengsummen vinne.
+
+##ØDELEGGELSE
+Hver spiller starter med en fast mengde helsepoeng. Helse vil ikke regenerere 
+(fylle seg opp igjen). Hvis en AI blir ødelagt (går tom for helsepoeng); vil AI'en 
+starte fra startruten igjen, uten å miste eventuelle oppgraderinger. AI'en må stå
+over en hel runde etter å ha blitt ødelagt.
+
 
 ARITHMETIC & STATS
-------------------
-
-* Upgrading a weapon from lvl 1 to lvl 2: 4 resources
-* Upgrading a weapon from lvl 2 to lvl 3: 5 resources
-* hp = -dmg
-* Player at full health: 100hp
-* laser lvl 1: 16dmg
-* laser lvl 2: 18dmg
-* laser lvl 3: 22dmg
-* mortar lvl 1: 20dmg
-* mortar lvl 2: 20dmg
-* mortar lvl 3: 25dmg
-* mortar AoE damage: 2dmg
-* droid lvl 1: 22dmg
-* droid lvl 2: 24dmg
-* droid lvl 3: 26dmg
-* droid AoE damage: 10dmg
-* player_damage = weapon_damage
-	       + AoE_damage + unused_turns*(0.2*weapon_damage) + unused_turns*(0.2*AoE_damage)
+##ARITMETIKK OG STATISTIKK
+* Oppgradering av et våpen fra nivå 1 til 2 krever: 4 ressurser
+* Oppgradering av et våpen fra nivå 2 til 3 krever: 5 ressurser
+* Helsepoeng (hp) = -skade (-dmg)
+* Startsum for helsepoeng: 100hp
+* Laser skader, ved nivå 1: 16 dmg
+* Laser skader, ved nivå 2: 18 dmg
+* Laser skader, ved nivå 3: 22 dmg
+* Granatkaster skader, ved nivå 1: 20 dmg
+* Granatkaster skader, ved nivå 2: 20 dmg
+* Granatkaster skader, ved nivå 3: 25 dmg
+* Granatkasters AoE skader: 2 dmg
+* Kamp-droider skader, ved nivå 1: 22 dmg
+* Kamp-droider skader, ved nivå 2: 24 dmg
+* Kamp-droider skader, ved nivå 3: 26 dmg
+* Kamp-droiders AoE skader: 10 dmg
+* Utregning av skade:
+	player_damage = weapon_damage + AoE_damage + unused_turns * (0.2 * weapon_damage) + unused_turns * (0.2 * AoE_damage)
