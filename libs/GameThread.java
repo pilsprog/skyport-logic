@@ -161,7 +161,7 @@ public class GameThread {
     }
     public void letClientsThink(){
 	try {
-	    Thread.sleep(roundTimeSeconds*1000);
+	    Thread.sleep(roundTimeSeconds*50);
 	}
 	catch (InterruptedException e){
 	    System.out.println("INTTERUPTED!");

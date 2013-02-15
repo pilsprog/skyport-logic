@@ -106,20 +106,21 @@ public class GraphicsConnection {
 	    for(AIConnection ai: playerlist){
 		JSONObject playerObject = new JSONObject();
 		playerObject.put("name", ai.username);
-		// TODO: fill in actual values for health, score, primary-weapon, secondary-weapon ...
-		playerObject.put("health", 100);
-		playerObject.put("score", 0);
-		playerObject.put("position", ai.position.coords.getCompactString());
-		JSONObject primaryWeaponObject = new JSONObject();
-		primaryWeaponObject.put("name", ai.primaryWeapon);
-		primaryWeaponObject.put("level", ai.primaryWeaponLevel);
-		playerObject.put("primary-weapon", primaryWeaponObject);
+		if(turnNumber != 100){
+		    playerObject.put("health", 100);
+		    playerObject.put("score", 0);
+		    playerObject.put("position", ai.position.coords.getCompactString());
+		    JSONObject primaryWeaponObject = new JSONObject();
+		    primaryWeaponObject.put("name", ai.primaryWeapon);
+		    primaryWeaponObject.put("level", ai.primaryWeaponLevel);
+		    playerObject.put("primary-weapon", primaryWeaponObject);
 		
-		JSONObject secondaryWeaponObject = new JSONObject();
-		secondaryWeaponObject.put("name", ai.secondaryWeapon);
-		secondaryWeaponObject.put("level", ai.secondaryWeaponLevel);
-		playerObject.put("secondary-weapon", secondaryWeaponObject);
-		
+		    JSONObject secondaryWeaponObject = new JSONObject();
+		    secondaryWeaponObject.put("name", ai.secondaryWeapon);
+		    secondaryWeaponObject.put("level", ai.secondaryWeaponLevel);
+		    playerObject.put("secondary-weapon", secondaryWeaponObject);
+		}
+
 		players.put(playerObject);
 	    }
 	    root.put("players", players);	    
