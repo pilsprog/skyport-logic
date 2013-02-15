@@ -1,4 +1,5 @@
-import sys, random, threadng, socket
+import sys, random, threading, socket
+from math import *
 sys.path.append("../api/python") #We need to add an extra folder
 #for python to search in if we want to use the API
 import skyport
@@ -14,11 +15,15 @@ class SkyNection():
 
 	@author Emil Hatlelid
 """
-	AI = None
 	def __init__(self, INPUT_AI):
-		print("SkN> Initializing SkyNection...")
-		print("SkN> Loading AI...")
+	"""
+		@param INPUT_AI:
+		@rtype: OBJECT
+	"""
+		print("SkN> Initializing SkyNection...\nSkN> Loading AI...")
 		self.AI = INPUT_AI
+		print("SkN> Initializing socket")
+		self.s = socket.socket()
 		print("SkN> Binding receiver and transmitter functions...")
 		self.receiver = skyport.SkyportReceiver()
 		self.sender = skyport.SkyportTransmitter(sendToSocket)
@@ -29,20 +34,36 @@ class SkyNection():
 		receiver.cb_action = AI.parseAction
 		receiver.cb_endturn = AI.parseEndturn
 	def begin(self):
-		print("Starting SkyNection...")
+		print("SkN> Starting SkyNection...")
+		self.s.connect(raw_input("SkN> Port: "), raw_input("SkN> Host: "))
 		sender.sendHandshake(AI.NAME)
-		running = true
-		while(running):
-			receiver.parseLine()
+		self.running = true
+		self.commands=()
+		lock = threading.Lock()
+		threading.thread.start_new_thread(readFromSocket, lock)
+		while self.running:
+			lock.acquire()
+			try:
+				if(self.commands.len()>0) receiver.parseLine(self.commands.pop(0))
+			finally:
+				lock.release()
+		print("SkN> Closing connection")
+		self.s.close()
+	def readFromSocket(lock):
+		while self.running:
+			lock.acquire()
+			try:
+				self.commands.append(self.s.recv())
+			finally:
+				lock.release()
 	def sendToSocket(data):
 		print(data)
 	def handshakeSuccessful():
 		print("SkN> Handshake successful!")
 	def gotError(e):
 		print("SkN> SERVERERROR:\n", e)
-	#receiver.parseLine("{\"message\":\"connect\", \"status\":true}")
 
-class WONDERFUL_AI(threading.Thread):
+class WONDERFUL_AI():
 """
 	WONDERFUL_AI
 	This is a reactive test-AI for Skyport, written in
@@ -56,42 +77,53 @@ class WONDERFUL_AI(threading.Thread):
 	skyportRelay, NAME, map, players = None
 	location = (0,0)
 	catchphrases = ("Its time to kick ass and chew bubblegum... and Im all outta gum", "Better not take another arrow to my knee...", "Wonderful.")
-	intruders = ("STOP, CRIMINAL SCUM!", "OH SNAP", "Freeze, sucka", "You just made a terrible decision...","Holy mother of blueberries", "Well, excuuuuse you!", "girl puhleeeeaseh", "Imma get you, teletubby!", "I pity the fool who stepped in my turf", "Worst ninja ever.", "Jinkies!", "FUS-RO-DAH!"i, "EXTERMINATE")
+	intruders = ("STOP, CRIMINAL SCUM!", "OH SNAP", "Freeze, sucka", "You just made a terrible decision...","Holy mother of blueberries", "Well, excuuuuse you!", "gurl puhleeeease", "Imma get you, teletubby!", "I pity the fool who steppes in my turf", "Worst ninja ever.", "Jinkies!", "FUS-RO-DAH!"i, "EXTERMINATE")
 	def __init__(self):
 		print("AI> Initializing WONDERFUL_AI...")
 		self.NAME = "WONDERFUL_AI"
 		skyportRelay = SkyNection(self)
-		print("AI> %s, you are, and so am I... lets GO!" % (raw_input("Are you ready to begin?")))
-		print("AI> ", random.choice(catchphrases))
+		print("AI> %, you are, and so am I... lets GO!\nAI> %s" % (raw_input("Are you ready to begin?"), random.choice(catchphrases)))
 		skyportRelay.begin()
-	def doSomething():
-		enemy=getEnemy()
-		
-	def getEnemy():
+	def doSomething(i):
+		i--
+		enemy=getClosestEnemy().json_packet["position"]
+		if(inRange("mortar", 1, enemy)):
+			print("AI> ", random.choice(intruders))
+			skyportRelay.sender.attackMortar(enemy)
+		else if(inRange("laser", 1, enemy) && getDirection(enemy)!="NON_LINEAR"):
+			print("AI> ", random.choice(intruders))
+			skyportRelay.sender.attackLaser(getDirection(enemy))
+		else if i>=0:
+			rndMove()
+			doSomething(i)
+	def inRange(weapon, level, target):
+		rangeDict = {"mortar":(2,3,4), "laser":(5,6,7), "droid":(3,4,5)}
+		return getDistance(target, self) <= rangeDict[weapon][level]
+	def getClosestEnemy():
 		closest = player[0]
+		distance = getDistance(closest.json_packet["position"], self.location)
 		for each player in self.players:
-			#if(player.json_packet["position"]
+			if(getDistance(player.json_packet["position"], self.location)< distance:
+				closest = player
+		return closest
+	def getDistance(pos1, pos2):
+		return sqrt((pos2[0] - pos1[0])**2 + (pos2[1] - pos1[1])**2)
 	def parseGameState(turn, map, players):
 		self.map = map
 		self.players = players
 		if players.pop(0).json_packet["name"]==self.NAME:
-			doSomething()
+			doSomething(3)
 	def parseGameStart(turn, map, players):
 		self.map = map
 		self.players = players
-		skyportRelay.sender.sendLoadout(chooseLoadout())
+		skyportRelay.sender.sendLoadout("laser", "mortar")
 	def parseAction(actionType, who, restData):
 		pass
 	def parseEndturn():
 		pass
 	def rndMove():
-		direction = random.choice(["up","down","left-down","left-up","right-down","right-up"])
-		print ("AI> Moving in %s direction"%(direction)
-		skyportRelay.sender.sendMove(direction)
+		skyportRelay.sender.sendMove(random.choice(["up","down","left-down","left-up","right-down","right-up"]))
 	def getDirection(j,k):
-		"""
-		Doesn't work too good with non-linear coordinates.
-		"""
 		if(j==self.location[0]):
 			if(k>self.location[1]) return "right-down"
 			else return "left-up"
@@ -106,6 +138,3 @@ class WONDERFUL_AI(threading.Thread):
 		return "V"==self.map.json_packet["data"][j][k]
 	def isRock(j,k):
 		return "O"==self.map.json_packet["data"][j][k]
-	def chooseLoadout():
-		weapons = ("mortar", "laser", "droid")
-		return weapons.pop(randrange(len(weapons))), weapons.pop(randrange(len(weapons)))
