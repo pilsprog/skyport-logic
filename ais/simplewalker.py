@@ -1,3 +1,4 @@
+#!/usr/bin/env python2
 import sys
 import random
 import socket
@@ -26,7 +27,7 @@ def read_packet():
 def do_random_move():
     direction = random.choice(["up", "down", "left-down", "left-up", "right-down", "right-up"])
     print("moving %s-wards." % direction)
-    transmitter.sendMove(direction)
+    transmitter.send_move(direction)
 
 def send_packet(line):
     send_line(json.dumps(line))
@@ -46,7 +47,7 @@ def got_gamestate(turn, map_obj, player_list):
             do_random_move()
 
 def got_gamestart(turn, map_obj, player_list):
-    transmitter.sendLoadout("droid", "mortar")
+    transmitter.send_loadout("droid", "mortar")
 
 def got_action(action_type, who, rest_data):
     print("got action!")
@@ -58,18 +59,18 @@ def got_endturn():
 receiver = skyport.SkyportReceiver()
 transmitter = skyport.SkyportTransmitter(send_line)
 
-receiver.cb_handshake_successful = got_handshake
-receiver.cb_error = got_error
-receiver.cb_gamestate = got_gamestate
-receiver.cb_gamestart = got_gamestart
-receiver.cb_action = got_action
-receiver.cb_endturn = got_endturn
+receiver.handler_handshake_successful = got_handshake
+receiver.handler_error = got_error
+receiver.handler_gamestate = got_gamestate
+receiver.handler_gamestart = got_gamestart
+receiver.handler_action = got_action
+receiver.handler_endturn = got_endturn
 
-transmitter.sendHandshake(sys.argv[1])
+transmitter.send_handshake(sys.argv[1])
 
 while True:
     line = read_packet()
     if line != None:
         print("got line: '%s'" % line)
-        receiver.parseLine(line)
+        receiver.parse_line(line)
 

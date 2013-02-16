@@ -40,29 +40,29 @@ class SkyportConnection(LineReceiver): # twisted-specific things
         self.receiver = skyport.SkyportReceiver()
         # Set up callbacks for the receiver
         # self.gotHandshake is called when the handshake is completed successfully
-        self.receiver.cb_handshake_successful = self.gotHandshake
+        self.receiver.handler_handshake_successful = self.gotHandshake
         # self.gotError is called whenever the server replies with an error packet
-        self.receiver.cb_error = self.gotError
+        self.receiver.handler_error = self.gotError
         # self.gotGamestate is called whenever the server sends the gamestate (not gamestart!)
-        self.receiver.cb_gamestate = self.gotGamestate
+        self.receiver.handler_gamestate = self.gotGamestate
         # self.gameStart is called when the server sends the initial gamestate (gamestart)
-        self.receiver.cb_gamestart = self.gotGamestart
+        self.receiver.handler_gamestart = self.gotGamestart
         # self.gotAction is called when the server re-broadcasts an action someone has taken
-        self.receiver.cb_action = self.gotAction
+        self.receiver.handler_action = self.gotAction
         # self.gotEndturn is called when the server announces a turn has ended (3 seconds)
-        self.receiver.cb_endturn = self.gotEndturn
+        self.receiver.handler_endturn = self.gotEndturn
 
         # instantiate the transmitter. It will use the self.sendLine() function to send things.
         self.transmitter = skyport.SkyportTransmitter(self.sendLine)
         # the transmitter only needs to know what function to call
         # to actually send the data to the socket (self.sendLine)
         # send the initial handshake
-        self.transmitter.sendHandshake(NAME)
+        self.transmitter.send_handshake(NAME)
         
     def lineReceived(self, line):
         # simply send the received line to the SkyportReceiver.
         # it will then accordingly call the appropriate callbacks registered.
-        self.receiver.parseLine(line)
+        self.receiver.parse_line(line)
         
     def gotHandshake(self):
         print("AI got handshake!")
@@ -80,10 +80,10 @@ class SkyportConnection(LineReceiver): # twisted-specific things
     def doRandomMovement(self):
         direction = random.choice(["up", "down", "left-down", "left-up", "right-down", "right-up"])
         print("moving %s-wards." % direction)
-        self.transmitter.sendMove(direction);
+        self.transmitter.send_move(direction);
         
     def gotGamestart(self, turnNumber, mapObject, playerList):
-        self.transmitter.sendLoadout("droid", "mortar")
+        self.transmitter.send_loadout("droid", "mortar")
         print("AI got gamestart!")
         
     def gotAction(self, actionType, who, restData):
