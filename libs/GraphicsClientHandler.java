@@ -21,7 +21,7 @@ public class GraphicsClientHandler implements Runnable {
 	    catch (IOException e){
 		System.out.println("[GRAPHICS] Graphics engine disconnected!");
 		connection.isAlive = false;
-		return;
+		System.exit(1);
 	    }
 	    catch (ProtocolException e){
 		try {

@@ -20,4 +20,8 @@ jar:
 	cp skyport-server.jar ..
 	cd ..
 
+clean:
+	rm -rf bin/*
+	rm skyport-server.jar
+
 .PHONY: json

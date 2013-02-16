@@ -161,10 +161,10 @@ public class GameThread {
     }
     public void letClientsThink(){
 	try {
-	    Thread.sleep(roundTimeSeconds*50);
+	    Thread.sleep(roundTimeSeconds*1000);
 	}
 	catch (InterruptedException e){
-	    System.out.println("INTTERUPTED!");
+	    System.out.println("INTERUPTED!");
 	}
     }
     public AIConnection sendGamestate(int roundNumber){
