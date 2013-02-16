@@ -1,6 +1,15 @@
 SKYPORT REV 1 GAME RULES
 ========================
 
+NOTE
+----
+
+If you have obtained this file through downloading the SDK, make sure you have
+the latest versions. New versions of the SDK may be continuously released up
+until the competition. You can read a brand-new, in-development version of this
+document online at
+https://github.com/Amadiro/Skyport-logic/blob/master/docs/en/GAME.md
+
 SYNOPSIS
 --------
 
