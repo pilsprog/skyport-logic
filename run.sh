@@ -1,3 +1,3 @@
 #!/bin/bash
 # args are: port, players, game time
-java -cp "bin:bin/json" Main 54321 3 48000 assets/3-players-smallish.skyportmap
+java -cp "bin" Main 54321 3 48000 assets/3-players-smallish.skyportmap

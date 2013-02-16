@@ -14,12 +14,6 @@ lib:
 main:
 	$(JC) $(JAVAFLAGS) Main.java
 
-jar:
-	cd bin
-	jar cfe skyport-server.jar Main *
-	cp skyport-server.jar ..
-	cd ..
-
 clean:
 	rm -rf bin/*
 	rm skyport-server.jar
