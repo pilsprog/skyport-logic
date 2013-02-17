@@ -2,6 +2,7 @@
 import sys
 import random
 import socket
+from socket import timeout
 import json
 sys.path.append("../api/python/")
 import skyport
@@ -10,18 +11,25 @@ assert(len(sys.argv) == 2)
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.connect(('127.0.0.1', 54321))
+#sock.setblocking(0)
+#sockfile = sock.makefile()
 
 inputbuf = ""
 
 def read_packet():
     global inputbuf
-    inputbuf += sock.recv(1024*4)
+    try:
+        inputbuf += sock.recv(1)
+    except socket.timeout as e:
+        return None
+    except socket.error as e:
+        return None
     try:
         characters_to_read = inputbuf.index("\n")
         line = inputbuf[0:characters_to_read] # removing the newline
         inputbuf = inputbuf[characters_to_read+1:len(inputbuf)]
         return line
-    except ValueError as e:
+    except ValueError as f:
         return None
 
 def do_random_move():
@@ -29,11 +37,10 @@ def do_random_move():
     print("moving %s-wards." % direction)
     transmitter.send_move(direction)
 
-def send_packet(line):
-    send_line(json.dumps(line))
-
 def send_line(line):
-    sock.send(line + "\n")
+    print("sending: '%s'" % line)
+    if sock.sendall(line + "\n") != None:
+        print("Error sending data!")
 
 def got_handshake():
     print("got handshake!")
