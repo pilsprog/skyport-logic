@@ -106,7 +106,7 @@ public class GraphicsConnection {
 	    for(AIConnection ai: playerlist){
 		JSONObject playerObject = new JSONObject();
 		playerObject.put("name", ai.username);
-		if(turnNumber != 100){
+		if(turnNumber != 0){
 		    playerObject.put("health", 100);
 		    playerObject.put("score", 0);
 		    playerObject.put("position", ai.position.coords.getCompactString());
