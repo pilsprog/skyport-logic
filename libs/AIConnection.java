@@ -12,8 +12,8 @@ public class AIConnection {
     public AtomicBoolean gotLoadout = new AtomicBoolean(false);
     public String primaryWeapon = "";
     public String secondaryWeapon = "";
-    public int primaryWeaponLevel = 0;
-    public int secondaryWeaponLevel = 0;
+    public int primaryWeaponLevel = 1;
+    public int secondaryWeaponLevel = 1;
     public String username;
     public Tile position = null;
     public boolean isAlive = true;
