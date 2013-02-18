@@ -1,16 +1,16 @@
 #AI KONKURRANSE (tidl. "Hardcore Programming")
-Det er år 2400. Konføderasjonen ligger i ruiner. Alt som
-gjenstår av det en gang store imperiet er spredte ruiner av
+Det er Ã¥r 2400. KonfÃ¸derasjonen ligger i ruiner. Alt som
+gjenstÃ¥r av det en gang store imperiet er spredte ruiner av
 de intergalaktiske havnene; imperiets gamle "Skyports".
 
-Meteor regn herjer skyportene fra den asurblåe stratosfæren.
-Samtidig gjør stammene seg klare til et nytt slag på den
+Meteor regn herjer skyportene fra den asurblÃ¥e stratosfÃ¦ren.
+Samtidig gjÃ¸r stammene seg klare til et nytt slag pÃ¥ den
 svevende slagmarken.
 
-I denne konkurransen vil det være ditt ansvar å skape den
-perfekte kamp roboten til å utslette dine fiender i et hav 
-av laserstråler og eksplosjoner. Programmer din robot til å 
-oppgradere våpen, skyte fiender og dominere skyporten.
+Du har blitt valgt til ansvaret om Ã¥ skape den perfekte-kamp
+roboten til Ã¥ utslette dine fiender i et hav av laserstrÃ¥ler
+og eksplosjoner. Programmer din robot til Ã¥ oppgradere vÃ¥pen,
+skyte fiender og dominere skyporten.
 
 #SKYPORT REV 1 SPILL REGLER
 ========================
@@ -48,78 +48,78 @@ rutenett:
               .         \_____/        .
              .                          .
 	      
-Rutenes posisjon er alltid skrevet [J,K]; J-koordinatet kommer alltid først og
-K-koordinatet sist. For eksempel; en AI vil kanskje sende en melding om å "flytte
-til posisjonen 1,0" og så "angrip med mortar (granatkaster) på posisjonen
+Rutenes posisjon er alltid skrevet [J,K]; J-koordinatet kommer alltid fï¿½rst og
+K-koordinatet sist. For eksempel; en AI vil kanskje sende en melding om ï¿½ "flytte
+til posisjonen 1,0" og sï¿½ "angrip med mortar (granatkaster) pï¿½ posisjonen
 2,2". Serveren vil da flytte AI'en til posisjon [2,0] og angripe posisjonen
 [2,2].  
-Du kan bevege deg mellom ruter over grensene mellom rutene, og opp til 3 ruter på
+Du kan bevege deg mellom ruter over grensene mellom rutene, og opp til 3 ruter pï¿½
 en tur.
-Det er syv forskjellige rute typer, dette vil bli forklart nærmere i neste avsnitt.
+Det er syv forskjellige rute typer, dette vil bli forklart nï¿½rmere i neste avsnitt.
 
 ##RUTER
 
 ###FARBARE RUTER (ruter du kan flytte til)
 * **GRESS**	- Gressrute. Ingen spesiell effekt. Kan komme i flere farger og
 former, men roboter er ikke opptatt av estetikk.  
-* **EXPLOSIUM**	- Hvis du står på denne ruten kan du bruke en eller flere 
-handlinger på å utvinne explosium ressurs, 1 ressurs per handling. Hver explosium
+* **EXPLOSIUM**	- Hvis du stï¿½r pï¿½ denne ruten kan du bruke en eller flere 
+handlinger pï¿½ ï¿½ utvinne explosium ressurs, 1 ressurs per handling. Hver explosium
  rute har maksimum 2 tilgjengelige ressurser. Etter at en rute er oppbrukt vil
  den forvandles til en gress rute.  vis du er it is depleted, it turns into
  grass.
-* **RUBIDIUM**	- Hvis du står på denne ruten kan du bruke en eller flere 
-handlinger på å utvinne rubidium ressurs, 1 ressurs per handling. Hver rubidium 
+* **RUBIDIUM**	- Hvis du stï¿½r pï¿½ denne ruten kan du bruke en eller flere 
+handlinger pï¿½ ï¿½ utvinne rubidium ressurs, 1 ressurs per handling. Hver rubidium 
 rute har maksimum 2 tilgjengelige ressurser. Etter at en rute er oppbrukt vil den
 forvandles til en gress rute.
-* **SKRAP**	- Hvis du står på denne ruten kan du bruke en eller flere 
-handlinger på å utvinne metall, 1 ressurs per handling. Hver skrap rute har
+* **SKRAP**	- Hvis du stï¿½r pï¿½ denne ruten kan du bruke en eller flere 
+handlinger pï¿½ ï¿½ utvinne metall, 1 ressurs per handling. Hver skrap rute har
 maksimum 2 tilgjengelige ressurser. Etter at en rute er oppbrukt vil den 
 forvandles til en gress rute.
 
 ###UFARBARE RUTER
 * **VOID**(TOM)	- Tomme ruter.
-* **SPAWN**(START)	- Beskyttet startområde. Det vil ikke være mulig å gå 
-tilbake til disse rutene etter at du har gått av dem.
+* **SPAWN**(START)	- Beskyttet startomrï¿½de. Det vil ikke vï¿½re mulig ï¿½ gï¿½ 
+tilbake til disse rutene etter at du har gï¿½tt av dem.
 * **ROCK**(STEIN)	- En stein som stenger for veien.
 
 ##TUR
-Hver runde får hver AI tre handlinger. En AI kan bruke handlingene til å flytte
-seg (1 rute per handling), skyte ett våpen, vente eller utvinne ressurser. Å 
-skyte et våpen vil avslutte runden og bruke de resterende handlingene på skuddet.
-De ekstra handlingene vil øke skaden som skuddet gjør. Venting vil gi en liten 
-poeng- og helse- straff, dette betyr også at inaktive AI'er vil bli kastet ut 
+Hver runde fï¿½r hver AI tre handlinger. En AI kan bruke handlingene til ï¿½ flytte
+seg (1 rute per handling), skyte ett vï¿½pen, vente eller utvinne ressurser. ï¿½ 
+skyte et vï¿½pen vil avslutte runden og bruke de resterende handlingene pï¿½ skuddet.
+De ekstra handlingene vil ï¿½ke skaden som skuddet gjï¿½r. Venting vil gi en liten 
+poeng- og helse- straff, dette betyr ogsï¿½ at inaktive AI'er vil bli kastet ut 
 etter en stund.
 Etter at AI'ens runde er over; vil en spillstatus bli sendt til alle AI'er, og 
-det vil være neste AI sin tur.
+det vil vï¿½re neste AI sin tur.
 		
-##VÅPEN
-Det er tre forskjellige våpen i spillet; laser, granatkaster og kamp-droider. 
-Hvert våpen kan bli oppgradert tre ganger for å øke rekkevidden og skaden.
+##Vï¿½PEN
+Det er tre forskjellige vï¿½pen i spillet; laser, granatkaster og kamp-droider. 
+Hvert vï¿½pen kan bli oppgradert tre ganger for ï¿½ ï¿½ke rekkevidden og skaden.
 
 ###GRANATKASTER (Mortar)
-Granatkasteren er det enkleste våpenet å bruke; den har en radius/rekkevidde, og
-kan treffe alle ruter innen denne rekkevidden. Du kan også tenke deg at skuddet
-kan "gå" et antall steg over alle typer ruter, i alle retninger. Granatkasteren
-blir ikke påvirket av steiner eller tomme ruter, men det har heller ingen effekt å
-skyte på dem. Skuddet (granaten) fra granatkasteren har en liten, eksplosiv ladning
-og vil eksplodere ved sammenstøt, derfor har granatkasteren også en liten AoE 
-(områdeskade) en rute rundt målet (1 rute).
-* Rekkevidde ved nivå 1: 2 ruter
-* Rekkevidde ved nivå 2: 3 ruter
-* Rekkevidde ved nivå 3: 4 ruter
+Granatkasteren er det enkleste vï¿½penet ï¿½ bruke; den har en radius/rekkevidde, og
+kan treffe alle ruter innen denne rekkevidden. Du kan ogsï¿½ tenke deg at skuddet
+kan "gï¿½" et antall steg over alle typer ruter, i alle retninger. Granatkasteren
+blir ikke pï¿½virket av steiner eller tomme ruter, men det har heller ingen effekt ï¿½
+skyte pï¿½ dem. Skuddet (granaten) fra granatkasteren har en liten, eksplosiv ladning
+og vil eksplodere ved sammenstï¿½t, derfor har granatkasteren ogsï¿½ en liten AoE 
+(omrï¿½deskade) en rute rundt mï¿½let (1 rute).
+* Rekkevidde ved nivï¿½ 1: 2 ruter
+* Rekkevidde ved nivï¿½ 2: 3 ruter
+* Rekkevidde ved nivï¿½ 3: 4 ruter
 
 Se bildet under for illustrasjon:
 
 ![range of the mortar](../range-mortar.png)
 
 ###LASER
-Laseren er våpenet med den lengste rekkevidden, men den kan bare skyte i rette
-linjer, våpenet pekes altså i en retning og fyres av. Dette betyr også at det er
-flere områder som man ikke kan treffe uten å bevege seg til en annen posisjon.
+Laseren er vï¿½penet med den lengste rekkevidden, men den kan bare skyte i rette
+linjer, vï¿½penet pekes altsï¿½ i en retning og fyres av. Dette betyr ogsï¿½ at det er
+flere omrï¿½der som man ikke kan treffe uten ï¿½ bevege seg til en annen posisjon.
 Laseren kan skyte over tomme ruter, men ikke gjennom steiner.
-* Rekkevidde ved nivå 1: 5 ruter
-* Rekkevidde ved nivå 2: 6 ruter
-* Rekkevidde ved nivå 3: 7 ruter
+* Rekkevidde ved nivï¿½ 1: 5 ruter
+* Rekkevidde ved nivï¿½ 2: 6 ruter
+* Rekkevidde ved nivï¿½ 3: 7 ruter
 
 Se bildet under for illustrasjon:
 
@@ -128,14 +128,14 @@ Se bildet under for illustrasjon:
 ###KAMP-DROIDER
 Kamp-droidene krever at AI'en sender en serie med retninger som viser hvilke steg 
 de skal ta. En kamp-droide har et begrenset antall steg den kan ta, etter den har 
-gått det antallet steg vil den eksplodere, uansett om den har fullført alle stegene
-eller ikke. Droider kan ikke gå over tomme ruter eller gjennom stein, derfor må de 
-navigeres rundt dem. Droider som møter tomme ruter eller steiner vil eksplodere.
-Droider har en stor ksplosiv ladning og vil forårsake stor AoE (områdeskade) skade
-rundt målet (1 rute).
-* Rekkevidde ved nivå: 3 steg
-* Rekkevidde ved nivå: 4 steg
-* Rekkevidde ved nivå: 5 steg
+gï¿½tt det antallet steg vil den eksplodere, uansett om den har fullfï¿½rt alle stegene
+eller ikke. Droider kan ikke gï¿½ over tomme ruter eller gjennom stein, derfor mï¿½ de 
+navigeres rundt dem. Droider som mï¿½ter tomme ruter eller steiner vil eksplodere.
+Droider har en stor ksplosiv ladning og vil forï¿½rsake stor AoE (omrï¿½deskade) skade
+rundt mï¿½let (1 rute).
+* Rekkevidde ved nivï¿½: 3 steg
+* Rekkevidde ved nivï¿½: 4 steg
+* Rekkevidde ved nivï¿½: 5 steg
 
 Se bildet under for illustrasjon:
 
@@ -144,73 +144,73 @@ Se bildet under for illustrasjon:
    
 ##RESURSER
 Det er tre forskjellige typer ressurser i Skyport: rubidium, explosium og 
-skrap-metall. Rubidium blir brukt til å oppgradere lasere, explosium; granatkastere
+skrap-metall. Rubidium blir brukt til ï¿½ oppgradere lasere, explosium; granatkastere
  og skrap-metall; kamp-droider.
-Du kan utvinne ressurser ved å stå på en russurs-rute og bruke en handling på å
-utvinne ressursen. Hvis en AI har samlet nok ressurser av en type vil det være
-mulig å oppgradere det tilsvarende våpenet til det neste nivået. Hvert våpen kan 
-ikke bli oppgradert forbi nivå 3.
+Du kan utvinne ressurser ved ï¿½ stï¿½ pï¿½ en russurs-rute og bruke en handling pï¿½ ï¿½
+utvinne ressursen. Hvis en AI har samlet nok ressurser av en type vil det vï¿½re
+mulig ï¿½ oppgradere det tilsvarende vï¿½penet til det neste nivï¿½et. Hvert vï¿½pen kan 
+ikke bli oppgradert forbi nivï¿½ 3.
 
 
-##VÅPENVALG
-Ved spillstart vil AI'ene velge hvilke to våpen de skal bruke for resten av
-spillet. Alle kombinasjoner av de tre våpene er tilgjengelige. Noen kart kan 
-inneholde en ujevnt distribuert mengde av ressurser, som kan påvirke hvor nyttig
-hvert våpen er. Det er derfor lurt å gå nøye gjennom kartet før våpenvalget sendes
+##Vï¿½PENVALG
+Ved spillstart vil AI'ene velge hvilke to vï¿½pen de skal bruke for resten av
+spillet. Alle kombinasjoner av de tre vï¿½pene er tilgjengelige. Noen kart kan 
+inneholde en ujevnt distribuert mengde av ressurser, som kan pï¿½virke hvor nyttig
+hvert vï¿½pen er. Det er derfor lurt ï¿½ gï¿½ nï¿½ye gjennom kartet fï¿½r vï¿½penvalget sendes
 
 
 ##SPILLSTART
-Ved spillstart vil hver AI bli satt på hver sin **"STARTPOSISJON"-rute** (SPAWN) 
-eller "start-ruter". Det vil ikke være mulig å gå tilbake på start-ruten etter at
+Ved spillstart vil hver AI bli satt pï¿½ hver sin **"STARTPOSISJON"-rute** (SPAWN) 
+eller "start-ruter". Det vil ikke vï¿½re mulig ï¿½ gï¿½ tilbake pï¿½ start-ruten etter at
 man har flyttet seg av den. Derfor er det bare serveren som kan flytte AI'er til 
-start-rutene. Et angrep mot en AI på en startrute vil *returnere skaden* til 
-angriperen i stedet for målet. En AI som står på en startrute kan ikke utføre
-andre handlinger enn å bevege seg av ruten. Å vente på en startrute vil også føre
+start-rutene. Et angrep mot en AI pï¿½ en startrute vil *returnere skaden* til 
+angriperen i stedet for mï¿½let. En AI som stï¿½r pï¿½ en startrute kan ikke utfï¿½re
+andre handlinger enn ï¿½ bevege seg av ruten. ï¿½ vente pï¿½ en startrute vil ogsï¿½ fï¿½re
 til poeng- og helse-straffer.
 
 ##HANDLINGER
-Hver runde får hver AI muligheten til å utføre tre handlinger. En angreps-handling
-vil avslutte turen og bruke de resterende handlingene til å styrke angrepet.
+Hver runde fï¿½r hver AI muligheten til ï¿½ utfï¿½re tre handlinger. En angreps-handling
+vil avslutte turen og bruke de resterende handlingene til ï¿½ styrke angrepet.
 
 ##BEVEGELSE
-En handling kan bli brukt til å flytte AI'en fra en rute til en av de tilstøtende 
-rutene; en AI kan altså bare bevege seg en rute om gangen og bare i seks retninger.
+En handling kan bli brukt til ï¿½ flytte AI'en fra en rute til en av de tilstï¿½tende 
+rutene; en AI kan altsï¿½ bare bevege seg en rute om gangen og bare i seks retninger.
 AI'er kan heller ikke bevege seg til stein eller tomme ruter.
 Alle ugyldige bevegelser vil bli forkastet av serveren.
 
 ##POENG
-Å **skade en motstander** gir deg poeng tilsvarende skaden du påførte.
+ï¿½ **skade en motstander** gir deg poeng tilsvarende skaden du pï¿½fï¿½rte.
 Hvis du **dreper en motstander** gir det en ekstra 20-poengs bonus.
 
-Hvis du **dør vil du miste 80 poeng**.
-Du kan også miste poeng på andre måter, som for eksempel å bruke handlinger på å
-vente eller å stå på en startrute etter den første runden.
+Hvis du **dï¿½r vil du miste 80 poeng**.
+Du kan ogsï¿½ miste poeng pï¿½ andre mï¿½ter, som for eksempel ï¿½ bruke handlinger pï¿½ ï¿½
+vente eller ï¿½ stï¿½ pï¿½ en startrute etter den fï¿½rste runden.
 
-Ved spillets slutt vil den med den høyeste poengsummen vinne.
+Ved spillets slutt vil den med den hï¿½yeste poengsummen vinne.
 
-##ØDELEGGELSE
+##ï¿½DELEGGELSE
 Hver spiller starter med en fast mengde helsepoeng. Helse vil ikke regenerere 
-(fylle seg opp igjen). Hvis en AI blir ødelagt (går tom for helsepoeng); vil AI'en 
-starte fra startruten igjen, uten å miste eventuelle oppgraderinger. AI'en må stå
-over en hel runde etter å ha blitt ødelagt.
+(fylle seg opp igjen). Hvis en AI blir ï¿½delagt (gï¿½r tom for helsepoeng); vil AI'en 
+starte fra startruten igjen, uten ï¿½ miste eventuelle oppgraderinger. AI'en mï¿½ stï¿½
+over en hel runde etter ï¿½ ha blitt ï¿½delagt.
 
 
 ARITHMETIC & STATS
 ##ARITMETIKK OG STATISTIKK
-* Oppgradering av et våpen fra nivå 1 til 2 krever: 4 ressurser
-* Oppgradering av et våpen fra nivå 2 til 3 krever: 5 ressurser
+* Oppgradering av et vï¿½pen fra nivï¿½ 1 til 2 krever: 4 ressurser
+* Oppgradering av et vï¿½pen fra nivï¿½ 2 til 3 krever: 5 ressurser
 * Helsepoeng (hp) = -skade (-dmg)
 * Startsum for helsepoeng: 100hp
-* Laser skader, ved nivå 1: 16 dmg
-* Laser skader, ved nivå 2: 18 dmg
-* Laser skader, ved nivå 3: 22 dmg
-* Granatkaster skader, ved nivå 1: 20 dmg
-* Granatkaster skader, ved nivå 2: 20 dmg
-* Granatkaster skader, ved nivå 3: 25 dmg
+* Laser skader, ved nivï¿½ 1: 16 dmg
+* Laser skader, ved nivï¿½ 2: 18 dmg
+* Laser skader, ved nivï¿½ 3: 22 dmg
+* Granatkaster skader, ved nivï¿½ 1: 20 dmg
+* Granatkaster skader, ved nivï¿½ 2: 20 dmg
+* Granatkaster skader, ved nivï¿½ 3: 25 dmg
 * Granatkasters AoE skader: 2 dmg
-* Kamp-droider skader, ved nivå 1: 22 dmg
-* Kamp-droider skader, ved nivå 2: 24 dmg
-* Kamp-droider skader, ved nivå 3: 26 dmg
+* Kamp-droider skader, ved nivï¿½ 1: 22 dmg
+* Kamp-droider skader, ved nivï¿½ 2: 24 dmg
+* Kamp-droider skader, ved nivï¿½ 3: 26 dmg
 * Kamp-droiders AoE skader: 10 dmg
 * Utregning av skade:
 	player_damage = weapon_damage + AoE_damage + unused_turns * (0.2 * weapon_damage) + unused_turns * (0.2 * AoE_damage)
