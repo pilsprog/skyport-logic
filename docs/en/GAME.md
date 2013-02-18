@@ -1,19 +1,3 @@
-#AI Competition (formerly "Hardcore Programming")
-2400 AD. As the confederate empire is crumbling, scavengers,
-delinquents and other criminal scum is fighting over the
-sparsely remaining resources scattered amongst the
-free-drifting skyports.
-
-Meteor showers are blazing from the azure stratosphere, as
-the airship fleets of the largest tribes converge to the
-final battleground.
-
-In this competition, it is your task to create the perfect
-battle droid to annihilate your enemies in a feriocious
-furnace of lasers, explosions and automated fighting drones.
-Gather resources to upgrade your war-machine, and dominate
-the battlefield.
-
 SKYPORT REV 1 GAME RULES
 ========================
 

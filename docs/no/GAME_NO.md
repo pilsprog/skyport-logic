@@ -1,3 +1,4 @@
+
 #AI KONKURRANSE (tidl. "Hardcore Programming")
 Det er år 2400. Konføderasjonen ligger i ruiner. Alt som
 gjenstår av det en gang store imperiet er spredte ruiner av
@@ -11,6 +12,8 @@ Du har blitt valgt til ansvaret om å skape den perfekte-kamp
 roboten til å utslette dine fiender i et hav av laserstråler
 og eksplosjoner. Programmer din robot til å oppgradere våpen,
 skyte fiender og dominere skyporten.
+
+=======
 
 #SKYPORT REV 1 SPILL REGLER
 ========================
