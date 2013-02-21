@@ -19,10 +19,16 @@ inputbuf = ""
 def read_packet():
     global inputbuf
     try:
-        inputbuf += sock.recv(1)
+        ret = sock.recv(1)
+        inputbuf += ret
+        if not ret:
+            print("Disconnected!")
+            sys.exit(1)
     except socket.timeout as e:
+        print("TO!")
         return None
     except socket.error as e:
+        print("foo")
         return None
     try:
         characters_to_read = inputbuf.index("\n")
@@ -78,6 +84,6 @@ transmitter.send_handshake(sys.argv[1])
 while True:
     line = read_packet()
     if line != None:
-        print("got line: '%s'" % line)
+        print("got line: '%r'" % line)
         receiver.parse_line(line)
 
