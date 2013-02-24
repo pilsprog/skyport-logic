@@ -67,9 +67,9 @@ def got_gamestate(turn, map_obj, player_list):
         shoot_laser_in_random_direction()
 
 def got_gamestart(turn, map_obj, player_list):
-    weapons = ["laser", "mortar", "droid"]
-    primary_weapon = random.choice(weapons)
-    weapons.remove(primary_weapon)
+    weapons = ["mortar", "droid"]
+    primary_weapon = "laser"
+    #weapons.remove(primary_weapon)
     secondary_weapon = random.choice(weapons)
     print("chose loadout: %s and %s" % (primary_weapon, secondary_weapon))
     transmitter.send_loadout(primary_weapon, secondary_weapon)
