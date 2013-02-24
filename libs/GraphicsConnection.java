@@ -97,7 +97,6 @@ public class GraphicsConnection {
     public synchronized void sendGamestate(int turnNumber, int dimension, String mapData[][],
 			      AIConnection playerlist[]){
 	// TODO: correct turn number
-	System.out.println("Sending gamestate to graphics engine");
 	JSONObject root = new JSONObject();
 	try {
 	    root.put("message", "gamestate");

@@ -5,4 +5,10 @@ shooting:
 -moving on and off of spawn tiles?
 -damaging on spawn tiles?
 -should shots move through spawn tiles?
-	-I think they should, as long as all damage inflicted on any unsuspecting AI standing on it is reflected -Emil
+    -I think they should, as long as all damage inflicted on any unsuspecting AI standing on it is reflected -Emil
+    -I think instead of making spawn tiles impervious to damage, we should just give each user one round
+     of immortality...
+- death & damage notifications into protocol?
+
+- check tiles register & unregister players correctly for all situations as they move onto/off the tile.
+  f.ex. respawning

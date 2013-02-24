@@ -164,4 +164,19 @@ public class World {
     public Tile getRandomSpawnpoint(){
 	return freeSpawnpoints.poll();
     }
+    public int verifyNumberOfPlayersOnBoard(){
+	int players = 0;
+	Tile currentJTile = topTile;
+	for(int j = 0; j < dimension; j++){
+	    Tile currentKTile = currentJTile;
+	    for(int k = 0; k < dimension; k++){
+		if(currentKTile.playerOnTile != null){
+		    players++;
+		}
+		currentKTile = currentKTile.rightDown;
+	    }
+	    currentJTile = currentJTile.leftDown;
+	}
+	return players;
+    }
 }

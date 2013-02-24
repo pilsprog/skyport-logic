@@ -73,4 +73,18 @@ public class Tile {
 	    return false;
 	}
     }
+    public void damageTile(int hitpoints, AIConnection dealingPlayer){
+	if(playerOnTile == null){
+	    System.out.println("Tile absorbed damage.");
+	    return;
+	}
+	else {
+	    if(tileType == TileType.SPAWN){
+	    	System.out.println("Hit spawn tile! No damage received.");
+	    }
+	    else {
+		playerOnTile.damagePlayer(hitpoints, dealingPlayer);
+	    }
+	}
+    }
 }

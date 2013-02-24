@@ -17,6 +17,9 @@ public class AIConnection {
     public String username;
     public Tile position = null;
     public boolean isAlive = true;
+    public int health = 100;
+    public int score = 0;
+
     
     public AIConnection(Socket clientSocket){
 	messages = new ConcurrentLinkedQueue<JSONObject>();
@@ -37,8 +40,14 @@ public class AIConnection {
     public synchronized void write(String string){ // only one thread may write at the same time
 	System.out.println("[AICONHND] writing to socket: " + string);
     }
+    void sendError(String errorString){
+	try {
+	    JSONObject errorMessage = new JSONObject().put("error", errorString);
+	    sendMessage(errorMessage);
+	} catch (JSONException f){}
+	catch (IOException g){}
+    }
     public synchronized void input(JSONObject o) throws ProtocolException, IOException {
-	System.out.println("[AICONHND] Got input");
 	if(!gotHandshake){
 	    if(parseHandshake(o)){
 		try {
@@ -135,8 +144,8 @@ public class AIConnection {
 		JSONObject playerObject = new JSONObject();
 		playerObject.put("name", ai.username);
 		if(turnNumber != 0){
-		    playerObject.put("health", 100);
-		    playerObject.put("score", 0);
+		    playerObject.put("health", ai.health);
+		    playerObject.put("score", ai.score);
 		    playerObject.put("position", ai.position.coords.getCompactString());
 		    JSONObject primaryWeaponObject = new JSONObject();
 		    primaryWeaponObject.put("name", ai.primaryWeapon);
@@ -306,4 +315,57 @@ public class AIConnection {
 	    return false;
 	}
     }
+    void invalidAction(JSONObject action){
+	try {
+	    JSONObject errorMessage
+		= new JSONObject().put("error", "Invalid action: " + action.get("type"));
+	    sendMessage(errorMessage);
+	} catch (JSONException f){}
+	catch (IOException g){}
+    }
+    boolean shootLaser(JSONObject action){
+	int laserLevel = 1;
+	if(primaryWeapon.equals("laser")){
+	    laserLevel = primaryWeaponLevel;
+	}
+	else if(secondaryWeapon.equals("laser")){
+	    laserLevel = secondaryWeaponLevel;
+	}
+	else {
+	    return false;
+	}
+	try {
+	    String direction = action.getString("direction");
+	    Laser laser = new Laser(this);
+	    if(laser.setDirection(direction)){
+		laser.setPosition(position);
+		laser.performShot(laserLevel);
+	    }
+	    else {
+		sendError("Invalid shot: unknown direction '"  + direction + "'");
+		return false;
+	    }
+	    return true;
+	}
+	catch (JSONException e){
+	    sendError("Invalid shot: lacks a direction key");
+	}
+	return false;
+    }
+    void damagePlayer(int hitpoints, AIConnection dealingPlayer){
+	System.out.println("STUB: '" + this.username + "' received " + hitpoints
+			   + " damage from '" + dealingPlayer.username  + "'!");
+	health -= hitpoints;
+	dealingPlayer.givePoints(hitpoints); // award dealingPlayer the points
+	if(health <= 0){
+	    System.out.println(this.username + " got killed by " + dealingPlayer.username);
+	    dealingPlayer.givePoints(20); // 20 bonus points for killing someone
+	    health = 100; // TODO: just resetting health here
+	}
+    }
+    void givePoints(int points){
+	System.out.println("got awarded " + points + " points");
+	score += points;
+    }
 }
+

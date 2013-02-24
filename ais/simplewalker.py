@@ -43,6 +43,12 @@ def do_random_move():
     print("moving %s-wards." % direction)
     transmitter.send_move(direction)
 
+def shoot_laser_in_random_direction():
+    # requires you to select the laser as weapon, obviously
+    direction = random.choice(["up", "down", "left-down", "left-up", "right-down", "right-up"])
+    print("shooting %s-wards." % direction)
+    transmitter.attack_laser(direction)
+    
 def send_line(line):
     print("sending: '%s'" % line)
     if sock.sendall(line + "\n") != None:
@@ -56,11 +62,17 @@ def got_error(errmsg):
 
 def got_gamestate(turn, map_obj, player_list):
     if player_list[0]["name"] == sys.argv[1]:
-        for x in range(0, 3):
-            do_random_move()
+        do_random_move()
+        do_random_move()
+        shoot_laser_in_random_direction()
 
 def got_gamestart(turn, map_obj, player_list):
-    transmitter.send_loadout("droid", "mortar")
+    weapons = ["laser", "mortar", "droid"]
+    primary_weapon = random.choice(weapons)
+    weapons.remove(primary_weapon)
+    secondary_weapon = random.choice(weapons)
+    print("chose loadout: %s and %s" % (primary_weapon, secondary_weapon))
+    transmitter.send_loadout(primary_weapon, secondary_weapon)
 
 def got_action(action_type, who, rest_data):
     print("got action!")

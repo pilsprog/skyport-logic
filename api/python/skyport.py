@@ -62,11 +62,11 @@ class SkyportTransmitter:
 		self.handler_send(json.dumps({"message":"action", "type": "move", "direction": whereto}))
 
 	def attack_laser(self, direction):
-		self.handler_send(json.dumps({"message":"attack", "weapon":"laser", "direction":direction}))
+		self.handler_send(json.dumps({"message":"action", "type":"laser", "direction":direction}))
 
-	def attack_mortar(self, jCoordinate, kCoordinate):
-		coordinates = "%i,%i" % (jCoordinate, kCoordinate);
-		self.handler_send(json.dumps({"message":"attack", "weapon":"mortar", "coordinates":coordinates}))
+	def attack_mortar(self, j_coordinate, k_coordinate):
+		coordinates = "%i,%i" % (j_coordinate, k_coordinate);
+		self.handler_send(json.dumps({"message":"action", "type":"mortar", "coordinates":coordinates}))
 
 	def attack_droid(self, **sequence):
-		self.handler_send(json.dumps({"message":"attack", "weapon":"droid", "sequence":sequence}))
+		self.handler_send(json.dumps({"message":"action", "type":"droid", "sequence":sequence}))

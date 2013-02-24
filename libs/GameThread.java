@@ -85,6 +85,9 @@ public class GameThread {
 	long gtsAsLong = gameTimeoutSeconds;
 	int roundNumber = 1;
 	while(true){
+	    int playerNum = world.verifyNumberOfPlayersOnBoard();
+	    System.out.println("CHECK: " + playerNum + " players on the field");
+		    
 	    long roundStartTime = System.nanoTime();
 	    if((roundStartTime - startTime) > gtsAsLong*1000000000){
 		System.out.println("[GAMETHRD] Time over!");
@@ -153,9 +156,20 @@ public class GameThread {
 	}
     }
     private boolean letPlayerPerformAction(JSONObject action, AIConnection currentPlayer){
-	// TODO: switch on the type of action here
-	if(action != null){
-	    return currentPlayer.doMove(action);
+	if(action == null) return false;
+	try {
+	    String actiontype = action.getString("type");
+	    switch (actiontype){
+	    case "move":
+		return currentPlayer.doMove(action);
+	    case "laser":
+		return currentPlayer.shootLaser(action);
+	    default:
+		currentPlayer.invalidAction(action);
+		return false;
+	    }
+	}
+	catch (JSONException e){ // TODO: send back error about missing type
 	}
 	return false;
     }
