@@ -18,11 +18,10 @@ function got_gamestate(turn_number, map, players){
     console.log("got gamestate");
     if(players[0]["name"] == myname){
 	console.log("my turn!");
-	for(var i = 0; i < 3; i++){
-	    movements = ["up", "down", "left-up", "left-down", "right-up", "right-down"];
-	    var random_movement = movements[Math.floor(Math.random() * movements.length)];
-	    connection.move(random_movement);
-	}
+	directions = ["up", "down", "left-up", "left-down", "right-up", "right-down"];
+	connection.move(directions[Math.floor(Math.random() * directions.length)]);
+	connection.move(directions[Math.floor(Math.random() * directions.length)]);
+	connection.attack_laser(directions[Math.floor(Math.random() * directions.length)]);
     }
 }
 function got_action(type, from, rest){console.log("got action");}

@@ -90,6 +90,9 @@ SkyportConnection.prototype = {
 	this._send_packet({"message":"loadout", "primary-weapon":primary_weapon,
 			   "secondary-weapon":secondary_weapon});
     },
+    attack_laser: function(direction){
+	this._send_packet(({"message":"action", "type":"laser", "direction":direction}))
+    },
     move: function(direction){
 	this._send_packet({"message":"action", "type":"move", "direction":direction});
     }
