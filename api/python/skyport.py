@@ -68,5 +68,5 @@ class SkyportTransmitter:
 		coordinates = "%i,%i" % (j_coordinate, k_coordinate);
 		self.handler_send(json.dumps({"message":"action", "type":"mortar", "coordinates":coordinates}))
 
-	def attack_droid(self, **sequence):
+	def attack_droid(self, sequence):
 		self.handler_send(json.dumps({"message":"action", "type":"droid", "sequence":sequence}))

@@ -18,7 +18,7 @@ function got_gamestate(turn_number, map, players){
     console.log("got gamestate");
     if(players[0]["name"] == myname){
 	console.log("my turn!");
-	directions = ["up", "down", "left-up", "left-down", "right-up", "right-down"];
+	directions = ["up", "down", "left-up", "left-down", "right-up", "right-down", "hogwarts"];
 	connection.move(directions[Math.floor(Math.random() * directions.length)]);
 	connection.move(directions[Math.floor(Math.random() * directions.length)]);
 	connection.attack_laser(directions[Math.floor(Math.random() * directions.length)]);

@@ -95,6 +95,8 @@ public class GameThread {
 	    }
 	    System.out.println("[GAMETHRD] Sending gamestate...");
 	    // TODO: clear out message queue of the player whos turn it is
+	    // TODO: test everything with all levels of weapons -- so far
+	    // only tested with lvl 1 weapons.
 	    AIConnection currentPlayer = sendGamestate(roundNumber);
 	    
 	    System.out.println("sent gamestate. Current player: " + currentPlayer.username);
@@ -141,6 +143,7 @@ public class GameThread {
 	catch (JSONException e){
 	}
 	try {
+	    System.out.println("STUB: insert extra protocol for 2D GUI here");
 	    graphicsContainer.get().sendMessage(action);
 	}
 	catch (IOException e) {
@@ -164,6 +167,8 @@ public class GameThread {
 		return currentPlayer.doMove(action);
 	    case "laser":
 		return currentPlayer.shootLaser(action);
+	    case "droid":
+		return currentPlayer.shootDroid(action);
 	    default:
 		currentPlayer.invalidAction(action);
 		return false;

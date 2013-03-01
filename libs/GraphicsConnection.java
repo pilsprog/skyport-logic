@@ -13,6 +13,7 @@ public class GraphicsConnection {
     public boolean isAlive = true;
     public GraphicsContainer container = null;
     public boolean isDoneProcessing = true;
+    public boolean alternativeLaserStyle = false;
     
     public GraphicsConnection(Socket clientSocket, GraphicsContainer containerArg){
 	messages = new ConcurrentLinkedQueue<JSONObject>();
@@ -35,7 +36,6 @@ public class GraphicsConnection {
 	System.out.println("[GRAPHCON] writing to socket: " + string);
     }
     public synchronized void input(JSONObject o) throws ProtocolException, IOException {
-	System.out.println("[GRAPHCON] Got input");
 	if(!gotHandshake){
 	    if(parseHandshake(o)){
 		try {
@@ -88,6 +88,12 @@ public class GraphicsConnection {
 	    System.out.println("Correct password");
 	    gotHandshake = true;
 	    container.set(this);
+	    try {
+		if(!o.getString("laserstyle").equals("start-stop")){
+		    alternativeLaserStyle = true;
+		}
+	    }
+	    catch(JSONException e){}
 	    return true;
 	}
 	catch (JSONException e){
@@ -106,8 +112,8 @@ public class GraphicsConnection {
 		JSONObject playerObject = new JSONObject();
 		playerObject.put("name", ai.username);
 		if(turnNumber != 0){
-		    playerObject.put("health", 100);
-		    playerObject.put("score", 0);
+		    playerObject.put("health", ai.health);
+		    playerObject.put("score", ai.score);
 		    playerObject.put("position", ai.position.coords.getCompactString());
 		    JSONObject primaryWeaponObject = new JSONObject();
 		    primaryWeaponObject.put("name", ai.primaryWeapon);

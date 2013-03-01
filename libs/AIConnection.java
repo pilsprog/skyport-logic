@@ -352,6 +352,39 @@ public class AIConnection {
 	}
 	return false;
     }
+
+    boolean shootDroid(JSONObject action){
+	int droidLevel = 1;
+	if(primaryWeapon.equals("droid")){
+	    droidLevel = primaryWeaponLevel;
+	}
+	else if(secondaryWeapon.equals("droid")){
+	    droidLevel = secondaryWeaponLevel;
+	}
+	else {
+	    System.out.println("User '" + username
+			       + "' attempted to shoot the droid, but doesn't have it");
+	    return false;
+	}
+	try {
+	    JSONArray directionSequence = action.getJSONArray("sequence");
+	    Droid droid = new Droid(this);
+	    if(droid.setDirections(directionSequence, droidLevel)){
+		droid.setPosition(position);
+		droid.performShot();
+	    }
+	    else {
+		sendError("Invalid shot: unknown direction in droid sequence");
+		return false;
+	    }
+	    return true;
+	}
+	catch (JSONException e){
+	    sendError("Invalid shot: lacks a direction key");
+	}
+	return false;
+    }
+    
     void damagePlayer(int hitpoints, AIConnection dealingPlayer){
 	System.out.println("STUB: '" + this.username + "' received " + hitpoints
 			   + " damage from '" + dealingPlayer.username  + "'!");

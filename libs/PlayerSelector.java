@@ -59,6 +59,7 @@ public class PlayerSelector {
 	    if(!tempPlayer.connection.isAlive){
 		if(tempPlayer.next == tempPlayer){
 		    Util.pressEnterToContinue("Last player disconnected, press enter to quit");
+		    System.exit(1);
 		}
 		System.out.println("Found dead player '" + tempPlayer.connection.username
 				   + "' in ring, purging...");

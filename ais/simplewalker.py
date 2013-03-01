@@ -48,6 +48,13 @@ def shoot_laser_in_random_direction():
     direction = random.choice(["up", "down", "left-down", "left-up", "right-down", "right-up"])
     print("shooting %s-wards." % direction)
     transmitter.attack_laser(direction)
+
+def shoot_droid_in_random_directions():
+    directions = []
+    for x in range(0, 4):
+        directions.append(random.choice(["up", "down", "left-down", "left-up", "right-down", "right-up", "lol"]))
+    print("shooting droid in sequence %r" % directions)
+    transmitter.attack_droid(directions)
     
 def send_line(line):
     print("sending: '%s'" % line)
@@ -64,13 +71,14 @@ def got_gamestate(turn, map_obj, player_list):
     if player_list[0]["name"] == sys.argv[1]:
         do_random_move()
         do_random_move()
-        shoot_laser_in_random_direction()
+        random.choice([shoot_laser_in_random_direction, shoot_droid_in_random_directions])()
 
 def got_gamestart(turn, map_obj, player_list):
-    weapons = ["mortar", "droid"]
+    # weapons = ["mortar", "droid"]
     primary_weapon = "laser"
-    #weapons.remove(primary_weapon)
-    secondary_weapon = random.choice(weapons)
+    secondary_weapon = "droid"
+    # #weapons.remove(primary_weapon)
+    # secondary_weapon = random.choice(weapons)
     print("chose loadout: %s and %s" % (primary_weapon, secondary_weapon))
     transmitter.send_loadout(primary_weapon, secondary_weapon)
 
