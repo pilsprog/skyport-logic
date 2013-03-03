@@ -20,7 +20,7 @@ public class Laser {
 	    return false;
 	}
     }
-    public void performShot(int level){
+    public Coordinate performShot(int level){
 	System.out.println("'" + dealingPlayer.username + "' performing laser shot in direction "
 			   + direction + "!");
 	int range = 5;
@@ -75,5 +75,6 @@ public class Laser {
 	    }
 	    break;
 	}
+	return currentTile.coords;
     }
 }

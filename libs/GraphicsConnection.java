@@ -14,6 +14,8 @@ public class GraphicsConnection {
     public GraphicsContainer container = null;
     public boolean isDoneProcessing = true;
     public boolean alternativeLaserStyle = false;
+    public Coordinate startHack = null;
+    public Coordinate stopHack = null;
     
     public GraphicsConnection(Socket clientSocket, GraphicsContainer containerArg){
 	messages = new ConcurrentLinkedQueue<JSONObject>();
@@ -166,6 +168,15 @@ public class GraphicsConnection {
 	}
     }
     public void sendMessage(JSONObject o) throws IOException{
+	try {
+	    if(o.getString("message").equals("action") && o.getString("type").equals("laser")){
+		System.out.println("start-stop hack: start: " + startHack.getString() + ", stop: " + stopHack.getString());
+		o.put("start", startHack.getCompactString());
+		o.put("stop", stopHack.getCompactString());
+	    }
+	}
+	catch(JSONException e){}
+
 	socket.getOutputStream().write((o.toString() + "\n").getBytes());
     }
     public JSONObject getNextMessage(){
@@ -179,5 +190,10 @@ public class GraphicsConnection {
 		break;
 	    }
 	}
+    }
+    public void setStartStopHack(Coordinate startVector, Coordinate stopVector){
+	// quick'n'dirty hack added for skyport 2D gui to change laser to start-stop format
+	startHack = startVector;
+	stopHack = stopVector;
     }
 }

@@ -166,7 +166,7 @@ public class GameThread {
 	    case "move":
 		return currentPlayer.doMove(action);
 	    case "laser":
-		return currentPlayer.shootLaser(action);
+		return currentPlayer.shootLaser(action, graphicsContainer.get());
 	    case "droid":
 		return currentPlayer.shootDroid(action);
 	    default:

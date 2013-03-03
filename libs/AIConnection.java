@@ -323,7 +323,7 @@ public class AIConnection {
 	} catch (JSONException f){}
 	catch (IOException g){}
     }
-    boolean shootLaser(JSONObject action){
+    boolean shootLaser(JSONObject action, GraphicsConnection graphicsConnection){
 	int laserLevel = 1;
 	if(primaryWeapon.equals("laser")){
 	    laserLevel = primaryWeaponLevel;
@@ -339,7 +339,8 @@ public class AIConnection {
 	    Laser laser = new Laser(this);
 	    if(laser.setDirection(direction)){
 		laser.setPosition(position);
-		laser.performShot(laserLevel);
+		Coordinate endvector = laser.performShot(laserLevel);
+		graphicsConnection.setStartStopHack(position.coords, endvector);
 	    }
 	    else {
 		sendError("Invalid shot: unknown direction '"  + direction + "'");
