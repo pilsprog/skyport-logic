@@ -84,6 +84,7 @@ This is the loadout used by the AI to chose the weapons.
 The weapon loadout should be sent to the server by the AI after the GAMESTART
 packet was sent, and before the first GAMESTATE packet is sent. If no loadout
 is sent before the first GAMESTATE is sent, you are kicked off the server.
+You cannot select the same weapon twice.
 
 GAMESTATE
 ---------
@@ -154,7 +155,7 @@ is at position (j,k), the (j,k) is not part of the actual protocol.
     
 ### EXAMPLE:
 
-    > {"data": [                 // the map data, one J-column at a time
+    > {"data": [                 // the map data, one J-"column" at a time
     >          ["G", "E", "S"],  // first J-column
     >          ["G", "R", "V"],  // second J-column
     >          ["C", "G", "G"]]  // third J-column
@@ -190,13 +191,13 @@ PLAYER
     >    {"name":"laser", "level":1}, // "laser", "mortar", "droid", the number is the tier (1,2 or 3)
     >  "secondary-weapon":
     >    {"name":"mortar", "level":1},// ditto
-    >  "health":20,		      // int from 1 to 100
-    >  "score":120,		      // int from 1 to ?
+    >  "health":20,		      // int from 0 to 100
+    >  "score":120,		      // positive int
     >  "position":"j,k"}              // position in j/k coordinates (global)
     
 ENDTURN
 -------
-After a turn is over (the three-seconds deadline is over), a ENDTURN packet is sent. It is not
+After a turn is over (the three-seconds deadline is over), an ENDTURN packet is sent. It is not
 really necessary to react to the ENDTURN message in any way, it's merely a convenience message
 so that all AIs know that the deadline for sending actions by the active player is over.
 
@@ -290,6 +291,14 @@ Error messages are not machine-readable and mainly meant for human debugging. He
 the exact error-messages are not documented and may change. An AI should never rely
 on some behaviour that provokes an error from the server.
 
+DEATH:
+------
+If a player dies, his health is set to 0, but he may still be on the field. A player
+with health 0 is not actually alive, and will be reset to his respective spawn-point
+during the next round. A player with health 0 will never have a turn (the server will
+refill the players health to 100 before he gets a turn again) and you can simply ignore
+him. Hitting a tile with a dead player on it will not award you any points, or indeed
+have any effect at large.
 
 EXAMPLE SESSIONS
 ----------------
