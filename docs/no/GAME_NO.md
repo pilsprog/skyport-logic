@@ -4,7 +4,7 @@ Det er år 2400. Konføderasjonen ligger i ruiner. Alt som
 gjenstår av det en gang store imperiet er spredte ruiner av
 de intergalaktiske havnene; imperiets gamle "Skyports".
 
-Meteor regn herjer skyportene fra den asurblåe stratosfæren.
+Meteorregn herjer skyportene fra den asurblå stratosfæren.
 Samtidig gjør stammene seg klare til et nytt slag på den
 svevende slagmarken.
 
@@ -66,18 +66,17 @@ Det er syv forskjellige rute typer, dette vil bli forklart nårmere i neste avsn
 * **GRESS**	- Gressrute. Ingen spesiell effekt. Kan komme i flere farger og
 former, men roboter er ikke opptatt av estetikk.  
 * **EXPLOSIUM**	- Hvis du står på denne ruten kan du bruke en eller flere 
-handlinger på å utvinne explosium ressurs, 1 ressurs per handling. Hver explosium
- rute har maksimum 2 tilgjengelige ressurser. Etter at en rute er oppbrukt vil
- den forvandles til en gress rute.  vis du er it is depleted, it turns into
- grass.
+handlinger på å utvinne explosium ressurs, 1 ressurs per handling. Hver 
+explosiumrute har maksimum 2 tilgjengelige ressurser. Etter at en rute er oppbrukt vil
+ den forvandles til en gressrute.  
 * **RUBIDIUM**	- Hvis du står på denne ruten kan du bruke en eller flere 
-handlinger på å utvinne rubidium ressurs, 1 ressurs per handling. Hver rubidium 
-rute har maksimum 2 tilgjengelige ressurser. Etter at en rute er oppbrukt vil den
-forvandles til en gress rute.
+handlinger på å utvinne rubidium ressurs, 1 ressurs per handling. Hver 
+rubidiumrute har maksimum 2 tilgjengelige ressurser. Etter at en rute er oppbrukt vil den
+forvandles til en gressrute.
 * **SKRAP**	- Hvis du står på denne ruten kan du bruke en eller flere 
-handlinger på å utvinne metall, 1 ressurs per handling. Hver skrap rute har
+handlinger på å utvinne metall, 1 ressurs per handling. Hver skraprute har
 maksimum 2 tilgjengelige ressurser. Etter at en rute er oppbrukt vil den 
-forvandles til en gress rute.
+forvandles til en gressrute.
 
 ###UFARBARE RUTER
 * **VOID**(TOM)	- Tomme ruter.
@@ -88,11 +87,9 @@ som står på en SPAWN-rute, og du kan ikke angripe mens du står på en SPAWN-r
 
 ##TUR
 Hver runde får hver AI tre handlinger. En AI kan bruke handlingene til å flytte
-seg (1 rute per handling), skyte ett våpen, vente eller utvinne ressurser. å 
+seg (1 rute per handling), skyte ett våpen eller utvinne ressurser. Å 
 skyte et våpen vil avslutte runden og bruke de resterende handlingene på skuddet.
-De ekstra handlingene vil øke skaden som skuddet gjør. Venting vil gi en liten 
-poeng- og helse- straff, dette betyr også at inaktive AI'er vil bli kastet ut 
-etter en stund.
+De ekstra handlingene vil øke skaden som skuddet gjør. 
 Etter at AI'ens runde er over; vil en spillstatus bli sendt til alle AI'er, og 
 det vil være neste AI sin tur.
 		
@@ -145,7 +142,7 @@ de skal ta. En kamp-droide har et begrenset antall steg den kan ta, etter den ha
 gått det antallet steg vil den eksplodere, uansett om den har fullført alle stegene
 eller ikke. Droider kan ikke gå over tomme ruter eller gjennom stein, derfor må de 
 navigeres rundt dem. Droider som møter tomme ruter eller steiner vil eksplodere.
-Droider har en eksplosiv ladning og vil forårsake AoE (områdeskade) skade
+Droider har en eksplosiv ladning og vil forårsake AoE-skade (områdeskade) 
 rundt målet (1 rute).
 
 NB: Det er mulig å skade seg selv med kamp-droiden, både gjennom en direkt treff
@@ -164,8 +161,8 @@ Se bildet under for illustrasjon:
    
 ##RESURSER
 Det er tre forskjellige typer ressurser i Skyport: rubidium, explosium og 
-skrap-metall. Rubidium blir brukt til å oppgradere lasere, explosium; granatkastere
- og skrap-metall; kamp-droider.
+skrap-metall. Rubidium blir brukt til å oppgradere lasere, explosium kan oppgradere 
+granatkastere og skrap-metall kan oppgradere kamp-droider.
 Du kan utvinne ressurser ved å stå på en russurs-rute og bruke en handling på å
 utvinne ressursen. Hvis en AI har samlet nok ressurser av en type vil det være
 mulig å oppgradere det tilsvarende våpenet til det neste nivået. Hvert våpen kan 
@@ -176,17 +173,17 @@ ikke bli oppgradert forbi nivå 3.
 Ved spillstart vil AI'ene velge hvilke to våpen de skal bruke for resten av
 spillet. Alle kombinasjoner av de tre våpene er tilgjengelige. Noen kart kan 
 inneholde en ujevnt distribuert mengde av ressurser, som kan påvirke hvor nyttig
-hvert våpen er. Det er derfor lurt å gå nøye gjennom kartet får våpenvalget sendes
+hvert våpen er. Det er derfor lurt å gå nøye gjennom kartet får våpenvalget sendes.
 
 
 ##SPILLSTART
 Ved spillstart vil hver AI bli satt på hver sin **"STARTPOSISJON"-rute** (SPAWN) 
 eller "start-ruter". Det vil ikke være mulig å gå tilbake på start-ruten etter at
 man har flyttet seg av den. Derfor er det bare serveren som kan flytte AI'er til 
-start-rutene. Et angrep mot en AI på en startrute vil *returnere skaden* til 
-angriperen i stedet for målet. En AI som står på en startrute kan ikke utføre
-andre handlinger enn å bevege seg av ruten. å vente på en startrute vil også føre
-til poeng- og helse-straffer.
+start-rutene. Et angrep mot en AI på en startrute vil ikke ha noen effekt.
+En AI som står på en startrute kan ikke utføre
+andre handlinger enn å bevege seg av ruten. Å vente på en startrute vil også føre
+til poengstraff.
 
 ##HANDLINGER
 Hver runde får hver AI muligheten til å utføre tre handlinger. En angreps-handling
@@ -209,7 +206,7 @@ spillern.
 
 Hvis du **dør vil du miste 40 poeng**.
 Hvis du ikke sender noe action mens det er din tur, vil servern
-straffe deg med -10 straff-poeng. Denne mekanismen er hovedsakling
+straffe deg med -10 poeng. Denne mekanismen er hovedsakling
 for å straffe AIer som har kræsjet. Om du ikke vil bevege deg av
 taktiske grunner, kan du bare bevege deg en rute fram og så tilbake,
 eller skyte mortaren et tilfeldig sted. Dette vil ikke medføre noe
@@ -244,7 +241,7 @@ Skade blir alltid rundet opp/ned til nærmeste heltall, med round(0.5) = 1.
 * Granatkaster skader, ved nivå 1: 20 dmg
 * Granatkaster skader, ved nivå 2: 20 dmg
 * Granatkaster skader, ved nivå 3: 25 dmg
-* Granatkasters AoE skader: 2 dmg
+* Granatkasters AoE skader: 18 dmg
 * Kamp-droider skader, ved nivå 1: 22 dmg
 * Kamp-droider skader, ved nivå 2: 24 dmg
 * Kamp-droider skader, ved nivå 3: 26 dmg
