@@ -300,6 +300,13 @@ refill the players health to 100 before he gets a turn again) and you can simply
 him. Hitting a tile with a dead player on it will not award you any points, or indeed
 have any effect at large.
 
+DISCONNECTING:
+--------------
+A disconnected AI will remain in the game, and continue to rack up penality points for
+not doing anything. Killing the disconnected AI will still reward you with the normal
+amounts of damage- and bonus-points. Once disconnected, you cannot re-connect, so you
+should take care to not drop the connection under any circumstances.
+
 EXAMPLE SESSIONS
 ----------------
 The following example session demonstrates the communication between an AI and
