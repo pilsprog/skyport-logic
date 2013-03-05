@@ -181,9 +181,8 @@ Ved spillstart vil hver AI bli satt på hver sin **"STARTPOSISJON"-rute** (SPAWN
 eller "start-ruter". Det vil ikke være mulig å gå tilbake på start-ruten etter at
 man har flyttet seg av den. Derfor er det bare serveren som kan flytte AI'er til 
 start-rutene. Et angrep mot en AI på en startrute vil ikke ha noen effekt.
-En AI som står på en startrute kan ikke utføre
-andre handlinger enn å bevege seg av ruten. Å vente på en startrute vil også føre
-til poengstraff.
+En AI som står på en startrute kan ikke angripe.
+Å vente stå på en startrute når turen din er over, vil føre til -10 poengstraff.
 
 ##HANDLINGER
 Hver runde får hver AI muligheten til å utføre tre handlinger. En angreps-handling
