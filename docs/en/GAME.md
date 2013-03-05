@@ -46,7 +46,7 @@ imposed on them:
               .         \_____/        .
              .                          .
 	      
-Positions are always written in [J, K] notation, i.e. the J-coordinate comes first,
+Positions are always written in J,K notation, i.e. the J-coordinate comes first,
 the K-coordinate second. For instance, you may send the server a message
 such as "go to 1,0" and then "fire mortar at 2,2". The server would then
 first move you one tile in the J-direction, and then perform your mortar shot,
@@ -94,6 +94,9 @@ WEAPONS
 There are three basic weapons, the laser, the mortar and the battle droid.
 Each weapon may be upgraded three times, to increase its range and damage,
 see the next sections.
+Leftover unused actions in your turn (e.g. if you shoot your weapon right
+away without moving first) will give your weapon extra bonus damage. See
+the end of this document.
 
 MORTAR
 ------

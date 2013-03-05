@@ -109,7 +109,7 @@ Kart-objektet ser slik ut:
 	
     > {"j-length": MAP-WIDTH-IN-J-DIRECTION // Størrelsen på kartet i J-koordinatet
     >  "k-length": MAP-WIDTH-IN-K-DIRECTION // Størrelsen på kartet i K-koordinatet
-    >  "data": [ // Kart-dataen, en J-kolonne om gangen
+    >  "data": [ // Kart-dataen, en J-"kolonne" om gangen
     >          [TILE(0,0), TILE(0,1), TILE(0,2), ...],
     >          [TILE(1,0), TILE(1,1), TILE(1,2), ...],
     >          [TILE(2,0), TILE(2,1), TILE(2,2), ...]]
@@ -165,8 +165,8 @@ utgjør dette kartet:
     >  "primary-weapon":
     >    {"name":"laser", "level":1},    // "laser", "mortar", "droid", nummeret indikerer nivå (1,2 eller 3)
     >  "secondary-weapon":"mortar-1", // samme som forrige linje
-    >  "health":20,		      // int fra 1 til 100
-    >  "score":120,		      // int fra 1 til ?
+    >  "health":20,		      // int fra 0 til 100
+    >  "score":120,		      // positivt tall (eller 0)
     >  "position":"j,k"}              // posisjon i j/k koordinater (globalt)  
 
 ##TURSLUTT (ENDTURN)
@@ -197,10 +197,6 @@ Følgende handlinger er for øyeblikket gyldige:
     > {"message":"action", "type":"move",
     >  "direction":"up" // kan være "up" (opp), "down" (ned), "right-up" (opp-høyre), "right-down" (ned-høyre), "left-up" (venstre-opp), "left-down" (venstre-ned)
     > }
-
-**Stå over** turen:
-
-    > {"message":"action", "type":"pass"}
 
 **Oppgrader** ett våpen:
     
@@ -263,6 +259,19 @@ Feilmeldingene er ikke maskinlesbare og er hovedsakling ment for menneskelig fei
 Derfor er ikke feilmeldingene dokumentert og kan bli endret i utviklingen av systemet.
 En AI burde aldri være avhengig av feilmeldinger fra serveren.
 
+##DØD##
+Når en spiller dør, blir hans helsepoeng satt til 0, men han vil forbli på spillbrettet.
+En spiller som har 0 helsepoeng lever ikke, og vil bli satt tilbake til hans startrute
+i løpet av neste runde. En spiller med 0 helsepoeng kan ikke har en tur (servern vil fylle
+opp helsepoengene til 100 før spillern får en tur), og kan blir ignorert. Å skade en dø spiller
+vil ikke gir deg noe poeng, eller har noe som helst effekt ellers.
+
+##FRAKOBLING##
+
+En AI som ble frakoblet, vil forbli i spillet, og fortsette å samle inn straffpoeng for å ikke
+gjøre noe. Å drepe en frakoblet AI vil gir deg vanlig mengde skade- og bonus-poeng. Om du blir
+frakoblet fra servern, kan du ikke forbinde deg tilbake til den, så du burde passe på å ikke
+frakoble under noen omstendigheter.
 
 ##EKSEMPEL ØKTER##
 Disse eksempel øktene demonstrer kommunikasjonen mellom en AI og serveren i en 1-mot-1 kamp

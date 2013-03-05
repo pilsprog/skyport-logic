@@ -192,7 +192,7 @@ PLAYER
     >  "secondary-weapon":
     >    {"name":"mortar", "level":1},// ditto
     >  "health":20,		      // int from 0 to 100
-    >  "score":120,		      // positive int
+    >  "score":120,		      // positive int (or 0)
     >  "position":"j,k"}              // position in j/k coordinates (global)
     
 ENDTURN
