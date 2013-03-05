@@ -84,8 +84,6 @@ adjacent tile, covering a maximal distance of three tiles per turn. A
 player may chose to use an action for something else, such as firing a
 weapon or simply waiting. Firing a weapon immediately ends the turn, but
 any left-over actions give your attack an extra damage bonus.
-Waiting incurrs a small point/health penality, so that inactive AIs will
-get kicked out after a while.
 After a players turn is over, the gamestate is sent to all clients, and
 the next player may make his turn.
 		
