@@ -46,7 +46,7 @@ Hvis ikke vil serveren sende en feilmelding.
 
 ##SPILLSTART##
 Før spillet starter sender serveren en **initial gamestate** (status ved oppstart) til alle AI'er, 
-med **TURN-NUMBER = 0**. Denne spillstatusen ser ellers **nøyaktig lik normale spillstatus**, 
+med **TURN-NUMBER = 0** og tom players array. Denne spillstatusen ser ellers **nøyaktig lik normale spillstatus**, 
 men skal ikke svares av AI'ene. Serveren vil avvise alle svar.
 Etter at server-operatøren trykker på en knapp vil en ENDTURN (tur-slutt) pakke bli sendt og
 spillet vil begynne. Formålet er å gi alle klienter tid til å initialisere og prosessere brettet,
@@ -188,7 +188,7 @@ Handlinger AI'en kan utføre.
     >  ...
     > }
 
-Følgende handlinger er for øyeblikket gyldige:
+Følgende handlinger er gyldige:
 
 ### BEVEGELSE/TAKTISK:
     

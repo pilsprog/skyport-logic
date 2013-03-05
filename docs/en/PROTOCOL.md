@@ -66,7 +66,7 @@ Otherwise it will send an error.
 GAMESTART
 ---------
 Before the game starts, the server sends an **initial gamestate** to all AIs, with
-the **TURN-NUMBER = 0**. This gamestate looks otherwise **exactly like a normal gamestate**,
+the **TURN-NUMBER = 0** and no players. This gamestate looks otherwise **exactly like a normal gamestate**,
 but should not be replied to. The server will reject all replies.
 After the operator presses a button, an ENDTURN packet is sent, and the actual gameplay starts**.
 The intent is to give all clients time to initialize and process the board, resources &
@@ -92,7 +92,7 @@ Gamestate sent by the server to each of the AIs **every round**. You may use
 any information contained in this packet to your advantage however you like.
 If it is your turn (you are the first player in the rotating "players" list,)
 **you have 3 seconds to reply with 3 actions packets.** Any actions you send
-after the 3 seconds are over are discarded. This means for instance that you
+after the 3 seconds are over, are discarded. This means for instance that you
 could send one action at 1s, another action at 2s, and the third action at 3s,
 but the third action will likely arrive at the server-end after the cutoff
 and will be discarded. The first two actions will still be carried out for you.
@@ -133,7 +133,7 @@ The map-object looks as follows:
 	
     > {"j-length": MAP-WIDTH-IN-J-DIRECTION // size of the map in the J-direction
     >  "k-length": MAP-WIDTH-IN-K-DIRECTION // size of the map in the K-direction
-    >  "data": [ // the map data, one J-column at a time
+    >  "data": [ // the map data, one J-"column" at a time
     >          [TILE(0,0), TILE(0,1), TILE(0,2), ...],
     >          [TILE(1,0), TILE(1,1), TILE(1,2), ...],
     >          [TILE(2,0), TILE(2,1), TILE(2,2), ...]]
@@ -218,7 +218,7 @@ Actions that can be taken by the AI.
     >  ...
     > }
 
-The following actions are currently valid:
+The following actions are valid:
 
 ### MOVEMENT/TACTICAL:
     
