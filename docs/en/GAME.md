@@ -49,7 +49,7 @@ imposed on them:
 Positions are always written in [J, K] notation, i.e. the J-coordinate comes first,
 the K-coordinate second. For instance, you may send the server a message
 such as "go to 1,0" and then "fire mortar at 2,2". The server would then
-first move you to the tile [1, 0], and then perform your mortar shot,
+first move you one tile in the J-direction, and then perform your mortar shot,
 assuming it is in range.
 You can move from tile to tile in the fashion you would expect (crossing edges),
 and you can move up to 3 tiles in one round.
@@ -74,7 +74,7 @@ TILES
 ### INACCESSIBLE TILES (These tiles cannot be moved onto, but the server may place you on them.)
 		
 * **VOID**  - No tile at all.	
-* **SPAWN** - protected spawn area. Once you move away from it, you can't re-enter.
+* **SPAWN** - protected spawn area. Once you move away from it, you can't re-enter. Cannot be attacked, and can't be attacked from.
 * **ROCK**  - A rock is blocking the way.
 
 TURNS
@@ -102,11 +102,17 @@ hit any tile inside that range. An alternative interpretation (resulting
 in the same tiles) is to say "the mortar can move a fixed number of steps
 in any direction. Any tile it can reach in that number of steps, is in
 range". The mortar is unaffected by gaps and rocks, but shooting at them
-has no effect. The mortar carries a small explosive load, and hence has
-a very weak AoE bonus damage at a radius of one tile.
+has no effect (both void tiles and rocks will simply absorb the damage
+completely, and no AoE damage will ocurr). The mortar carries an explosive
+load, and hence has a strong AoE bonus damage at a radius of one tile.
+Note that you can use the mortar to damage yourself, both with a direct
+hit and with AoE damage. You are not awarded any points for damaging or
+killing yourself.
 * Range at level 1: 2 tiles
 * Range at level 2: 3 tiles
 * Range at level 3: 4 tiles
+
+See the bottom of this document for damage.
 
 See the following image for a visualization:
 
@@ -121,6 +127,8 @@ The laser can shoot over gaps, but not through rocks.
 * Range at level 2: 6 tiles
 * Range at level 3: 7 tiles
 
+See the bottom of this document for damage.
+
 See the following image for a visualization:
 
 ![range of the laser](../range-laser.png)
@@ -130,12 +138,18 @@ DROID
 The droid requires the player to send a list of directional steps.
 It has a fixed number of steps it can walk, after which it will explode,
 whether it has reached its target or not. The droid cannot walk over gaps
-or rocks, so it has to navigate around them. The droid carries a big
-explosive payload and induces a massive AoE damage bonus, at a radius of
+or rocks, so it has to navigate around them. The droid carries an
+explosive payload and induces an AoE damage bonus, at a radius of
 one tile.
+Note that you can use the droid to damage yourself, both with a direct
+hit and with AoE damage. You are not awarded any points for damaging or
+killing yourself.
+
 * Range at level 1: 3 steps
 * Range at level 2: 4 steps
 * Range at level 3: 5 steps
+
+See the bottom of this document for damage.
 
 See the following image for a visualization:
 
@@ -187,12 +201,22 @@ inaccessible tile is an invalid move and hence discarded by the server.
 POINTS
 ------
 Damaging a player awards you with the amount of points equivalent to
-the damage you inflicted on the player. Killing another player in
-addition awards you with a 20 bonus points bounty. Dying gives you a
-point penality of 80 points.
-You may also lose varying amounts of points by performing certain actions that
-incur a penality, such as not moving a turn and standing on a spawn
-tile beyond the initial round. After a fixed amount of time has passed,
+the damage you inflicted on the player. This means that "overdamage"
+is counted, e.g. if your enemy has 1 health point left, and you hit
+him for 16 damage, you will be awarded 16 points for the damage inflicted.
+Killing another player in addition awards you with a 20 bonus points bounty.
+Dying gives you a point penality of -40 points.
+Standing on the spawn-tile incurrs a -10 point penality at the end of each
+round. To avoid any penalities, move away from the spawn-tile immediately
+upon spawning.
+Not performing any actions at all during your turn, incurs a -10 point
+penality as well. The intention of this rule is to make crashed AIs quickly drop
+to the bottom of the score bracket. If you wish to not make a move due
+to tactical reasons, you may simply perform a shot in any direction, or
+move up a tile and then back down, forfeiting your last action. This will
+not incur any penality.
+
+After a fixed amount of time has passed,
 the round ends, and the player with the highest score wins.
 
 DESTRUCTION
@@ -200,11 +224,16 @@ DESTRUCTION
 Each player starts with a certain amount of health. Health does not
 replenish, but upon destruction, a player may respawn from his spawn-
 point and continue playing without losing their upgraded weapons.
-Respawning takes one full turn.
+Respawning takes one full turn, so you have to skip one round. Once
+you have died, the server will simply move past you in the player
+order, so that you don't get your next turn. The next time after
+that, the turn order will be resumed as normal.
+Death incurs a -40 points penality.
+
 
 ARITHMETIC & STATS
 ------------------
-
+Damage is always rounded to the nearest int, with 0.5 rounding to 1.
 * Upgrading a weapon from lvl 1 to lvl 2: 4 resources
 * Upgrading a weapon from lvl 2 to lvl 3: 5 resources
 * hp = -dmg
@@ -215,10 +244,16 @@ ARITHMETIC & STATS
 * mortar lvl 1: 20dmg
 * mortar lvl 2: 20dmg
 * mortar lvl 3: 25dmg
-* mortar AoE damage: 2dmg
+* mortar AoE damage: 18dmg
 * droid lvl 1: 22dmg
 * droid lvl 2: 24dmg
 * droid lvl 3: 26dmg
 * droid AoE damage: 10dmg
 * player_damage = weapon_damage
-	       + AoE_damage + unused_turns*(0.2*weapon_damage) + unused_turns*(0.2*AoE_damage)
+    + AoE_damage + unused_turns*(0.2*weapon_damage) + unused_turns*(0.2*AoE_damage)
+For this last equation, notice that either AoE_damage = 0 or weapon_damage = 0, since a tile cannot be hit
+simultaneously by the weapons main damage and its AoE damage.
+Example:
+Player A hits a tile X with a lvl 3 mortar and 2 unused turns left.
+Damage incurred to player on X:	    	       player_damage = 25 + 0 + 2*(0.2*25) + 2*(0.2*0) = 35
+Damage incurred to players on adjacent tiles:  player_damage = 0 + 18 + 2*(0.2*0) + 2*(0.2*18) = 25

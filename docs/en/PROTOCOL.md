@@ -227,10 +227,6 @@ The following actions are currently valid:
     >  "direction":"up" // can be "up", "down", "right-up", "right-down", "left-up", "left-down"
     > }
 
-**Forfeit** the turn:
-
-    > {"message":"action", "type":"pass"}
-
 **Upgrade** a weapon:
     
     > {"message":"action", "type":"upgrade", "weapon":"mortar"} // can be "mortar", "laser" or "droid"
