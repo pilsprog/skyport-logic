@@ -80,7 +80,7 @@ def got_gamestate(turn, map_obj, player_list):
     if player_list[0]["name"] == sys.argv[1]:
         do_random_move()
         do_random_move()
-        random.choice([shoot_laser_in_random_direction, shoot_droid_in_random_directions, shoot_mortar_in_random_direction])()
+        random.choice([shoot_laser_in_random_direction])()
 
 def got_gamestart(turn, map_obj, player_list):
     # weapons = ["mortar", "droid"]
