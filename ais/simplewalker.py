@@ -85,7 +85,7 @@ def got_gamestate(turn, map_obj, player_list):
 def got_gamestart(turn, map_obj, player_list):
     # weapons = ["mortar", "droid"]
     primary_weapon = "mortar"
-    secondary_weapon = "droid"
+    secondary_weapon = "laser"
     # #weapons.remove(primary_weapon)
     # secondary_weapon = random.choice(weapons)
     print("chose loadout: %s and %s" % (primary_weapon, secondary_weapon))
