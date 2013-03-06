@@ -26,8 +26,8 @@ def read_packet():
         print("TO!")
         return None
     except socket.error as e:
-        print("foo")
-        return None
+        print("error: %s" % e)
+        sys.exit(1)
     try:
         characters_to_read = inputbuf.index("\n")
         line = inputbuf[0:characters_to_read] # removing the newline
@@ -61,7 +61,7 @@ def shoot_laser_in_random_direction():
 def shoot_droid_in_random_directions():
     directions = []
     for x in range(0, 4):
-        directions.append(random.choice(["up", "down", "left-down", "left-up", "right-down", "right-up", "lol"]))
+        directions.append(random.choice(["up", "down", "left-down", "left-up", "right-down", "right-up"]))
     print("shooting droid in sequence %r" % directions)
     transmitter.attack_droid(directions)
     
@@ -80,11 +80,11 @@ def got_gamestate(turn, map_obj, player_list):
     if player_list[0]["name"] == sys.argv[1]:
         do_random_move()
         do_random_move()
-        random.choice([shoot_laser_in_random_direction, shoot_droid_in_random_directions])()
+        random.choice([shoot_laser_in_random_direction, shoot_droid_in_random_directions, shoot_mortar_in_random_direction])()
 
 def got_gamestart(turn, map_obj, player_list):
     # weapons = ["mortar", "droid"]
-    primary_weapon = "laser"
+    primary_weapon = "mortar"
     secondary_weapon = "droid"
     # #weapons.remove(primary_weapon)
     # secondary_weapon = random.choice(weapons)
