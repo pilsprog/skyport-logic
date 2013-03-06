@@ -11,8 +11,6 @@ assert(len(sys.argv) == 2)
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.connect(('127.0.0.1', 54321))
-#sock.setblocking(0)
-#sockfile = sock.makefile()
 
 inputbuf = ""
 
@@ -43,6 +41,17 @@ def do_random_move():
     print("moving %s-wards." % direction)
     transmitter.send_move(direction)
 
+def shoot_mortar_in_random_direction():
+    # Randomly performs invalid shots.
+    # [-4, 4] x [-4, 4]
+    j = random.randrange(-4, 5)
+    k = random.randrange(-4, 5)
+    if j == 0 and k == 0:
+        j = 2 # don't it ourselves -- we don't care about bias.
+        k = 2
+    transmitter.attack_mortar(j, k)
+
+    
 def shoot_laser_in_random_direction():
     # requires you to select the laser as weapon, obviously
     direction = random.choice(["up", "down", "left-down", "left-up", "right-down", "right-up"])
