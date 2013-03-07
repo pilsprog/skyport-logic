@@ -95,7 +95,7 @@ SkyportConnection.prototype = {
     },
     attack_mortar: function(j, k){
 	this._send_packet(({"message":"action", "type":"mortar", "coordinates":(j+","+k)}))
-    }
+    },
     move: function(direction){
 	this._send_packet({"message":"action", "type":"move", "direction":direction});
     }
