@@ -1,8 +1,0 @@
-players 2
-size 2
-description "minimal test-map for two players"
-                              __
-                           __/G \__
-                          /S \__/S \
-                          \__/G \__/
-                             \__/

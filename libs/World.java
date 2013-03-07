@@ -179,4 +179,19 @@ public class World {
 	}
 	return players;
     }
+    public int getSpawnpointNumber(){
+	int spawnpoints = 0;
+	Tile currentJTile = topTile;
+	for(int j = 0; j < dimension; j++){
+	    Tile currentKTile = currentJTile;
+	    for(int k = 0; k < dimension; k++){
+		if(currentKTile.tileType == TileType.SPAWN){
+		    spawnpoints++;
+		}
+		currentKTile = currentKTile.rightDown;
+	    }
+	    currentJTile = currentJTile.leftDown;
+	}
+	return spawnpoints;
+    }
 }

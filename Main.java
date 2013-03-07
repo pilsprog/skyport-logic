@@ -27,9 +27,20 @@ public class Main {
 	    System.exit(1);	    
 	}
 	World world = null;
+	int spawnPoints = 0;
 	try {
 	    WorldParser wp = new WorldParser(mapfile);
 	    world = wp.parseFile();
+	    spawnPoints = world.getSpawnpointNumber();
+	    if(spawnPoints < minUsers){
+		System.out.println("Error: requested to wait for " + minUsers
+				   + " AIs, but this map only supports " + spawnPoints + ".");
+		System.exit(1);
+	    }
+	    if(spawnPoints > minUsers){
+		System.out.println("Warning: playing with " + minUsers + " on a map for " + spawnPoints
+				   + " users, gameplay may be unbalanced.");
+	    }
 	}
 	catch(FileNotFoundException e){
 	    System.out.println("File not found: '" + mapfile + "'");

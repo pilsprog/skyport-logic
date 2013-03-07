@@ -1,0 +1,5 @@
+This folder contains various maps for testing.
+
+ - testing/:	     Mostly simple maps for testing AIs and the server.
+ - balanced/:	     Maps that are intended to be balanced and depict how the real maps in the game are going to look.
+ - evil/:	     Maps that are fairly evil and can be used for testing corner-cases in AIs.

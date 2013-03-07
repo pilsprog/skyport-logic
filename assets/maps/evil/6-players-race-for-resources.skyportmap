@@ -1,6 +1,6 @@
 players 6
 size 50
-description "Race for resources"
+description "Race for resources. A somewhat silly experiment on whether your AI prioritizes resource gathering correctly."
                                                                                                                                                       __
                                                                                                                                                    __/V \__
                                                                                                                                                 __/V \__/V \__
