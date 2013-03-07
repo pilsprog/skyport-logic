@@ -116,6 +116,7 @@ public class GraphicsConnection {
 		    playerObject.put("health", ai.health);
 		    playerObject.put("score", 0); //TODO: disabled ai.score until its properly implemented
 		    playerObject.put("position", ai.position.coords.getCompactString());
+		    playerObject.put("alive", ai.isAlive);
 		    JSONObject primaryWeaponObject = new JSONObject();
 		    primaryWeaponObject.put("name", ai.primaryWeapon);
 		    primaryWeaponObject.put("level", ai.primaryWeaponLevel);

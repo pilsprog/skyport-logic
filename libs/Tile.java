@@ -75,7 +75,8 @@ public class Tile {
     }
     public void damageTile(int hitpoints, AIConnection dealingPlayer){
 	if(playerOnTile == null){
-	    System.out.println("Tile absorbed damage.");
+	    // TODO: check rocks absorb mortar AoE damage correctly and such.
+	    System.out.println("Tile absorbed damage: no player on this " + tileType + "-tile");
 	    return;
 	}
 	else {

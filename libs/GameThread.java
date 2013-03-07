@@ -7,20 +7,21 @@ public class GameThread {
     ConcurrentLinkedQueue<AIConnection> globalClients;
     int minUsers;
     int gameTimeoutSeconds;
-    int roundTimeSeconds;
+    int roundTimeMilliseconds;
+    boolean accelerateDeadPlayers = true; // TODO: set this to 'false' to be more compliant with spec
     World world;
     PlayerSelector playerSelector;
     AtomicInteger readyUsers = new AtomicInteger(0); // for loadouts
     GraphicsContainer graphicsContainer = null;
     public GameThread(ConcurrentLinkedQueue<AIConnection> globalClientsArg,
-		      int minUsersArg, int gameTimeoutSecondsArg, int roundTimeSecondsArg,
+		      int minUsersArg, int gameTimeoutSecondsArg, int roundTimeMillisecondsArg,
 		      World worldArg, GraphicsContainer graphicsContainerArg){
 	graphicsContainer = graphicsContainerArg;
 	world = worldArg;
 	globalClients = globalClientsArg;
 	minUsers = minUsersArg;
 	gameTimeoutSeconds = gameTimeoutSecondsArg;
-	roundTimeSeconds = roundTimeSecondsArg;
+	roundTimeMilliseconds = roundTimeMillisecondsArg;
     }
     public void run(int gameSecondsTimeout){
 	try {
@@ -72,8 +73,8 @@ public class GameThread {
 	    if(allAreReady) break;
 	    
 	    letClientsThink();
-	    letClientsThink();
-	    letClientsThink();
+	    //letClientsThink();
+	    //letClientsThink();
 	}
 	sendDeadline();
 	graphicsContainer.get().sendEndActions();
@@ -101,7 +102,14 @@ public class GameThread {
 	    // only tested with lvl 1 weapons.
 	    AIConnection currentPlayer = sendGamestate(roundNumber);
 	    System.out.println("########## START TURN. PLAYER: '" + currentPlayer.username + "' ##########");
-	    letClientsThink();
+	    if(currentPlayer.isAlive || !accelerateDeadPlayers){
+		letClientsThink();
+	    }
+	    else {
+		System.out.println("Player '" + currentPlayer.username
+				   + "' is dead and accelerateDeadPlayers flag is set, sending"
+				   + " deadline immediately...");
+	    }
 	    sendDeadline();
 	    System.out.println("[GAMETHRD] Deadline! Processing actions...");
 	    JSONObject first = currentPlayer.getNextMessage();
@@ -112,17 +120,17 @@ public class GameThread {
 		broadcastAction(first, currentPlayer);
 		validAction++;
 	    }
-	    else {System.out.println("Action was invalid.");}
+	    else {System.out.println("First action was invalid.");}
 	    if(letPlayerPerformAction(second, currentPlayer)){
 		broadcastAction(second, currentPlayer);
 		validAction++;
 	    }
-	    else {System.out.println("Action was invalid.");}
+	    else {System.out.println("Second action was invalid.");}
 	    if(letPlayerPerformAction(third, currentPlayer)){
 		broadcastAction(third, currentPlayer);
 		validAction++;
 	    }
-	    else {System.out.println("Action was invalid.");}
+	    else {System.out.println("Third action was invalid.");}
 	    System.out.println("[GAMETHRD] player performed " + validAction + " valid actions");
 	    graphicsContainer.get().sendEndActions();
 	    // simulate the GUI working -- we will have to wait for it later
@@ -194,7 +202,7 @@ public class GameThread {
     }
     public void letClientsThink(){
 	try {
-	    Thread.sleep(roundTimeSeconds*1000);
+	    Thread.sleep(roundTimeMilliseconds); // 1000
 	}
 	catch (InterruptedException e){
 	    System.out.println("INTERUPTED!");

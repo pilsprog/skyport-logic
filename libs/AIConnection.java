@@ -38,9 +38,9 @@ public class AIConnection {
     public String getIp(){
 	return socket.getInetAddress() + ":" + Integer.toString(socket.getPort());
     }
-    public synchronized void write(String string){ // only one thread may write at the same time
-	System.out.println("[AICONHND] writing to socket: " + string);
-    }
+    // public synchronized void write(String string){ // only one thread may write at the same time
+    // 	System.out.println("[AICONHND] writing to socket: " + string);
+    // }
     void sendError(String errorString){
 	try {
 	    JSONObject errorMessage = new JSONObject().put("error", errorString);
@@ -188,6 +188,10 @@ public class AIConnection {
 	}
     }
     public void sendMessage(JSONObject o) throws IOException{
+	if(!isAlive){
+	    System.out.println("player '" + this.username + "' disconnected, not sending...");
+	    return;
+	}
 	socket.getOutputStream().write((o.toString() + "\n").getBytes());
     }
     public JSONObject getNextMessage(){

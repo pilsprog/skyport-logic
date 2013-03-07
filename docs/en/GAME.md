@@ -182,10 +182,9 @@ STARTING
 Upon gamestart, each AI is set to a protected starting-tile. A starting-
 tile can be moved off of, but cannot be moved onto. Hence only the server
 may place a player on a starting tile.
-Attacking a player on a starting tile incurs damage to the player
-performing the attack. A player on a starting-tile may not perform any
-moves other than moving away from the starting tile. Standing on the
-starting-tile incurs a health/point penality.
+A player standing on the starting tile, may not attack, and cannot be
+attacked. Remaining on the starting tile when the round is over, incurrs
+a penality of -10 points.
 
 ACTIONS
 -------
