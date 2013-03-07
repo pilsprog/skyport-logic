@@ -249,11 +249,15 @@ Damage is always rounded to the nearest int, with 0.5 rounding to 1.
 * droid lvl 2: 24dmg
 * droid lvl 3: 26dmg
 * droid AoE damage: 10dmg
-* player_damage = weapon_damage
-    + AoE_damage + unused_turns*(0.2*weapon_damage) + unused_turns*(0.2*AoE_damage)
+* player_damage = weapon_damage + AoE_damage + unused_turns*(0.2*weapon_damage) + unused_turns*(0.2*AoE_damage)
+
 For this last equation, notice that either AoE_damage = 0 or weapon_damage = 0, since a tile cannot be hit
 simultaneously by the weapons main damage and its AoE damage.
+
 Example:
+
 Player A hits a tile X with a lvl 3 mortar and 2 unused turns left.
+
 Damage incurred to player on X:	    	       player_damage = 25 + 0 + 2*(0.2*25) + 2*(0.2*0) = 35
+
 Damage incurred to players on adjacent tiles:  player_damage = 0 + 18 + 2*(0.2*0) + 2*(0.2*18) = 25

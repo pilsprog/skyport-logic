@@ -246,10 +246,15 @@ Skade blir alltid rundet opp/ned til nærmeste heltall, med round(0.5) = 1.
 * Kamp-droider skader, ved nivå 3: 26 dmg
 * Kamp-droiders AoE skader: 10 dmg
 * Utregning av skade:
-	player_damage = weapon_damage + AoE_damage + unused_turns * (0.2 * weapon_damage) + unused_turns * (0.2 * AoE_damage)
+player_damage = weapon_damage + AoE_damage + unused_turns * (0.2 * weapon_damage) + unused_turns * (0.2 * AoE_damage)
+
 NB: For denne ligningen er alltid enten AoE_damage = 0 eller weapon_damage = 0, siden en rute ikke kan blir truffet
 av AoE skade og direkt skade samtidig.
+
 Eksempel:
+
 Spiller A treffer en rute X med en lvl 3 mortar med 2 ubrukte handlinger.
+
 Skade påført til spillern på rute X:       player_damage = 25 + 0 + 2*(0.2*25) + 2*(0.2*0) = 35
+
 Skade påført til spillerne rundt X (AoE):  player_damage = 0 + 18 + 2*(0.2*0) + 2*(0.2*18) = 25
