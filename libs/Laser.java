@@ -34,6 +34,7 @@ public class Laser {
 	case "up":
 	    for(i = 0; i < range; i++){
 		if(currentTile.up == null) break;
+		if(currentTile.up.tileType == TileType.ROCK) break;
 		currentTile = currentTile.up;
 		currentTile.damageTile(damage, dealingPlayer);
 	    }
@@ -41,6 +42,7 @@ public class Laser {
 	case "down":
 	    for(i = 0; i < range; i++){
 		if(currentTile.down == null) break;
+		if(currentTile.down.tileType == TileType.ROCK) break;
 		currentTile = currentTile.down;
 		currentTile.damageTile(damage, dealingPlayer);
 
@@ -49,6 +51,7 @@ public class Laser {
 	case "left-up":
 	    for(i = 0; i < range; i++){
 		if(currentTile.leftUp == null) break;
+		if(currentTile.leftUp.tileType == TileType.ROCK) break;
 		currentTile = currentTile.leftUp;
 		currentTile.damageTile(damage, dealingPlayer);
 	    }
@@ -56,6 +59,7 @@ public class Laser {
 	case "left-down":
 	    for(i = 0; i < range; i++){
 		if(currentTile.leftDown == null) break;
+		if(currentTile.leftDown.tileType == TileType.ROCK) break;
 		currentTile = currentTile.leftDown;
 		currentTile.damageTile(damage, dealingPlayer);
 	    }
@@ -63,6 +67,7 @@ public class Laser {
 	case "right-up":
 	    for(i = 0; i < range; i++){
 		if(currentTile.rightUp == null) break;
+		if(currentTile.rightUp.tileType == TileType.ROCK) break;
 		currentTile = currentTile.rightUp;
 		currentTile.damageTile(damage, dealingPlayer);
 	    }
@@ -70,6 +75,7 @@ public class Laser {
 	case "right-down":
 	    for(i = 0; i < range; i++){
 		if(currentTile.rightDown == null) break;
+		if(currentTile.rightDown.tileType == TileType.ROCK) break;
 		currentTile = currentTile.rightDown;
 		currentTile.damageTile(damage, dealingPlayer);
 	    }

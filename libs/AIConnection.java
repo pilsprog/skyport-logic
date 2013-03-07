@@ -355,7 +355,7 @@ public class AIConnection {
     }
 
     boolean shootDroid(JSONObject action){
-	int droidLevel = 1;
+	int droidLevel = 1; // TODO
 	if(primaryWeapon.equals("droid")){
 	    droidLevel = primaryWeaponLevel;
 	}
@@ -370,6 +370,7 @@ public class AIConnection {
 	try {
 	    JSONArray directionSequence = action.getJSONArray("sequence");
 	    Droid droid = new Droid(this);
+	    
 	    if(droid.setDirections(directionSequence, droidLevel)){
 		droid.setPosition(position);
 		droid.performShot();
@@ -384,6 +385,31 @@ public class AIConnection {
 	    sendError("Invalid shot: lacks a direction key");
 	}
 	return false;
+    }
+
+    boolean shootMortar(JSONObject action){
+	int mortarLevel = 1;
+	if(primaryWeapon.equals("mortar")){
+	    mortarLevel = primaryWeaponLevel;
+	}
+	else if(secondaryWeapon.equals("mortar")){
+	    mortarLevel = secondaryWeaponLevel;
+	}
+	else {
+	    System.out.println("User '" + username
+			       + "' attempted to shoot the mortar, but doesn't have it");
+	    return false;
+	}
+	try {
+	    Coordinate relativeTargetCoordinates = new Coordinate(action.getString("coordinates"));
+	    Mortar mortar = new Mortar(this);
+	    mortar.setTarget(relativeTargetCoordinates, mortarLevel);
+	    return true;
+	}
+	catch (JSONException e){
+	    sendError("Invalid shot: lacks 'coordinates' key");
+	    return false;
+	}
     }
     
     void damagePlayer(int hitpoints, AIConnection dealingPlayer){

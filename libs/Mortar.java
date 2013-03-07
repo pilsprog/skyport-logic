@@ -3,7 +3,7 @@ import java.lang.Math;
 
 public class Mortar {
     private Tile position;
-    private Vec2 relativeTargetVector;
+    private Coordinate relativeTargetVector;
     private AIConnection dealingPlayer;
     private int level = 1;
     public Mortar(AIConnection dealingPlayerArg){
@@ -12,12 +12,13 @@ public class Mortar {
     public void setPosition(Tile positionArg){
 	position = positionArg;
     }
-    public void setTarget(Vec2 relativeTargetVectorArg, int levelArg){
+    public void setTarget(Coordinate relativeTargetVectorArg, int levelArg){
 	relativeTargetVector = relativeTargetVectorArg;
 	level = levelArg;
     }
     public void performShot(){
-	System.out.println("'" + dealingPlayer.username + "' performing mortar shot at '" + relativeTargetVector.str() + "'");
+	System.out.println("'" + dealingPlayer.username + "' performing mortar shot at '"
+			   + relativeTargetVector.getString() + "'");
 	int range = 3;
 	int damage = 22;
 	if(level == 2) {damage = 24; range = 4;}

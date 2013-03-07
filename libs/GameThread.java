@@ -143,7 +143,6 @@ public class GameThread {
 	catch (JSONException e){
 	}
 	try {
-	    System.out.println("STUB: insert extra protocol for 2D GUI here");
 	    graphicsContainer.get().sendMessage(action);
 	}
 	catch (IOException e) {
@@ -169,6 +168,8 @@ public class GameThread {
 		return currentPlayer.shootLaser(action, graphicsContainer.get());
 	    case "droid":
 		return currentPlayer.shootDroid(action);
+	    case "mortar":
+		return currentPlayer.shootMortar(action);
 	    default:
 		currentPlayer.invalidAction(action);
 		return false;
