@@ -104,7 +104,6 @@ public class GraphicsConnection {
     }
     public synchronized void sendGamestate(int turnNumber, int dimension, String mapData[][],
 			      AIConnection playerlist[]){
-	// TODO: correct turn number
 	JSONObject root = new JSONObject();
 	try {
 	    root.put("message", "gamestate");
@@ -115,7 +114,7 @@ public class GraphicsConnection {
 		playerObject.put("name", ai.username);
 		if(turnNumber != 0){
 		    playerObject.put("health", ai.health);
-		    playerObject.put("score", ai.score);
+		    playerObject.put("score", 0); //TODO: disabled ai.score until its properly implemented
 		    playerObject.put("position", ai.position.coords.getCompactString());
 		    JSONObject primaryWeaponObject = new JSONObject();
 		    primaryWeaponObject.put("name", ai.primaryWeapon);
@@ -170,7 +169,6 @@ public class GraphicsConnection {
     public void sendMessage(JSONObject o) throws IOException{
 	try {
 	    if(o.getString("message").equals("action") && o.getString("type").equals("laser")){
-		System.out.println("start-stop hack: start: " + startHack.getString() + ", stop: " + stopHack.getString());
 		o.put("start", startHack.getCompactString());
 		o.put("stop", stopHack.getCompactString());
 	    }

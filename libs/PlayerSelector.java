@@ -40,16 +40,30 @@ public class PlayerSelector {
     }
     
     public AIConnection[] getListInTurnOrderAndMoveToNextTurn(){
-	// purge dead players
-	purgeDeadPlayersFromRing();
+	// TODO: Dead players are currently not purged anymore. Verify that works...
+	// purgeDeadPlayersFromRing();
+
+	// TODO: build in check here to skip over passing players
+	// TODO: test this code
+	while(true){
+	    currentPlayer = currentPlayer.next;
+	    if(currentPlayer.connection.health == 0){
+		currentPlayer.connection.respawn(); // fill up health and teleport to spawn
+		// player will get a turn again next round
+	    }
+	    else {
+		break; // we found a player who doesn't have to pass his turn
+	    }
+	}
+	
 	LinkedList<AIConnection> templist = new LinkedList<AIConnection>();
 	RingNode tempPlayer = currentPlayer; // it's currentPlayers turn.
 	do {
 	    templist.add(tempPlayer.connection);
 	    tempPlayer = tempPlayer.next;
 	} while(tempPlayer != currentPlayer);
+
 	
-	currentPlayer = currentPlayer.next;
 	AIConnection[] connectionArrayWorkaroundForJavasStupidTypeSystem = new AIConnection[0];
 	return templist.toArray(connectionArrayWorkaroundForJavasStupidTypeSystem);
     }

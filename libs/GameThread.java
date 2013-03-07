@@ -69,9 +69,8 @@ public class GameThread {
 		    allAreReady = false;
 		}
 	    }
-	    if(allAreReady){
-		break;
-	    }
+	    if(allAreReady) break;
+	    
 	    letClientsThink();
 	    letClientsThink();
 	    letClientsThink();
@@ -86,20 +85,22 @@ public class GameThread {
 	int roundNumber = 1;
 	while(true){
 	    int playerNum = world.verifyNumberOfPlayersOnBoard();
-	    System.out.println("CHECK: " + playerNum + " players on the field");
+	    if(playerNum != globalClients.size()){
+		System.out.println("WARNING: " + globalClients.size() + " players are supposed to be"
+				   + " on the field, but found " + playerNum
+				   + ". Possible inconsistency during movement?");
+	    }
 		    
 	    long roundStartTime = System.nanoTime();
 	    if((roundStartTime - startTime) > gtsAsLong*1000000000){
 		System.out.println("[GAMETHRD] Time over!");
 		System.exit(0);
 	    }
-	    System.out.println("[GAMETHRD] Sending gamestate...");
 	    // TODO: clear out message queue of the player whos turn it is
 	    // TODO: test everything with all levels of weapons -- so far
 	    // only tested with lvl 1 weapons.
 	    AIConnection currentPlayer = sendGamestate(roundNumber);
-	    
-	    System.out.println("sent gamestate. Current player: " + currentPlayer.username);
+	    System.out.println("########## START TURN. PLAYER: '" + currentPlayer.username + "' ##########");
 	    letClientsThink();
 	    sendDeadline();
 	    System.out.println("[GAMETHRD] Deadline! Processing actions...");
@@ -165,10 +166,22 @@ public class GameThread {
 	    case "move":
 		return currentPlayer.doMove(action);
 	    case "laser":
+		if(currentPlayer.position.tileType == TileType.SPAWN){
+		    System.out.println("[GAMETHRD]: Player attempted to shoot laser from spawn.");
+		    return false;
+		}
 		return currentPlayer.shootLaser(action, graphicsContainer.get());
 	    case "droid":
+		if(currentPlayer.position.tileType == TileType.SPAWN){
+		    System.out.println("[GAMETHRD]: Player attempted to shoot droid from spawn.");
+		    return false;
+		}
 		return currentPlayer.shootDroid(action);
 	    case "mortar":
+		if(currentPlayer.position.tileType == TileType.SPAWN){
+		    System.out.println("[GAMETHRD]: Player attempted to shoot mortar from spawn.");
+		    return false;
+		}
 		return currentPlayer.shootMortar(action);
 	    default:
 		currentPlayer.invalidAction(action);

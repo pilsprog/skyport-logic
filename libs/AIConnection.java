@@ -16,6 +16,7 @@ public class AIConnection {
     public int secondaryWeaponLevel = 1;
     public String username;
     public Tile position = null;
+    public Tile spawnTile = null;
     public boolean isAlive = true;
     public int health = 100;
     public int score = 0;
@@ -196,6 +197,7 @@ public class AIConnection {
 	System.out.println("[AICONHND] Player '" + username
 			   + "' spawns at " + spawnpoint.coords.getString());
 	position = spawnpoint;
+	spawnTile = spawnpoint;
 	position.playerOnTile = this;
     }
     public void clearAllMessages(){
@@ -416,12 +418,23 @@ public class AIConnection {
 	System.out.println("STUB: '" + this.username + "' received " + hitpoints
 			   + " damage from '" + dealingPlayer.username  + "'!");
 	health -= hitpoints;
-	dealingPlayer.givePoints(hitpoints); // award dealingPlayer the points
+	// TODO: test self-damage & self-killing
+	if(!(dealingPlayer.username.equals(this.username))){
+	    dealingPlayer.givePoints(hitpoints); // damaged user other than self, award points
+	}
 	if(health <= 0){
 	    System.out.println(this.username + " got killed by " + dealingPlayer.username);
-	    dealingPlayer.givePoints(20); // 20 bonus points for killing someone
-	    health = 100; // TODO: just resetting health here
+	    if(!(dealingPlayer.username.equals(this.username))){
+		dealingPlayer.givePoints(20); // 20 bonus points for killing someone
+	    }
+	    health = 0;
 	}
+    }
+    void respawn(){
+	position.playerOnTile = null;
+	position = spawnTile;
+	position.playerOnTile = this;
+	health = 100;
     }
     void givePoints(int points){
 	System.out.println("got awarded " + points + " points");
