@@ -200,6 +200,8 @@ public class GameThread {
 		    currentPlayer.sendError("Tried to mine while not on a resource tile!");
 		    return false;
 		}
+	    case "upgrade": // {"message":"action", "type":"upgrade", "weapon":"mortar",
+		return currentPlayer.upgradeWeapon(action.getString("weapon"));
 	    default:
 		currentPlayer.invalidAction(action);
 		return false;

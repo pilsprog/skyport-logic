@@ -73,3 +73,6 @@ class SkyportTransmitter:
 
 	def mine(self):
 		self.handler_send(json.dumps({"message":"action", "type":"mine"}))
+        
+	def upgrade(self, weapon):
+		self.handler_send(json.dumps({"message":"upgrade", "weapon":weapon}))

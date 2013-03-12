@@ -34,11 +34,12 @@ public class Droid {
 	level = levelArg;
 	return true;
     }
-    public void performShot(){
+    public int performShot(){
 	Debug.game("'" + dealingPlayer.username + "' performing droid shot with "
 			   + directions.length + " steps");
 	int range = 3;
 	int damage = 22;
+	int validStepsTaken = 0;
 	if(level == 2) {damage = 24; range = 4;}
 	if(level == 3) {damage = 26; range = 5;}
 	Tile currentTile = position;
@@ -53,10 +54,12 @@ public class Droid {
 		break;
 	    }
 	    else {
+		validStepsTaken++;
 		Debug.debug("droid executed command successfully, reading next instruction...");
 	    }
 	}
 	explode(damage);
+	return validStepsTaken;
     }
     void explode(int damage){
 	// TODO: implement bonuses for unused turns (also check other weapons)

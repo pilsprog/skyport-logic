@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.json.*;
 
 public class GraphicsConnection {
+    public static GraphicsConnection debugConnection;
     private Socket socket;
     private BufferedReader inputReader;
     private ConcurrentLinkedQueue<JSONObject> messages;
@@ -27,6 +28,7 @@ public class GraphicsConnection {
 	catch (IOException e){
 	    Debug.error("error creating connection handler: " + e);
 	}
+	debugConnection = this;
     }
     public String readLine() throws IOException {
 	return inputReader.readLine();
@@ -209,6 +211,17 @@ public class GraphicsConnection {
 	try {
 	    o.put("message", "subtitle");
 	    o.put("text", subtitle);
+	    sendMessage(o);
+	}
+	catch(JSONException e){}
+	catch(IOException e){}
+    }
+    public void sendHighlight(String position, int r, int g, int b){
+	JSONObject o = new JSONObject();
+	try {
+	    o.put("message", "highlight");
+	    o.put("coordinate", position);
+	    o.put("color", new JSONArray().put(r).put(g).put(b));
 	    sendMessage(o);
 	}
 	catch(JSONException e){}

@@ -381,12 +381,20 @@ public class AIConnection {
 	    JSONArray directionSequence = action.getJSONArray("sequence");
 	    Droid droid = new Droid(this);
 	    if(directionSequence.length() > range){
-		sendError("Sent " + directionSequence.length() + " commands for the droid, but your droids level ("
+		Debug.warn("Got " + directionSequence.length() + " commands for the droid, but your droids level ("
+			   + droidLevel + ") only supports " + range + " steps.");
+		sendError("Got " + directionSequence.length() + " commands for the droid, but your droids level ("
 			  + droidLevel + ") only supports " + range + " steps.");
 	    }
 	    if(droid.setDirections(directionSequence, droidLevel)){
 		droid.setPosition(position);
-		droid.performShot();
+		int stepsTaken = droid.performShot();
+		JSONArray truncatedArray = new JSONArray();
+		for(int i = 0; i < stepsTaken; i++){
+		    truncatedArray.put(directionSequence.get(i));
+		}
+		action.put("sequence", truncatedArray);
+		Debug.debug("droid steps taken: " + stepsTaken);
 	    }
 	    else {
 		sendError("Invalid shot: unknown direction in droid sequence");
@@ -459,6 +467,10 @@ public class AIConnection {
 	    }
 	    health = 0;
 	}
+    }
+    boolean upgradeWeapon(String weapon){
+	Debug.stub("UPGRADE WEAPON");
+	return true;
     }
     void respawn(){
 	position.playerOnTile = null;

@@ -13,6 +13,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.connect(('127.0.0.1', 54321))
 
 inputbuf = ""
+weapons_chosen = []
 
 def read_packet():
     global inputbuf
@@ -51,6 +52,8 @@ def shoot_mortar_in_random_direction():
         k = 2
     transmitter.attack_mortar(j, k)
 
+def upgrade_primary_weapon():
+    transmitter.upgrade(random.choice(weapons_chosen))
     
 def shoot_laser_in_random_direction():
     # requires you to select the laser as weapon, obviously
@@ -60,7 +63,7 @@ def shoot_laser_in_random_direction():
 
 def shoot_droid_in_random_directions():
     directions = []
-    for x in range(0, 4):
+    for x in range(0, 8):
         directions.append(random.choice(["up", "down", "left-down", "left-up", "right-down", "right-up"]))
     print("shooting droid in sequence %r" % directions)
     transmitter.attack_droid(directions)
@@ -89,6 +92,7 @@ def got_gamestart(turn, map_obj, player_list):
     weapons.remove(primary_weapon)
     secondary_weapon = random.choice(weapons)
     print("chose loadout: %s and %s" % (primary_weapon, secondary_weapon))
+    weapons_chosen = [primary_weapon, secondary_weapon]
     transmitter.send_loadout(primary_weapon, secondary_weapon)
 
 def got_action(action_type, who, rest_data):
