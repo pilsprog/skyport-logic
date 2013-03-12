@@ -24,22 +24,26 @@ public class World {
 	while(bottomTile.leftDown != null){
 	    bottomTile = bottomTile.leftDown;
 	}
-	System.out.println("Summary of world " + filename + ":");
-	System.out.println("Total tiles: " + Tile.totalTiles);
-	System.out.println("\tGrass tiles: " + Tile.grassTiles);
-	System.out.println("\tRock tiles: " + Tile.rockTiles);
-	System.out.println("\tVoid tiles: " + Tile.voidTiles);
-	System.out.println("\tSpawn tiles: " + Tile.spawnTiles);
-	System.out.println("Resources:");
-
-	System.out.println("\tScrap tiles: " + Tile.scrapTiles + ", total scrap: " + Tile.scrapTiles*2);
-	System.out.println("\tRubidium tiles: " + Tile.rubidiumTiles + ", total rubidium: "
-			   + Tile.rubidiumTiles*2);
-	System.out.println("\tExplosium tiles: " + Tile.explosiumTiles + ", total explosium: "
-			   + Tile.explosiumTiles*2);
+	if(Debug.developerMode){
+	    System.out.println("Summary of world " + filename + ":");
+	    System.out.println("Total tiles: " + Tile.totalTiles);
+	    System.out.println("\tGrass tiles: " + Tile.grassTiles);
+	    System.out.println("\tRock tiles: " + Tile.rockTiles);
+	    System.out.println("\tVoid tiles: " + Tile.voidTiles);
+	    System.out.println("\tSpawn tiles: " + Tile.spawnTiles);
+	    System.out.println("Resources:");
+	    
+	    System.out.println("\tScrap tiles: " + Tile.scrapTiles + ", total scrap: " + Tile.scrapTiles*2);
+	    System.out.println("\tRubidium tiles: " + Tile.rubidiumTiles + ", total rubidium: "
+			       + Tile.rubidiumTiles*2);
+	    System.out.println("\tExplosium tiles: " + Tile.explosiumTiles + ", total explosium: "
+			       + Tile.explosiumTiles*2);
+	}
 	enumerateCoordinates(topTile);
 	findAndRandomizeSpawnpoints(topTile);
-	performStructureConsistencyVerification(topTile);
+	if(Debug.developerMode){
+	    performStructureConsistencyVerification(topTile);
+	}
 	returnAsRowMajorMatrix();
     }
     public String[][] returnAsRowMajorMatrix(){
@@ -89,7 +93,7 @@ public class World {
 	    }
 	    currentJTile = currentJTile.leftDown;
 	}
-	System.out.println("Found " + freeSpawnpoints.size() + " spawnpoints. Randomizing...");
+	Debug.debug("Found " + freeSpawnpoints.size() + " spawnpoints. Randomizing...");
 	Collections.shuffle(freeSpawnpoints);
     }
     public void performStructureConsistencyVerification(Tile topTile){

@@ -21,14 +21,13 @@ public class Laser {
 	}
     }
     public Coordinate performShot(int level){
-	System.out.println("'" + dealingPlayer.username + "' performing laser shot in direction "
+	Debug.game("'" + dealingPlayer.username + "' performing laser shot in direction "
 			   + direction + "!");
 	int range = 5;
 	int damage = 16;
 	if(level == 2) {damage = 18; range = 6;}
 	if(level == 3) {damage = 22; range = 7;}
 	Tile currentTile = position;
-	// TODO: rock tiles should not be transparent to lasers
 	int i = 0;
 	switch(direction){
 	case "up":

@@ -25,7 +25,7 @@ public class GraphicsConnection {
 	    inputReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 	}
 	catch (IOException e){
-	    System.out.println("[GRAPHCON] error creating connection handler: " + e);
+	    Debug.error("error creating connection handler: " + e);
 	}
     }
     public String readLine() throws IOException {
@@ -33,9 +33,6 @@ public class GraphicsConnection {
     }
     public String getIp(){
 	return socket.getInetAddress() + ":" + Integer.toString(socket.getPort());
-    }
-    public synchronized void write(String string){ // only one thread may write at the same time
-	System.out.println("[GRAPHCON] writing to socket: " + string);
     }
     public synchronized void input(JSONObject o) throws ProtocolException, IOException {
 	if(!gotHandshake){
@@ -60,11 +57,13 @@ public class GraphicsConnection {
 		}
 	    }
 	    catch (JSONException e){
+		Debug.warn("Invalid or incomplete packet: " + e.getMessage());
 		throw new ProtocolException("Invalid or incomplete packet: " + e.getMessage());
 	    }
 	}
 	else {
 	    try {
+		Debug.warn("Unexpected packet: " + o.get("message"));
 		throw new ProtocolException("Unexpected packet: '" + o.get("message") + "'");
 	    }
 	    catch (JSONException e) {
@@ -84,10 +83,10 @@ public class GraphicsConnection {
 					    o.getInt("revision"));
 	    }
 	    if(!o.getString("password").equals(password)){
-		System.out.println("Wrong password");
+		Debug.warn("GUI sent wrong password");
 		throw new ProtocolException("Wrong password!");
 	    }
-	    System.out.println("Correct password");
+	    Debug.debug("Correct password");
 	    gotHandshake = true;
 	    container.set(this);
 	    try {
@@ -144,7 +143,7 @@ public class GraphicsConnection {
 	    isDoneProcessing = false;
 	}
 	catch (IOException e) {
-	    System.out.println("Error writing to graphics: " + e.getMessage());
+	    Debug.error("Error writing to graphics: " + e.getMessage());
 	}
     }
     public void sendDeadline(){
@@ -154,7 +153,7 @@ public class GraphicsConnection {
 	    sendMessage(o);
 	} catch (JSONException e){}
 	catch (IOException e){
-	    System.out.println("Error writing to graphics: " + e.getMessage());
+	    Debug.error("Error writing to graphics: " + e.getMessage());
 	}
     }
     public void sendEndActions(){
@@ -164,7 +163,7 @@ public class GraphicsConnection {
 	    sendMessage(o);
 	} catch (JSONException e){}
 	catch (IOException e){
-	    System.out.println("Error writing to graphics: " + e.getMessage());
+	    Debug.error("Error writing to graphics: " + e.getMessage());
 	}
     }
     public void sendMessage(JSONObject o) throws IOException{
@@ -182,7 +181,7 @@ public class GraphicsConnection {
 	return messages.poll();
     }
     public void waitForGraphics(){
-	System.out.println("Waiting for graphics...");
+	Debug.debug("Waiting for graphics...");
 	while(true){
 	    try {Thread.sleep(10);} catch (InterruptedException e){}
 	    if(isDoneProcessing){
@@ -194,5 +193,25 @@ public class GraphicsConnection {
 	// quick'n'dirty hack added for skyport 2D gui to change laser to start-stop format
 	startHack = startVector;
 	stopHack = stopVector;
+    }
+    public void sendTitle(String title){
+	JSONObject o = new JSONObject();
+	try {
+	    o.put("message", "title");
+	    o.put("text", title);
+	    sendMessage(o);
+	}
+	catch(JSONException e){}
+	catch(IOException e){}
+    }
+    public void sendSubtitle(String subtitle){
+	JSONObject o = new JSONObject();
+	try {
+	    o.put("message", "subtitle");
+	    o.put("text", subtitle);
+	    sendMessage(o);
+	}
+	catch(JSONException e){}
+	catch(IOException e){}
     }
 }

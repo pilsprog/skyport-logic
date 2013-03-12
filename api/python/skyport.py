@@ -70,3 +70,6 @@ class SkyportTransmitter:
 
 	def attack_droid(self, sequence):
 		self.handler_send(json.dumps({"message":"action", "type":"droid", "sequence":sequence}))
+
+	def mine(self):
+		self.handler_send(json.dumps({"message":"action", "type":"mine"}))

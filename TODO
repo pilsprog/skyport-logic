@@ -13,3 +13,5 @@ shooting:
 - check tiles register & unregister players correctly for all situations as they move onto/off the tile.
 f.ex. respawning
 - bonus dmg
+- mortar shots outside map
+upgrading

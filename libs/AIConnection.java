@@ -20,6 +20,9 @@ public class AIConnection {
     public boolean isAlive = true;
     public int health = 100;
     public int score = 0;
+    public int rubidiumResources = 0;
+    public int explosiumResources = 0;
+    public int scrapResources = 0;
 
     
     public AIConnection(Socket clientSocket){
@@ -29,7 +32,7 @@ public class AIConnection {
 	    inputReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 	}
 	catch (IOException e){
-	    System.out.println("[AICONHND] error creating connection handler: " + e);
+	    Debug.error("error creating connection handler: " + e);
 	}
     }
     public String readLine() throws IOException {
@@ -38,9 +41,7 @@ public class AIConnection {
     public String getIp(){
 	return socket.getInetAddress() + ":" + Integer.toString(socket.getPort());
     }
-    // public synchronized void write(String string){ // only one thread may write at the same time
-    // 	System.out.println("[AICONHND] writing to socket: " + string);
-    // }
+
     void sendError(String errorString){
 	try {
 	    JSONObject errorMessage = new JSONObject().put("error", errorString);
@@ -105,7 +106,7 @@ public class AIConnection {
 	    }
 	    primaryWeapon = o.getString("primary-weapon");
 	    secondaryWeapon = o.getString("secondary-weapon");
-	    System.out.println(username + " selected loadout: " + primaryWeapon + " and "
+	    Debug.info(username + " selected loadout: " + primaryWeapon + " and "
 			       + secondaryWeapon + ".");
 	    gotLoadout.set(true);
 	}
@@ -174,7 +175,7 @@ public class AIConnection {
 	    sendMessage(root);
 	}
 	catch (IOException e) {
-	    System.out.println("Error writing to '" + username + "': " + e.getMessage());
+	    Debug.error("Error writing to '" + username + "': " + e.getMessage());
 	}
     }
     public void sendDeadline(){
@@ -184,12 +185,12 @@ public class AIConnection {
 	    sendMessage(o);
 	} catch (JSONException e){}
 	catch (IOException e){
-	    System.out.println("Error writing to '" + username + "': " + e.getMessage());
+	    Debug.error("Error writing to '" + username + "': " + e.getMessage());
 	}
     }
     public void sendMessage(JSONObject o) throws IOException{
 	if(!isAlive){
-	    System.out.println("player '" + this.username + "' disconnected, not sending...");
+	    Debug.warn("player '" + this.username + "' disconnected, not sending...");
 	    return;
 	}
 	socket.getOutputStream().write((o.toString() + "\n").getBytes());
@@ -198,7 +199,7 @@ public class AIConnection {
 	return messages.poll();
     }
     public synchronized void setSpawnpoint(Tile spawnpoint){
-	System.out.println("[AICONHND] Player '" + username
+	Debug.info("Player '" + username
 			   + "' spawns at " + spawnpoint.coords.getString());
 	position = spawnpoint;
 	spawnTile = spawnpoint;
@@ -206,7 +207,7 @@ public class AIConnection {
     }
     public void clearAllMessages(){
 	if(messages.size() > 0){
-	    System.out.println("Message inbox of " + username + " contained " + messages.size() + " extra messages, discarding...");
+	    Debug.warn("Message inbox of " + username + " contained " + messages.size() + " extra messages, discarding...");
 	}
 	messages.clear();
     }
@@ -369,14 +370,20 @@ public class AIConnection {
 	    droidLevel = secondaryWeaponLevel;
 	}
 	else {
-	    System.out.println("User '" + username
+	    Debug.warn("User '" + username
 			       + "' attempted to shoot the droid, but doesn't have it");
 	    return false;
 	}
+	int range = 3;
+	if(droidLevel == 2) {range = 4;}
+	if(droidLevel == 3) {range = 5;} // replicated here for more friendly error messages
 	try {
 	    JSONArray directionSequence = action.getJSONArray("sequence");
 	    Droid droid = new Droid(this);
-	    
+	    if(directionSequence.length() > range){
+		sendError("Sent " + directionSequence.length() + " commands for the droid, but your droids level ("
+			  + droidLevel + ") only supports " + range + " steps.");
+	    }
 	    if(droid.setDirections(directionSequence, droidLevel)){
 		droid.setPosition(position);
 		droid.performShot();
@@ -402,24 +409,43 @@ public class AIConnection {
 	    mortarLevel = secondaryWeaponLevel;
 	}
 	else {
-	    System.out.println("User '" + username
+	    Debug.warn("User '" + username
 			       + "' attempted to shoot the mortar, but doesn't have it");
 	    return false;
 	}
 	try {
 	    Coordinate relativeTargetCoordinates = new Coordinate(action.getString("coordinates"));
 	    Mortar mortar = new Mortar(this);
+	    mortar.setPosition(this.position);
 	    mortar.setTarget(relativeTargetCoordinates, mortarLevel);
-	    return true;
+	    return mortar.performShot();
 	}
 	catch (JSONException e){
 	    sendError("Invalid shot: lacks 'coordinates' key");
 	    return false;
 	}
     }
+
+    boolean mineResource(){
+	TileType tileType = this.position.tileType;
+	Debug.game("Player " + username + " mining " + tileType);
+	boolean minedResource = this.position.mineTile();
+	if(minedResource){
+	    if(tileType == TileType.RUBIDIUM)
+		rubidiumResources++;
+	    if(tileType == TileType.EXPLOSIUM)
+		explosiumResources++;
+	    if(tileType == TileType.SCRAP)
+		scrapResources++;
+	    Debug.debug("Resources of player " + username + " are now: Rubidium: "
+			       + rubidiumResources + ", Explosium: " + explosiumResources + ", Scrap: " + scrapResources);
+	    return true;
+	}
+	return false;
+    }
     
     void damagePlayer(int hitpoints, AIConnection dealingPlayer){
-	System.out.println("STUB: '" + this.username + "' received " + hitpoints
+	Debug.stub("'" + this.username + "' received " + hitpoints
 			   + " damage from '" + dealingPlayer.username  + "'!");
 	health -= hitpoints;
 	// TODO: test self-damage & self-killing
@@ -427,7 +453,7 @@ public class AIConnection {
 	    dealingPlayer.givePoints(hitpoints); // damaged user other than self, award points
 	}
 	if(health <= 0){
-	    System.out.println(this.username + " got killed by " + dealingPlayer.username);
+	    Debug.game(this.username + " got killed by " + dealingPlayer.username);
 	    if(!(dealingPlayer.username.equals(this.username))){
 		dealingPlayer.givePoints(20); // 20 bonus points for killing someone
 	    }
@@ -441,7 +467,7 @@ public class AIConnection {
 	health = 100;
     }
     void givePoints(int points){
-	System.out.println("got awarded " + points + " points");
+	Debug.debug("got awarded " + points + " points");
 	score += points;
     }
 }

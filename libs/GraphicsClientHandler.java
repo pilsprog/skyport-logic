@@ -6,7 +6,7 @@ public class GraphicsClientHandler implements Runnable {
     GraphicsConnection connection;
     public GraphicsClientHandler(GraphicsConnection gConnection) {
 	connection = gConnection;
-	System.out.println("[GRAPHICS] Created new reader thread.");
+	Debug.debug("Created new reader thread.");
     }
     @Override
     public void run(){
@@ -19,9 +19,7 @@ public class GraphicsClientHandler implements Runnable {
 		connection.input(o);
 	    }
 	    catch (IOException e){
-		System.out.println("[GRAPHICS] Graphics engine disconnected!");
-		connection.isAlive = false;
-		System.exit(1);
+		Debug.error("GUI disconnected, exiting!");
 	    }
 	    catch (ProtocolException e){
 		try {
@@ -30,7 +28,6 @@ public class GraphicsClientHandler implements Runnable {
 		}
 		catch (JSONException f){}
 		catch (IOException g){
-		    System.out.println("urgh!");
 		}
 	    }
 	}

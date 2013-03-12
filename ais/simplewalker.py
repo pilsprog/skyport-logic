@@ -23,7 +23,7 @@ def read_packet():
             print("Disconnected!")
             sys.exit(1)
     except socket.timeout as e:
-        print("TO!")
+        print("timeout!")
         return None
     except socket.error as e:
         print("error: %s" % e)
@@ -47,7 +47,7 @@ def shoot_mortar_in_random_direction():
     j = random.randrange(-4, 5)
     k = random.randrange(-4, 5)
     if j == 0 and k == 0:
-        j = 2 # don't it ourselves -- we don't care about bias.
+        j = 2 # don't hit ourselves -- we don't care about bias.
         k = 2
     transmitter.attack_mortar(j, k)
 
@@ -80,14 +80,14 @@ def got_gamestate(turn, map_obj, player_list):
     if player_list[0]["name"] == sys.argv[1]:
         do_random_move()
         do_random_move()
-        random.choice([shoot_laser_in_random_direction])()
+        random.choice([shoot_mortar_in_random_direction, shoot_laser_in_random_direction, 
+                       shoot_droid_in_random_directions, transmitter.mine])()
 
 def got_gamestart(turn, map_obj, player_list):
-    # weapons = ["mortar", "droid"]
-    primary_weapon = "mortar"
-    secondary_weapon = "laser"
-    # #weapons.remove(primary_weapon)
-    # secondary_weapon = random.choice(weapons)
+    weapons = ["mortar", "droid", "laser"]
+    primary_weapon = random.choice(weapons)
+    weapons.remove(primary_weapon)
+    secondary_weapon = random.choice(weapons)
     print("chose loadout: %s and %s" % (primary_weapon, secondary_weapon))
     transmitter.send_loadout(primary_weapon, secondary_weapon)
 

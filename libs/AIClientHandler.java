@@ -8,7 +8,7 @@ public class AIClientHandler implements Runnable {
     public AIClientHandler(AIConnection aiConnection, ConcurrentLinkedQueue<AIConnection> lq) {
 	connection = aiConnection;
 	globalClientList = lq;
-	System.out.println("[AIREADER] Created new reader thread. " + lq.size() + " clients active.");
+	Debug.info("Got new AI client. " + lq.size() + " clients are now active.");
     }
     @Override
     public void run(){
@@ -22,7 +22,7 @@ public class AIClientHandler implements Runnable {
 	    }
 	    catch (IOException e){
 		//globalClientList.remove(connection);
-		System.out.println("[AIREADER] Disconnect from " + connection.getIp() + ". "
+		Debug.warn("Disconnect from " + connection.getIp() + ". "
 				   + globalClientList.size() + " clients active.");
 		connection.isAlive = false;
 		return;
@@ -34,7 +34,6 @@ public class AIClientHandler implements Runnable {
 		}
 		catch (JSONException f){}
 		catch (IOException g){
-		    System.out.println("urgh!");
 		}
 	    }
 	}

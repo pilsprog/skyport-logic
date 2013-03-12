@@ -17,19 +17,23 @@ public class Acceptor implements Runnable {
 	    backlog = backlogArg;
 	    globalClientList = globalClients;
 	    isGraphicsManager = isGraphicsManagerArg;
-	    System.out.println("[ACCEPTOR] listening on port " + acceptorSocket.toString());
+	    if(isGraphicsManager){
+		Debug.info("listening on port " + acceptorSocket.toString() + " for the GUI");
+	    }
+	    else {
+		Debug.info("listening on port " + acceptorSocket.toString() + " for players");
+	    }
 	}
 	catch(IOException e){
-	    System.out.println("[ACCEPTOR] Error binding to port: " + e);
-	    System.exit(1);
+	    Debug.error("Error binding to port: " + e);
 	}
     }
     public void run(){
-	System.out.println("[ACCEPTOR] Starting to accept incoming connections");
+	Debug.debug("Starting to accept incoming connections");
 	while(clientsAccepted < backlog){
 	    try {
 		Socket clientSocket = acceptorSocket.accept();
-		System.out.println("[ACCEPTOR] Connect from " + clientSocket);
+		Debug.debug("Connect from " + clientSocket);
 		if(!isGraphicsManager){
 		    spawnReadHandlerThread(clientSocket);
 		}
@@ -39,10 +43,10 @@ public class Acceptor implements Runnable {
 		clientsAccepted++;
 	    }
 	    catch (IOException e) {
-		System.out.println("[ACCEPTOR] Error accepting connection: " + e);
+		Debug.warn("Error accepting connection: " + e);
 	    }
 	}
-	System.out.println("[ACCEPTOR] Accepted " + backlog + " clients, exiting");
+	Debug.debug("Accepted " + backlog + " clients, exiting");
 	try {
 	    acceptorSocket.close();
 	}
@@ -50,7 +54,7 @@ public class Acceptor implements Runnable {
     };
 
     public GraphicsConnection spawnGraphicsHandlerThread(Socket clientSocket){
-	System.out.println("Spawning graphics handler!");
+	Debug.debug("Spawning graphics handler!");
 	GraphicsConnection conn = new GraphicsConnection(clientSocket, graphics);
 	GraphicsClientHandler handler = new GraphicsClientHandler(conn);
 	Thread thread = new Thread(handler);

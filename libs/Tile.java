@@ -57,8 +57,7 @@ public class Tile {
 	    rockTiles++;
 	}
 	else {
-	    System.out.println("Error: Unknown tile type '" + type + "'");
-	    System.exit(1);
+	    Debug.error("Error: Unknown tile type '" + type + "'");
 	}
 	totalTiles++;
     }
@@ -73,15 +72,30 @@ public class Tile {
 	    return false;
 	}
     }
+    public boolean mineTile(){
+	if(resources > 0){
+	    resources--;
+	    if(resources == 0){
+		Debug.game(tileType + " tile is depleted of resources and became a grass-tile.");
+		tileType = TileType.GRASS;
+		id = "G";
+		// TODO: it may be of interest later to *Tiles-- and grassTiles++.
+		// Doesn't seem particularly important, though -- we currently only use
+		// it for the initial consistency check.
+	    }
+	    return true;
+	}
+	return false;
+    }
     public void damageTile(int hitpoints, AIConnection dealingPlayer){
 	if(playerOnTile == null){
 	    // TODO: check rocks absorb mortar AoE damage correctly and such.
-	    System.out.println("Tile absorbed damage: no player on this " + tileType + "-tile");
+	    Debug.debug("Tile absorbed damage: no player on this " + tileType + "-tile");
 	    return;
 	}
 	else {
 	    if(tileType == TileType.SPAWN){
-	    	System.out.println("Hit spawn tile! No damage received.");
+	    	Debug.info("Hit spawn tile, no damage received.");
 	    }
 	    else {
 		playerOnTile.damagePlayer(hitpoints, dealingPlayer);

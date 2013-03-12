@@ -9,7 +9,6 @@ public class Coordinate {
 	String[] tokens = commaDelimitedVectorString.split(",");
 	j = Integer.parseInt(tokens[0]);
 	k = Integer.parseInt(tokens[1]);
-	System.out.println("Coordinate DEBUG: " + commaDelimitedVectorString + " to " + getString());
     }
     public String getString(){
 	return "[" + j + ", " + k + "]";

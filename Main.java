@@ -16,14 +16,14 @@ public class Main {
 	    mapfile = args[3];
 	    if(args.length == 5){
 		aiThinkTimeout = Integer.parseInt(args[4]);
-		System.out.println("Using an AI think timeout of " + aiThinkTimeout + "ms for each turn");
+		Debug.info("Using an AI think timeout of " + aiThinkTimeout + "ms for each turn");
 	    }
 	    else {
-		System.out.println("Using default AI think timeout of " + aiThinkTimeout + "ms for each turn");
+		Debug.info("Using default AI think timeout of " + aiThinkTimeout + "ms for each turn");
 	    }
 	}
 	catch (Exception e){
-	    System.out.println("Usage: ./server <port> <number of users> <game time> <mapfile> [think-timeout in milliseconds]");
+	    Debug.info("Usage: ./server <port> <number of users> <game time> <mapfile> [think-timeout in milliseconds]");
 	    System.exit(1);	    
 	}
 	World world = null;
@@ -33,18 +33,16 @@ public class Main {
 	    world = wp.parseFile();
 	    spawnPoints = world.getSpawnpointNumber();
 	    if(spawnPoints < minUsers){
-		System.out.println("Error: requested to wait for " + minUsers
-				   + " AIs, but this map only supports " + spawnPoints + ".");
+		Debug.error("requested to wait for " + minUsers + " AIs, but this map only supports " + spawnPoints + ".");
 		System.exit(1);
 	    }
 	    if(spawnPoints > minUsers){
-		System.out.println("Warning: playing with " + minUsers + " on a map for " + spawnPoints
+		Debug.warn("playing with " + minUsers + " on a map for " + spawnPoints
 				   + " users, gameplay may be unbalanced.");
 	    }
 	}
 	catch(FileNotFoundException e){
-	    System.out.println("File not found: '" + mapfile + "'");
-	    System.exit(1);
+	    Debug.error("File not found: '" + mapfile + "'");
 	}
 	
 	ConcurrentLinkedQueue<AIConnection> globalClientList = new ConcurrentLinkedQueue<AIConnection>();
@@ -57,7 +55,6 @@ public class Main {
 	
 
 	// the main thread simply becomes the new gamethread.
-	System.out.println("Starting gamethread...");
 	GameThread game =
 	    new GameThread(globalClientList, minUsers, gameTimeoutSeconds,
 			   aiThinkTimeout, world, graphicsContainer);

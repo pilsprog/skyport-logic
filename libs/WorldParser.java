@@ -14,14 +14,14 @@ public class WorldParser{
 	file = filename;
     }
     public World parseFile() throws FileNotFoundException {
-	System.out.println("[MAPPARSE] Parsing map '" + file + "'");
+	Debug.info("Parsing map '" + file + "'");
 	Scanner scanner = new Scanner(new File(file));
 	parseHeader(scanner);
-	System.out.println("[MAPPARSE] Players: " + players);
-	System.out.println("[MAPPARSE] size: " + dimensions);
-	System.out.println("[MAPPARSE] description: '" + description + "'");
+	Debug.info("Players: " + players);
+	Debug.info("size: " + dimensions);
+	Debug.info("description: '" + description + "'");
 	Tile topCorner = parseBody(scanner);
-	System.out.println("[MAPPARSE] Done parsing. Ignored " + ignoredLines + " empty lines.");
+	Debug.debug("Done parsing. Ignored " + ignoredLines + " empty lines.");
 	return new World(topCorner, file, dimensions);
     }
     private void parseHeader(Scanner scanner){
@@ -59,7 +59,7 @@ public class WorldParser{
 		continue;
 	    }
 	    if(lines.length != currentLength){
-		System.out.println("[MAPPARSE] Error: expected this line to have length "
+		Debug.warn("Error: expected this line to have length "
 				   + currentLength + ", but got " + lines.length);
 		continue;
 	    }
@@ -112,7 +112,7 @@ public class WorldParser{
 		// TODO register skipped lines
 	    }
 	    if(lines.length != currentLength){
-		System.out.println("[MAPPARSE] (down) Error: expected this line to have length "
+		Debug.warn("(down) Error: expected this line to have length "
 				   + currentLength + ", but got " + lines.length);
 		continue;
 	    }

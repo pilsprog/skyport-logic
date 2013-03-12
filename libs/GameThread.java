@@ -28,7 +28,7 @@ public class GameThread {
 	    Thread.sleep(500);
 	}
 	catch(InterruptedException e){}
-	System.out.println("[GAMETHRD] waiting for graphics engine to connect");
+	Debug.info("waiting for graphics engine to connect");
 	while(true){
 	    try {
 		Thread.sleep(100);
@@ -37,8 +37,8 @@ public class GameThread {
 		break;
 	    }
 	}
-	System.out.println("[GAMETHRD] got graphics engine connection");
-	System.out.println("[GAMETHRD] waiting for " + minUsers + " users to connect");
+	Debug.info("got graphics engine connection");
+	Debug.info("waiting for " + minUsers + " users to connect");
 	int waitIteration = 0;
 	while(true){
 	    waitIteration++;
@@ -47,26 +47,26 @@ public class GameThread {
 	    }
 	    catch(InterruptedException e){}
 	    if(globalClients.size() == minUsers){
-		System.out.println("[GAMETHRD] Got " + minUsers + " users, starting the round");
+		Debug.info("Got " + minUsers + " users, starting the round");
 		break;
 	    }
 	}
-	System.out.println("[GAMETHRD] Initializing game");
+	Debug.debug("Initializing game");
 	gameMainloop();
     }
     public void gameMainloop(){
-	System.out.println("All clients connected.");
+	Debug.debug("All clients connected.");
 	Util.pressEnterToContinue("Press enter to randomize spawns and send the initial gamestate");
 	initializeBoardWithPlayers();
 	playerSelector = new PlayerSelector(globalClients);
-	System.out.println("[GAMETHRD] Sending initial gamestate");
+	Debug.info("Sending initial gamestart packet");
 	sendGamestate(0);
 	// we just loop until everyone has selected a loadout.
 	while(true){
 	    boolean allAreReady = true;
 	    for(AIConnection conn: globalClients){
 		if(!conn.gotLoadout.get()){
-		    System.out.println("Waiting for loadout from " + conn.username);
+		    Debug.info("Waiting for loadout from " + conn.username);
 		    allAreReady = false;
 		}
 	    }
@@ -79,7 +79,7 @@ public class GameThread {
 	sendDeadline();
 	graphicsContainer.get().sendEndActions();
 	graphicsContainer.get().waitForGraphics();
-	System.out.println("All clients have sent a loadout");
+	Debug.debug("All clients have sent a loadout");
 	Util.pressEnterToContinue("Press enter to start the game");
 	long startTime = System.nanoTime();
 	long gtsAsLong = gameTimeoutSeconds;
@@ -87,31 +87,31 @@ public class GameThread {
 	while(true){
 	    int playerNum = world.verifyNumberOfPlayersOnBoard();
 	    if(playerNum != globalClients.size()){
-		System.out.println("WARNING: " + globalClients.size() + " players are supposed to be"
+		Debug.warn(globalClients.size() + " players are supposed to be"
 				   + " on the field, but found " + playerNum
 				   + ". Possible inconsistency during movement?");
 	    }
 		    
 	    long roundStartTime = System.nanoTime();
 	    if((roundStartTime - startTime) > gtsAsLong*1000000000){
-		System.out.println("[GAMETHRD] Time over!");
+		Debug.info("Time over!");
 		System.exit(0);
 	    }
 	    // TODO: clear out message queue of the player whos turn it is
 	    // TODO: test everything with all levels of weapons -- so far
 	    // only tested with lvl 1 weapons.
 	    AIConnection currentPlayer = sendGamestate(roundNumber);
-	    System.out.println("########## START TURN. PLAYER: '" + currentPlayer.username + "' ##########");
+	    Debug.marker("START TURN " + roundNumber + " PLAYER: '" + currentPlayer.username + "'");
 	    if(currentPlayer.isAlive || !accelerateDeadPlayers){
 		letClientsThink();
 	    }
 	    else {
-		System.out.println("Player '" + currentPlayer.username
+		Debug.debug("Player '" + currentPlayer.username
 				   + "' is dead and accelerateDeadPlayers flag is set, sending"
 				   + " deadline immediately...");
 	    }
 	    sendDeadline();
-	    System.out.println("[GAMETHRD] Deadline! Processing actions...");
+	    Debug.debug("Deadline! Processing actions...");
 	    JSONObject first = currentPlayer.getNextMessage();
 	    JSONObject second = currentPlayer.getNextMessage();
 	    JSONObject third = currentPlayer.getNextMessage();
@@ -120,23 +120,20 @@ public class GameThread {
 		broadcastAction(first, currentPlayer);
 		validAction++;
 	    }
-	    else {System.out.println("First action was invalid.");}
+	    else {Debug.debug("First action was invalid.");}
 	    if(letPlayerPerformAction(second, currentPlayer)){
 		broadcastAction(second, currentPlayer);
 		validAction++;
 	    }
-	    else {System.out.println("Second action was invalid.");}
+	    else {Debug.debug("Second action was invalid.");}
 	    if(letPlayerPerformAction(third, currentPlayer)){
 		broadcastAction(third, currentPlayer);
 		validAction++;
 	    }
-	    else {System.out.println("Third action was invalid.");}
-	    System.out.println("[GAMETHRD] player performed " + validAction + " valid actions");
+	    else {Debug.debug("Third action was invalid.");}
+	    Debug.game("player " + currentPlayer.username + " performed " + validAction + " valid actions");
 	    graphicsContainer.get().sendEndActions();
-	    // simulate the GUI working -- we will have to wait for it later
 	    graphicsContainer.get().waitForGraphics();
-	    // end GUI working
-	    
 	    roundNumber++;
 	}
 	
@@ -145,7 +142,7 @@ public class GameThread {
 	// TODO: AIs can use this to inject extranous JSON fields into other peoples
 	// receiver stream. Write a function that sanitizes the attribute first before
 	// sending them off again.
-	System.out.println("Action was valid, re-broadcasting (FIXME)");
+	Debug.debug("Action was valid, re-broadcasting (FIXME)");
 	try {
 	    action.put("from", playerWhoPerformedTheAction.username);
 	}
@@ -155,14 +152,14 @@ public class GameThread {
 	    graphicsContainer.get().sendMessage(action);
 	}
 	catch (IOException e) {
-	    System.out.println("Warning: failed to broadcast action to graphics");
+	    Debug.debug("Warning: failed to broadcast action to graphics");
 	}
 	for(AIConnection player: globalClients){
 	    try {
 		player.sendMessage(action);
 	    }
 	    catch (IOException e){
-		System.out.println("Warning: Failed to broadcast action to " + player.username);
+		Debug.debug("Warning: Failed to broadcast action to " + player.username);
 	    }
 	}
     }
@@ -175,22 +172,34 @@ public class GameThread {
 		return currentPlayer.doMove(action);
 	    case "laser":
 		if(currentPlayer.position.tileType == TileType.SPAWN){
-		    System.out.println("[GAMETHRD]: Player attempted to shoot laser from spawn.");
+		    Debug.game("Player attempted to shoot laser from spawn.");
 		    return false;
 		}
 		return currentPlayer.shootLaser(action, graphicsContainer.get());
 	    case "droid":
 		if(currentPlayer.position.tileType == TileType.SPAWN){
-		    System.out.println("[GAMETHRD]: Player attempted to shoot droid from spawn.");
+		    Debug.game("Player attempted to shoot droid from spawn.");
 		    return false;
 		}
 		return currentPlayer.shootDroid(action);
 	    case "mortar":
 		if(currentPlayer.position.tileType == TileType.SPAWN){
-		    System.out.println("[GAMETHRD]: Player attempted to shoot mortar from spawn.");
+		    Debug.game("Player attempted to shoot mortar from spawn.");
 		    return false;
 		}
 		return currentPlayer.shootMortar(action);
+	    case "mine":
+		TileType currentTileType = currentPlayer.position.tileType;
+		if(currentTileType == TileType.RUBIDIUM
+		   || currentTileType == TileType.EXPLOSIUM
+		   || currentTileType == TileType.SCRAP){
+		    return currentPlayer.mineResource();
+		}
+		else {
+		    Debug.game("Player " + currentPlayer.username + " attempted to mine while not on a resource");
+		    currentPlayer.sendError("Tried to mine while not on a resource tile!");
+		    return false;
+		}
 	    default:
 		currentPlayer.invalidAction(action);
 		return false;
@@ -205,7 +214,7 @@ public class GameThread {
 	    Thread.sleep(roundTimeMilliseconds); // 1000
 	}
 	catch (InterruptedException e){
-	    System.out.println("INTERUPTED!");
+	    Debug.warn("INTERUPTED!");
 	}
     }
     public AIConnection sendGamestate(int roundNumber){
