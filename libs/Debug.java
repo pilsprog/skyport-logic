@@ -53,9 +53,7 @@ public class Debug {
 	}
     }
     public static void guiMessage(String message){
-	if(developerMode){
-	    GraphicsConnection.debugConnection.sendMessage(message);
-	}
+	GraphicsConnection.debugConnection.sendMessage(message);
     }
     public static void printGamestats(ConcurrentLinkedQueue<AIConnection> globalClientsArg){
 	if(developerMode){
