@@ -7,7 +7,7 @@ public class GameThread {
     ConcurrentLinkedQueue<AIConnection> globalClients;
     int minUsers;
     int gameTimeoutSeconds;
-    int roundTimeMilliseconds;
+    public int roundTimeMilliseconds;
     boolean accelerateDeadPlayers = true; // TODO: set this to 'false' to be more compliant with spec
     World world;
     PlayerSelector playerSelector;
@@ -37,6 +37,7 @@ public class GameThread {
 		break;
 	    }
 	}
+	graphicsContainer.get().thinktime = roundTimeMilliseconds;
 	Debug.info("got graphics engine connection");
 	Debug.info("waiting for " + minUsers + " users to connect");
 	int waitIteration = 0;
@@ -56,7 +57,6 @@ public class GameThread {
     }
     public void gameMainloop(){
 	Debug.debug("All clients connected.");
-	Util.pressEnterToContinue("Press enter to randomize spawns and send the initial gamestate");
 	initializeBoardWithPlayers();
 	playerSelector = new PlayerSelector(globalClients);
 	Debug.info("Sending initial gamestart packet");
@@ -80,11 +80,11 @@ public class GameThread {
 	graphicsContainer.get().sendEndActions();
 	graphicsContainer.get().waitForGraphics();
 	Debug.debug("All clients have sent a loadout");
-	Util.pressEnterToContinue("Press enter to start the game");
 	long startTime = System.nanoTime();
 	long gtsAsLong = gameTimeoutSeconds;
 	int roundNumber = 1;
 	while(true){
+	    Debug.printGamestats(globalClients);
 	    int playerNum = world.verifyNumberOfPlayersOnBoard();
 	    if(playerNum != globalClients.size()){
 		Debug.warn(globalClients.size() + " players are supposed to be"
@@ -134,6 +134,7 @@ public class GameThread {
 	    Debug.game("player " + currentPlayer.username + " performed " + validAction + " valid actions");
 	    graphicsContainer.get().sendEndActions();
 	    graphicsContainer.get().waitForGraphics();
+	    syncWithGraphics();
 	    roundNumber++;
 	}
 	
@@ -211,12 +212,20 @@ public class GameThread {
 	}
 	return false;
     }
+    public void syncWithGraphics(){
+	int newRoundTime = graphicsContainer.get().thinktime;
+	if(newRoundTime != roundTimeMilliseconds){
+	    roundTimeMilliseconds = newRoundTime;
+	    Debug.info("Delay changed to " + newRoundTime);
+	    Debug.guiMessage("Delay changed to " + newRoundTime);
+	}
+    }
     public void letClientsThink(){
 	try {
 	    Thread.sleep(roundTimeMilliseconds); // 1000
 	}
 	catch (InterruptedException e){
-	    Debug.warn("INTERUPTED!");
+	    Debug.warn("INTERRUPTED!");
 	}
     }
     public AIConnection sendGamestate(int roundNumber){

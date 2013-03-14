@@ -17,6 +17,7 @@ public class GraphicsConnection {
     public boolean alternativeLaserStyle = false;
     public Coordinate startHack = null;
     public Coordinate stopHack = null;
+    public int thinktime;
     
     public GraphicsConnection(Socket clientSocket, GraphicsContainer containerArg){
 	messages = new ConcurrentLinkedQueue<JSONObject>();
@@ -31,7 +32,8 @@ public class GraphicsConnection {
 	debugConnection = this;
     }
     public String readLine() throws IOException {
-	return inputReader.readLine();
+	String line =  inputReader.readLine();
+	return line;
     }
     public String getIp(){
 	return socket.getInetAddress() + ":" + Integer.toString(socket.getPort());
@@ -51,7 +53,24 @@ public class GraphicsConnection {
 	else if(o.has("message")){
 	    try {
 		if(o.get("message").equals("ready")){
+		    Debug.debug("DONE PROCESSING");
 		    isDoneProcessing = true;
+		}
+		else if(o.get("message").equals("faster")){
+		    if(thinktime >= 200){
+			thinktime -= 100;
+			Debug.info("New timeout: " + thinktime + " milliseconds");
+		    }
+		    else {
+			Debug.guiMessage("Can't go faster");
+			Debug.info("Can't go faster");
+		    }
+
+		    
+		}
+		else if(o.get("message").equals("slower")){
+		    thinktime += 100;
+		    Debug.info("New timeout: " + thinktime + " milliseconds");
 		}
 		else {
 		    throw new ProtocolException("Unexpected message, got '" + o.get("message")
@@ -115,7 +134,7 @@ public class GraphicsConnection {
 		playerObject.put("name", ai.username);
 		if(turnNumber != 0){
 		    playerObject.put("health", ai.health);
-		    playerObject.put("score", 0); //TODO: disabled ai.score until its properly implemented
+		    playerObject.put("score", ai.score);
 		    playerObject.put("position", ai.position.coords.getCompactString());
 		    playerObject.put("alive", ai.isAlive);
 		    JSONObject primaryWeaponObject = new JSONObject();
@@ -222,6 +241,16 @@ public class GraphicsConnection {
 	    o.put("message", "highlight");
 	    o.put("coordinate", position);
 	    o.put("color", new JSONArray().put(r).put(g).put(b));
+	    sendMessage(o);
+	}
+	catch(JSONException e){}
+	catch(IOException e){}
+    }
+    public void sendMessage(String message){
+	JSONObject o = new JSONObject();
+	try {
+	    o.put("message", "subtitle");
+	    o.put("text", message);
 	    sendMessage(o);
 	}
 	catch(JSONException e){}

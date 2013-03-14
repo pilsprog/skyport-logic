@@ -38,6 +38,7 @@ public class Mortar {
 	if(relativeTargetVector.j < 0){
 	    for(int i = 0; i < -relativeTargetVector.j; i++){
 		if(absoluteHitPosition.rightUp == null) {
+		    // TODO fix this to not explode?
 		    Debug.warn("Mortar reached end of map, exploding prematurely...");
 		    break;
 		}
@@ -75,6 +76,12 @@ public class Mortar {
     private void explode(int damage){
 	// TODO: implement bonuses for unused turns (also check other weapons)
 	// TODO: rocks? void? spawn seems still vulnerable?
+	if(absoluteHitPosition.tileType == TileType.ROCK
+	   || absoluteHitPosition.tileType == TileType.VOID
+	   || absoluteHitPosition.tileType == TileType.SPAWN){
+	    Debug.warn("Mortar hit " + absoluteHitPosition.tileType + " tile, did not explode");
+	    return;
+	}
 	int baseDamage = damage;
 	int aoeDamage = 18;
 	absoluteHitPosition.damageTile(baseDamage, dealingPlayer);

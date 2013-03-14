@@ -456,22 +456,91 @@ public class AIConnection {
 	Debug.stub("'" + this.username + "' received " + hitpoints
 			   + " damage from '" + dealingPlayer.username  + "'!");
 	health -= hitpoints;
-	// TODO: test self-damage & self-killing
 	if(!(dealingPlayer.username.equals(this.username))){
 	    dealingPlayer.givePoints(hitpoints); // damaged user other than self, award points
 	}
 	if(health <= 0){
 	    Debug.game(this.username + " got killed by " + dealingPlayer.username);
+	    Debug.guiMessage(this.username + " got killed by " + dealingPlayer.username);
 	    if(!(dealingPlayer.username.equals(this.username))){
 		dealingPlayer.givePoints(20); // 20 bonus points for killing someone
 	    }
+	    score -= 40;
 	    health = 0;
 	}
     }
     boolean upgradeWeapon(String weapon){
-	Debug.stub("UPGRADE WEAPON");
-	return true;
+	Debug.debug(username + " upgrading his " + weapon);
+	if(primaryWeapon.equals(weapon)){
+	    Debug.stub("upgrading primary weapon (" + weapon + ")");
+	    boolean success = subtractResourcesForWeaponUpgrade(weapon, primaryWeaponLevel);
+	    if(success){
+		primaryWeaponLevel++;
+		Debug.guiMessage(username + " upgrades his " + weapon);
+		return true;
+	    }
+	    else {
+		return false;
+	    }
+	}
+	else if(secondaryWeapon.equals(weapon)){
+	    boolean success = subtractResourcesForWeaponUpgrade(weapon, secondaryWeaponLevel);
+	    if(success){
+		secondaryWeaponLevel++;
+		Debug.guiMessage(username + " upgrades his " + weapon);
+		return true;
+	    }
+	    else {
+		return false;
+	    }
+	}
+	else {
+	    Debug.warn(username + " tried to upgrade weapon '" + weapon + "', but doesn't have it.");
+	    return false;
+	}
     }
+
+    boolean subtractResourcesForWeaponUpgrade(String weapon, int currentLevel){
+	int resourcesToSubtract = 4;
+	if(currentLevel == 2)
+	    resourcesToSubtract = 5;
+	if(currentLevel == 3){
+	    Debug.warn(username + " tried to upgrade his " + weapon + ", but it is already level 3.");
+	    return false;	    
+	}
+	if(weapon.equals("laser")){
+	    if(rubidiumResources >= resourcesToSubtract){
+		rubidiumResources -= resourcesToSubtract;
+		return true;
+	    }
+	    else {
+		Debug.warn("Tried to upgrade the laser, but not enough rubidium");
+		return false;
+	    }
+	}
+	if(weapon.equals("mortar")){
+	    if(explosiumResources >= resourcesToSubtract){
+		explosiumResources -= resourcesToSubtract;
+		return true;
+	    }
+	    else {
+		Debug.warn("Tried to upgrade the mortar, but not enough explosium");
+		return false;
+	    }
+	}
+	if(weapon.equals("droid")){
+	    if(scrapResources >= resourcesToSubtract){
+		scrapResources -= resourcesToSubtract;
+		return true;
+	    }
+	    else {
+		Debug.warn("Tried to upgrade the droid, but not enough scrap");
+		return false;
+	    }
+	}
+	return false;
+    }
+    
     void respawn(){
 	position.playerOnTile = null;
 	position = spawnTile;
@@ -481,6 +550,12 @@ public class AIConnection {
     void givePoints(int points){
 	Debug.debug("got awarded " + points + " points");
 	score += points;
+    }
+    void printStats(){
+	System.out.println(username + ": HP: " + health + ", score: " + score
+			   + ", RUB:" + rubidiumResources + ", EXP:" + explosiumResources
+			   + ", SCR:" + scrapResources + ", prim. lvl:" + primaryWeaponLevel +
+			   ", sec. lvl.:" + secondaryWeaponLevel);
     }
 }
 

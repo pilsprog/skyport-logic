@@ -91,7 +91,6 @@ public class Tile {
 	Debug.highlight(coords.getCompactString(), 255, 0, 0);	
 	if(playerOnTile == null){
 	    // TODO: check rocks absorb mortar AoE damage correctly and such.
-	    Debug.debug("Tile absorbed damage: no player on this " + tileType + "-tile");
 	    return;
 	}
 	else {

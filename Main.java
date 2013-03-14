@@ -32,13 +32,18 @@ public class Main {
 	    WorldParser wp = new WorldParser(mapfile);
 	    world = wp.parseFile();
 	    spawnPoints = world.getSpawnpointNumber();
-	    if(spawnPoints < minUsers){
-		Debug.error("requested to wait for " + minUsers + " AIs, but this map only supports " + spawnPoints + ".");
-		System.exit(1);
+	    if(minUsers != 0){
+		if(spawnPoints < minUsers){
+		    Debug.error("requested to wait for " + minUsers + " AIs, but this map only supports " + spawnPoints + ".");
+		    System.exit(1);
+		}
+		if(spawnPoints > minUsers){
+		    Debug.warn("playing with " + minUsers + " on a map for " + spawnPoints
+			       + " users, gameplay may be unbalanced.");
+		}
 	    }
-	    if(spawnPoints > minUsers){
-		Debug.warn("playing with " + minUsers + " on a map for " + spawnPoints
-				   + " users, gameplay may be unbalanced.");
+	    else {
+		minUsers = spawnPoints;
 	    }
 	}
 	catch(FileNotFoundException e){

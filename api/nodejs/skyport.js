@@ -91,12 +91,21 @@ SkyportConnection.prototype = {
 			   "secondary-weapon":secondary_weapon});
     },
     attack_laser: function(direction){
-	this._send_packet(({"message":"action", "type":"laser", "direction":direction}))
+	this._send_packet({"message":"action", "type":"laser", "direction":direction})
     },
     attack_mortar: function(j, k){
-	this._send_packet(({"message":"action", "type":"mortar", "coordinates":(j+","+k)}))
+	this._send_packet({"message":"action", "type":"mortar", "coordinates":(j+","+k)})
+    },
+    attack_droid: function(command_list){
+	this._send_packet({"message":"action", "type":"droid", "sequence":command_list});
     },
     move: function(direction){
 	this._send_packet({"message":"action", "type":"move", "direction":direction});
+    },
+    mine: function(){
+	this._send_packet({"message":"action", "type":"mine"});
+    },
+    upgrade: function(weapon){
+	this._send_packet({"message":"action", "type":"upgrade", "weapon":weapon});
     }
 };

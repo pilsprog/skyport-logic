@@ -5,6 +5,12 @@ if(process.argv.length != 3){
 }
 
 var myname = process.argv[2];
+var myweapons = [];
+
+function randomchoice(list){
+    return list[Math.floor(Math.random() * list.length)];
+}
+
 function got_connection(){
     console.log("got connection, sending handshake...");
     connection.send_handshake(myname);
@@ -12,18 +18,58 @@ function got_connection(){
 function got_handshake(){console.log("got handshake");}
 function got_gamestart(map, players){
     console.log("got gamestart");
-    connection.send_loadout("laser", "mortar");
+    available_weapons = ["laser", "mortar", "droid"];
+    primary = randomchoice(available_weapons);
+    available_weapons = available_weapons.filter(function(e){return e !== primary});
+    secondary = randomchoice(available_weapons);
+    connection.send_loadout(primary, secondary);
+    myweapons = [primary, secondary];
 }
 function got_gamestate(turn_number, map, players){
     console.log("got gamestate");
     if(players[0]["name"] == myname){
 	console.log("my turn!");
-	directions = ["up", "down", "left-up", "left-down", "right-up", "right-down", "hogwarts"];
-	connection.move(directions[Math.floor(Math.random() * directions.length)]);
-	connection.move(directions[Math.floor(Math.random() * directions.length)]);
-	connection.attack_laser(directions[Math.floor(Math.random() * directions.length)]);
+	random_move();
+	random_move();
+	randomchoice([random_laser, random_mortar, random_droid, upgrade, mine])();
     }
 }
+
+function upgrade(){
+    connection.upgrade(randomchoice(myweapons));
+}
+function mine(){connection.mine();}
+
+function random_move(){
+    directions = ["up", "down", "left-up", "left-down", "right-up", "right-down"];
+    connection.move(randomchoice(directions));
+}
+
+function random_laser(){
+    console.log("Shooting the laser");
+    directions = ["up", "down", "left-up", "left-down", "right-up", "right-down"];
+    connection.attack_laser(randomchoice(directions));
+}
+function random_mortar(){
+    console.log("Shooting the mortar");
+    // [-4, 4] x [-4, 4] area
+    var j = Math.floor(Math.random()*9) - 4;
+    var k = Math.floor(Math.random()*9) - 4;
+    if(j == 0 && k == 0){ // don't hit yourself
+	j = 2; // unless you enjoy that kind of thing, that is
+	k = 2;
+    }
+    connection.attack_mortar(j, k);
+}
+function random_droid(){
+    console.log("Shooting the droid");
+    var commands = [];
+    for(i = 0; i < 7; i++){
+	commands.push(randomchoice(["up", "down", "left-up", "left-down", "right-up", "right-down"]));
+    }
+    connection.attack_droid(commands);
+}
+
 function got_action(type, from, rest){console.log("got action");}
 function got_error(message){console.log("got error: '" + message + "'");}
 function got_endturn(){console.log("got endturn");}

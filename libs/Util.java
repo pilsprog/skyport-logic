@@ -20,14 +20,6 @@ public class Util {
 					+ "a-z, A-Z, 0-9, -, _, +.");
 	}
     }
-    public static void pressEnterToContinue(String reason){
-	System.out.print(reason + ": ");
-	System.out.flush();
-	try {
-	    System.in.read();
-	}
-	catch (IOException e){}
-    }
     public static ProtocolException throwInaccessibleTileException(String direction, Tile theTile){
 	if(theTile == null){
 	    return new ProtocolException("Invalid move: tile " + direction

@@ -1,5 +1,6 @@
+import java.util.concurrent.ConcurrentLinkedQueue;
 public class Debug {
-    public static boolean developerMode = true;
+    public static boolean developerMode = false;
     
     private static int getLineNumber() {
 	return Thread.currentThread().getStackTrace()[3].getLineNumber();
@@ -47,7 +48,23 @@ public class Debug {
 	}
     }
     public static void highlight(String position, int r, int g, int b){
-	GraphicsConnection.debugConnection.sendHighlight(position, r, g, b);
+	if(developerMode){
+	    GraphicsConnection.debugConnection.sendHighlight(position, r, g, b);
+	}
+    }
+    public static void guiMessage(String message){
+	if(developerMode){
+	    GraphicsConnection.debugConnection.sendMessage(message);
+	}
+    }
+    public static void printGamestats(ConcurrentLinkedQueue<AIConnection> globalClientsArg){
+	if(developerMode){
+	    System.out.println("####################### GAME STATS: #######################");
+	    for(AIConnection ai: globalClientsArg){
+		ai.printStats();
+	    }
+	    System.out.println("###########################################################");
+	}
     }
 
 }

@@ -52,7 +52,8 @@ def shoot_mortar_in_random_direction():
         k = 2
     transmitter.attack_mortar(j, k)
 
-def upgrade_primary_weapon():
+def upgrade_random_weapon():
+    #transmitter.upgrade("laser")
     transmitter.upgrade(random.choice(weapons_chosen))
     
 def shoot_laser_in_random_direction():
@@ -84,7 +85,8 @@ def got_gamestate(turn, map_obj, player_list):
         do_random_move()
         do_random_move()
         random.choice([shoot_mortar_in_random_direction, shoot_laser_in_random_direction, 
-                       shoot_droid_in_random_directions, transmitter.mine])()
+                       shoot_droid_in_random_directions, transmitter.mine, 
+                       upgrade_random_weapon])()
 
 def got_gamestart(turn, map_obj, player_list):
     weapons = ["mortar", "droid", "laser"]
@@ -92,6 +94,7 @@ def got_gamestart(turn, map_obj, player_list):
     weapons.remove(primary_weapon)
     secondary_weapon = random.choice(weapons)
     print("chose loadout: %s and %s" % (primary_weapon, secondary_weapon))
+    global weapons_chosen
     weapons_chosen = [primary_weapon, secondary_weapon]
     transmitter.send_loadout(primary_weapon, secondary_weapon)
 
