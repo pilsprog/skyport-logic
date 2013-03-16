@@ -1,0 +1,9 @@
+Created with VS2010 as console application.
+To run the included SimpleWalker AI, right-click the
+"SimpleWalker" project in the VS solution explorer,
+then click "Set as StartUp Project". After that, the
+play button should compile & start the test-AI & API
+automatically.
+
+The API still lacks a little in the error handling
+department, but all functionality should be working.

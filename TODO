@@ -16,3 +16,5 @@ f.ex. respawning
 - mortar shots outside map
 upgrading
 - mortar shots into void cause AoE damage?
+adjust colorswitch matrix:
+convert colorswitch.png -color-matrix " 1.5 0.0 0.0 0.0, 0.0, -0.157 0.0 1.5 0.0 1.0, 0.0, -0.157 0.0 0.0 1.5 0.0, 0.0, -0.157 0.0 1.0 0.0 1.0, 0.0,  0.0 0.0 1.0 0.0 0.0, 1.0,  1.0 0.0 0.0 0.0 0.0, 0.0,  1.0" output.png
