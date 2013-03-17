@@ -116,17 +116,17 @@ public class GameThread {
 	    JSONObject second = currentPlayer.getNextMessage();
 	    JSONObject third = currentPlayer.getNextMessage();
 	    int validAction = 0;
-	    if(letPlayerPerformAction(first, currentPlayer)){
+	    if(letPlayerPerformAction(first, currentPlayer, 2)){
 		broadcastAction(first, currentPlayer);
 		validAction++;
 	    }
 	    else {Debug.debug("First action was invalid.");}
-	    if(letPlayerPerformAction(second, currentPlayer)){
+	    if(letPlayerPerformAction(second, currentPlayer, 1)){
 		broadcastAction(second, currentPlayer);
 		validAction++;
 	    }
 	    else {Debug.debug("Second action was invalid.");}
-	    if(letPlayerPerformAction(third, currentPlayer)){
+	    if(letPlayerPerformAction(third, currentPlayer, 0)){
 		broadcastAction(third, currentPlayer);
 		validAction++;
 	    }
@@ -164,7 +164,7 @@ public class GameThread {
 	    }
 	}
     }
-    private boolean letPlayerPerformAction(JSONObject action, AIConnection currentPlayer){
+    private boolean letPlayerPerformAction(JSONObject action, AIConnection currentPlayer, int turnsLeft){
 	if(action == null) return false;
 	try {
 	    String actiontype = action.getString("type");
@@ -176,19 +176,19 @@ public class GameThread {
 		    Debug.game("Player attempted to shoot laser from spawn.");
 		    return false;
 		}
-		return currentPlayer.shootLaser(action, graphicsContainer.get());
+		return currentPlayer.shootLaser(action, graphicsContainer.get(), turnsLeft);
 	    case "droid":
 		if(currentPlayer.position.tileType == TileType.SPAWN){
 		    Debug.game("Player attempted to shoot droid from spawn.");
 		    return false;
 		}
-		return currentPlayer.shootDroid(action);
+		return currentPlayer.shootDroid(action, turnsLeft);
 	    case "mortar":
 		if(currentPlayer.position.tileType == TileType.SPAWN){
 		    Debug.game("Player attempted to shoot mortar from spawn.");
 		    return false;
 		}
-		return currentPlayer.shootMortar(action);
+		return currentPlayer.shootMortar(action, turnsLeft);
 	    case "mine":
 		TileType currentTileType = currentPlayer.position.tileType;
 		if(currentTileType == TileType.RUBIDIUM

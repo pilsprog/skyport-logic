@@ -7,8 +7,10 @@ public class Mortar {
     private Coordinate relativeTargetVector;
     private AIConnection dealingPlayer;
     private int level = 1;
-    public Mortar(AIConnection dealingPlayerArg){
+    private int turnsLeft;
+    public Mortar(AIConnection dealingPlayerArg, int turnsLeftArg){
 	dealingPlayer = dealingPlayerArg;
+	turnsLeft = turnsLeftArg;
     }
     public void setPosition(Tile positionArg){
 	position = positionArg;
@@ -20,11 +22,12 @@ public class Mortar {
     public boolean performShot(){
 	Debug.game("'" + dealingPlayer.username + "' performing mortar shot at '"
 			   + relativeTargetVector.getString() + "'");
-	// TODO: check damage on all weapons
 	int range = 3;
-	int damage = 20;
-	if(level == 2) {damage = 20; range = 4;}
-	if(level == 3) {damage = 25; range = 5;}
+	int baseDamage = 20;
+	if(level == 2) {baseDamage = 20; range = 4;}
+	if(level == 3) {baseDamage = 25; range = 5;}
+	int damage = (int)Math.round(baseDamage + 0.2*turnsLeft*baseDamage);
+	// TODO: move this down to explode() function
 	if(!isTileInRange(range)){
 	    Debug.warn("Mortar shot out of range!");
 	    return false;
@@ -74,7 +77,6 @@ public class Mortar {
 	}
     }
     private void explode(int damage){
-	// TODO: implement bonuses for unused turns (also check other weapons)
 	// TODO: rocks? void? spawn seems still vulnerable?
 	if(absoluteHitPosition.tileType == TileType.ROCK
 	   || absoluteHitPosition.tileType == TileType.VOID
@@ -83,7 +85,7 @@ public class Mortar {
 	    return;
 	}
 	int baseDamage = damage;
-	int aoeDamage = 18;
+	int aoeDamage = (int)Math.round(18 + 0.2*turnsLeft*18);
 	absoluteHitPosition.damageTile(baseDamage, dealingPlayer);
 	if(absoluteHitPosition.up != null)
 	    absoluteHitPosition.up.damageTile(aoeDamage, dealingPlayer);

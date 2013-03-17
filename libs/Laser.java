@@ -2,8 +2,10 @@ public class Laser {
     private Tile position;
     private String direction;
     private AIConnection dealingPlayer;
-    public Laser(AIConnection dealingPlayerArg){
+    private int turnsLeft;
+    public Laser(AIConnection dealingPlayerArg, int turnsLeftArg){
 	dealingPlayer = dealingPlayerArg;
+	turnsLeft = turnsLeftArg;
     }
     public boolean setPosition(Tile positionArg){
 	position = positionArg;
@@ -24,9 +26,11 @@ public class Laser {
 	Debug.game("'" + dealingPlayer.username + "' performing laser shot in direction "
 			   + direction + "!");
 	int range = 5;
-	int damage = 16;
-	if(level == 2) {damage = 18; range = 6;}
-	if(level == 3) {damage = 22; range = 7;}
+	int baseDamage = 16;
+	if(level == 2) {baseDamage = 18; range = 6;}
+	if(level == 3) {baseDamage = 22; range = 7;}
+	int damage = (int)Math.round(baseDamage + 0.2*turnsLeft*baseDamage);
+	// damage adjusted for unused turns
 	Tile currentTile = position;
 	int i = 0;
 	switch(direction){

@@ -330,7 +330,7 @@ public class AIConnection {
 	} catch (JSONException f){}
 	catch (IOException g){}
     }
-    boolean shootLaser(JSONObject action, GraphicsConnection graphicsConnection){
+    boolean shootLaser(JSONObject action, GraphicsConnection graphicsConnection, int turnsLeft){
 	int laserLevel = 1;
 	if(primaryWeapon.equals("laser")){
 	    laserLevel = primaryWeaponLevel;
@@ -343,7 +343,7 @@ public class AIConnection {
 	}
 	try {
 	    String direction = action.getString("direction");
-	    Laser laser = new Laser(this);
+	    Laser laser = new Laser(this, turnsLeft);
 	    if(laser.setDirection(direction)){
 		laser.setPosition(position);
 		Coordinate endvector = laser.performShot(laserLevel);
@@ -361,7 +361,7 @@ public class AIConnection {
 	return false;
     }
 
-    boolean shootDroid(JSONObject action){
+    boolean shootDroid(JSONObject action, int turnsLeft){
 	int droidLevel = 1; // TODO
 	if(primaryWeapon.equals("droid")){
 	    droidLevel = primaryWeaponLevel;
@@ -379,7 +379,7 @@ public class AIConnection {
 	if(droidLevel == 3) {range = 5;} // replicated here for more friendly error messages
 	try {
 	    JSONArray directionSequence = action.getJSONArray("sequence");
-	    Droid droid = new Droid(this);
+	    Droid droid = new Droid(this, turnsLeft);
 	    if(directionSequence.length() > range){
 		Debug.warn("Got " + directionSequence.length() + " commands for the droid, but your droids level ("
 			   + droidLevel + ") only supports " + range + " steps.");
@@ -408,7 +408,7 @@ public class AIConnection {
 	return false;
     }
 
-    boolean shootMortar(JSONObject action){
+    boolean shootMortar(JSONObject action, int turnsLeft){
 	int mortarLevel = 1;
 	if(primaryWeapon.equals("mortar")){
 	    mortarLevel = primaryWeaponLevel;
@@ -423,7 +423,7 @@ public class AIConnection {
 	}
 	try {
 	    Coordinate relativeTargetCoordinates = new Coordinate(action.getString("coordinates"));
-	    Mortar mortar = new Mortar(this);
+	    Mortar mortar = new Mortar(this, turnsLeft);
 	    mortar.setPosition(this.position);
 	    mortar.setTarget(relativeTargetCoordinates, mortarLevel);
 	    return mortar.performShot();

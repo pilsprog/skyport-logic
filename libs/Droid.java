@@ -5,8 +5,10 @@ public class Droid {
     private String[] directions;
     private AIConnection dealingPlayer;
     private int level = 1;
-    public Droid(AIConnection dealingPlayerArg){
+    private int turnsLeft;
+    public Droid(AIConnection dealingPlayerArg, int turnsLeftArg){
 	dealingPlayer = dealingPlayerArg;
+	turnsLeft = turnsLeftArg;
     }
     public boolean setPosition(Tile positionArg){
 	position = positionArg;
@@ -62,9 +64,8 @@ public class Droid {
 	return validStepsTaken;
     }
     void explode(int damage){
-	// TODO: implement bonuses for unused turns (also check other weapons)
-	int baseDamage = damage;
-	int aoeDamage = 10;
+	int baseDamage = (int)Math.round(damage + 0.2*turnsLeft*damage);
+	int aoeDamage = (int)Math.round(10 + 0.2*turnsLeft*10);
 	position.damageTile(baseDamage, dealingPlayer);
 	if(position.up != null) position.up.damageTile(aoeDamage, dealingPlayer);
 	if(position.down != null) position.down.damageTile(aoeDamage, dealingPlayer);
@@ -74,7 +75,6 @@ public class Droid {
 	if(position.leftUp != null) position.leftUp.damageTile(aoeDamage, dealingPlayer);
     }
     boolean performOneStep(String direction){
-	// TODO: test this
 	Debug.debug("droid moving '" + direction + "'");
 	switch(direction){
 	case "up":
