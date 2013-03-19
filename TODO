@@ -1,3 +1,4 @@
+
 point allocation notes:
 -count damage only of other players
 	-Maybe easier to ignore all damage alltogether when self-inflicted, but that wouldn't be as fun would it? =P -Emil
@@ -18,3 +19,7 @@ upgrading
 - mortar shots into void cause AoE damage?
 adjust colorswitch matrix:
 convert colorswitch.png -color-matrix " 1.5 0.0 0.0 0.0, 0.0, -0.157 0.0 1.5 0.0 1.0, 0.0, -0.157 0.0 0.0 1.5 0.0, 0.0, -0.157 0.0 1.0 0.0 1.0, 0.0,  0.0 0.0 1.0 0.0 0.0, 1.0,  1.0 0.0 0.0 0.0 0.0, 0.0,  1.0" output.png
+
+CORRECTIONS
+
+should lasers go through spawn tiles

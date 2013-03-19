@@ -1,5 +1,6 @@
 import java.util.regex.Pattern;
 import java.io.IOException;
+import org.json.*;
 
 public class Util {
     public static boolean validateWeapon(String weapon){
@@ -27,6 +28,25 @@ public class Util {
 	}
 	else {
 	    return new ProtocolException("Invalid move: " + theTile.tileType + " tile is not accessible");
+	}
+    }
+    public static boolean wasActionOffensive(JSONObject action){
+	if(action == null) return false;
+	try {
+	    String actiontype = action.getString("type");
+	    switch (actiontype){
+	    case "laser":
+		return true;
+	    case "droid":
+		return true;
+	    case "mortar":
+		return true;
+	    default:
+		return false;
+	    }
+	}
+	catch (JSONException e){
+	    return false;
 	}
     }
 }

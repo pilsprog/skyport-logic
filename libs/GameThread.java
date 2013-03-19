@@ -97,7 +97,6 @@ public class GameThread {
 		Debug.info("Time over!");
 		System.exit(0);
 	    }
-	    // TODO: clear out message queue of the player whos turn it is
 	    // TODO: test everything with all levels of weapons -- so far
 	    // only tested with lvl 1 weapons.
 	    AIConnection currentPlayer = sendGamestate(roundNumber);
@@ -112,26 +111,8 @@ public class GameThread {
 	    }
 	    sendDeadline();
 	    Debug.debug("Deadline! Processing actions...");
-	    JSONObject first = currentPlayer.getNextMessage();
-	    JSONObject second = currentPlayer.getNextMessage();
-	    JSONObject third = currentPlayer.getNextMessage();
-	    int validAction = 0;
-	    if(letPlayerPerformAction(first, currentPlayer, 2)){
-		broadcastAction(first, currentPlayer);
-		validAction++;
-	    }
-	    else {Debug.debug("First action was invalid.");}
-	    if(letPlayerPerformAction(second, currentPlayer, 1)){
-		broadcastAction(second, currentPlayer);
-		validAction++;
-	    }
-	    else {Debug.debug("Second action was invalid.");}
-	    if(letPlayerPerformAction(third, currentPlayer, 0)){
-		broadcastAction(third, currentPlayer);
-		validAction++;
-	    }
-	    else {Debug.debug("Third action was invalid.");}
-	    Debug.game("player " + currentPlayer.username + " performed " + validAction + " valid actions");
+	    processThreePlayerActions(currentPlayer);
+	    givePenalityForLingeringOnSpawntile(currentPlayer);
 	    graphicsContainer.get().sendEndActions();
 	    graphicsContainer.get().waitForGraphics();
 	    syncWithGraphics();
@@ -139,10 +120,44 @@ public class GameThread {
 	}
 	
     }
+    private void givePenalityForLingeringOnSpawntile(AIConnection currentPlayer){
+	if(currentPlayer.position == currentPlayer.spawnTile){
+	    Debug.warn("Player " + currentPlayer.username + " stayed on spawn too long");
+	    currentPlayer.givePenality(10);
+	}
+    }
+    private void processThreePlayerActions(AIConnection currentPlayer){
+	JSONObject first = currentPlayer.getNextMessage();
+	JSONObject second = currentPlayer.getNextMessage();
+	JSONObject third = currentPlayer.getNextMessage();
+	int validActions = 0;
+	if(letPlayerPerformAction(first, currentPlayer, 2)){
+	    broadcastAction(first, currentPlayer);
+	    validActions++;
+	    if(Util.wasActionOffensive(first))
+		return;
+	}
+	else {Debug.debug("First action was invalid.");}
+	if(letPlayerPerformAction(second, currentPlayer, 1)){
+	    broadcastAction(second, currentPlayer);
+	    validActions++;
+	    if(Util.wasActionOffensive(second))
+		return;
+	}
+	else {Debug.debug("Second action was invalid.");}
+	if(letPlayerPerformAction(third, currentPlayer, 0)){
+	    broadcastAction(third, currentPlayer);
+	    validActions++;
+	    if(Util.wasActionOffensive(third))
+		return;
+	}
+	else {Debug.debug("Third action was invalid.");}
+	Debug.game("player " + currentPlayer.username + " performed " + validActions + " valid actions");
+	if(validActions == 0){
+	    currentPlayer.givePenality(10);
+	}
+    }
     private void broadcastAction(JSONObject action, AIConnection playerWhoPerformedTheAction){
-	// TODO: AIs can use this to inject extranous JSON fields into other peoples
-	// receiver stream. Write a function that sanitizes the attribute first before
-	// sending them off again.
 	Debug.debug("Action was valid, re-broadcasting (FIXME)");
 	try {
 	    action.put("from", playerWhoPerformedTheAction.username);
@@ -229,7 +244,6 @@ public class GameThread {
 	}
     }
     public AIConnection sendGamestate(int roundNumber){
-	// TODO: visualization needs to be integrated here
 	String matrix[][] = world.returnAsRowMajorMatrix();
 	AIConnection playerTurnOrder[] = playerSelector.getListInTurnOrderAndMoveToNextTurn();
 	if(roundNumber != 0){

@@ -90,7 +90,6 @@ public class Tile {
     public void damageTile(int hitpoints, AIConnection dealingPlayer){
 	Debug.highlight(coords.getCompactString(), 255, 0, 0);	
 	if(playerOnTile == null){
-	    // TODO: check rocks absorb mortar AoE damage correctly and such.
 	    return;
 	}
 	else {

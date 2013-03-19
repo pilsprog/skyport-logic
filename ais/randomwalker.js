@@ -17,6 +17,7 @@ function got_connection(){
 }
 function got_handshake(){console.log("got handshake");}
 function got_gamestart(map, players){
+    // randomly chose some weapons to use
     console.log("got gamestart");
     available_weapons = ["laser", "mortar", "droid"];
     primary = randomchoice(available_weapons);
@@ -27,15 +28,17 @@ function got_gamestart(map, players){
 }
 function got_gamestate(turn_number, map, players){
     console.log("got gamestate");
-    if(players[0]["name"] == myname){
+    if(players[0]["name"] == myname){ // its our turn
 	console.log("my turn!");
 	random_move();
 	random_move();
+	// randomly shoot one of the weapons, upgrade or mine the tile
 	randomchoice([random_laser, random_mortar, random_droid, upgrade, mine])();
     }
 }
 
 function upgrade(){
+    // randomly upgrade one of our weapons
     connection.upgrade(randomchoice(myweapons));
 }
 function mine(){connection.mine();}
@@ -59,7 +62,7 @@ function random_mortar(){
 	j = 2; // unless you enjoy that kind of thing, that is
 	k = 2;
     }
-    connection.attack_mortar(j, k);
+    connection.attack_mortar(j, k); // j,k coordinates relative to our position
 }
 function random_droid(){
     console.log("Shooting the droid");
@@ -74,7 +77,11 @@ function got_action(type, from, rest){console.log("got action");}
 function got_error(message){console.log("got error: '" + message + "'");}
 function got_endturn(){console.log("got endturn");}
 
+// Establish the connection
 connection = new skyport.SkyportConnection("localhost", 54321);
+
+// Register these callbacks. SkyportConnection will call the
+// provided callback function when something of interest happens
 connection.on('connection', got_connection);
 connection.on('handshake', got_handshake);
 connection.on('gamestart', got_gamestart);

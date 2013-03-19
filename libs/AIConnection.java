@@ -190,7 +190,7 @@ public class AIConnection {
     }
     public void sendMessage(JSONObject o) throws IOException{
 	if(!isAlive){
-	    Debug.warn("player '" + this.username + "' disconnected, not sending...");
+	    Debug.debug("player '" + this.username + "' disconnected, not sending...");
 	    return;
 	}
 	socket.getOutputStream().write((o.toString() + "\n").getBytes());
@@ -552,8 +552,12 @@ public class AIConnection {
 	health = 100;
     }
     void givePoints(int points){
-	Debug.debug("got awarded " + points + " points");
+	Debug.info("got awarded " + points + " points");
 	score += points;
+    }
+    void givePenality(int points){
+	Debug.warn(username + " got " + points + " penality");
+	score -= points;
     }
     void printStats(){
 	System.out.println(username + ": HP: " + health + ", score: " + score

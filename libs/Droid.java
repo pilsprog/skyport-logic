@@ -45,7 +45,6 @@ public class Droid {
 	if(level == 2) {damage = 24; range = 4;}
 	if(level == 3) {damage = 26; range = 5;}
 	Tile currentTile = position;
-	// TODO: check droid can't go through any tiles it isn't supposed to go through
 	for(int i = 0; i < range; i++){
 	    if(i > directions.length - 1){
 		Debug.debug("no more commands, detonating...");

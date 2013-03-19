@@ -22,10 +22,10 @@ public class Mortar {
     public boolean performShot(){
 	Debug.game("'" + dealingPlayer.username + "' performing mortar shot at '"
 			   + relativeTargetVector.getString() + "'");
-	int range = 3;
+	int range = 2;
 	int baseDamage = 20;
-	if(level == 2) {baseDamage = 20; range = 4;}
-	if(level == 3) {baseDamage = 25; range = 5;}
+	if(level == 2) {baseDamage = 20; range = 3;}
+	if(level == 3) {baseDamage = 25; range = 4;}
 	int damage = (int)Math.round(baseDamage + 0.2*turnsLeft*baseDamage);
 	// TODO: move this down to explode() function
 	if(!isTileInRange(range)){
@@ -77,7 +77,6 @@ public class Mortar {
 	}
     }
     private void explode(int damage){
-	// TODO: rocks? void? spawn seems still vulnerable?
 	if(absoluteHitPosition.tileType == TileType.ROCK
 	   || absoluteHitPosition.tileType == TileType.VOID
 	   || absoluteHitPosition.tileType == TileType.SPAWN){
