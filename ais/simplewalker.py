@@ -89,7 +89,6 @@ def got_gamestate(turn, map_obj, player_list):
         random.choice([transmitter.mine, shoot_mortar_in_random_direction,
                        shoot_laser_in_random_direction, shoot_droid_in_random_directions,
                        transmitter.mine, upgrade_random_weapon])()
-        do_random_move()
         
 
 def got_gamestart(turn, map_obj, player_list):
