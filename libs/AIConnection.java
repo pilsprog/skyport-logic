@@ -453,7 +453,7 @@ public class AIConnection {
     }
     
     void damagePlayer(int hitpoints, AIConnection dealingPlayer){
-	if(health == 0){
+	if(health <= 0){
 	    Debug.warn("Player is already dead.");
 	    return;
 	}
