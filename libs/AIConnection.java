@@ -23,6 +23,8 @@ public class AIConnection {
     public int rubidiumResources = 0;
     public int explosiumResources = 0;
     public int scrapResources = 0;
+    public boolean hasToPass = false;
+    public boolean needsRespawn = false;
 
     
     public AIConnection(Socket clientSocket){
@@ -465,12 +467,13 @@ public class AIConnection {
 	}
 	if(health <= 0){
 	    Debug.game(this.username + " got killed by " + dealingPlayer.username);
-	    Debug.guiMessage(this.username + " got killed by " + dealingPlayer.username);
 	    if(!(dealingPlayer.username.equals(this.username))){
 		dealingPlayer.givePoints(20); // 20 bonus points for killing someone
 	    }
 	    score -= 40;
 	    health = 0;
+	    hasToPass = true;
+	    needsRespawn = true;
 	}
     }
     boolean upgradeWeapon(String weapon){
@@ -550,6 +553,7 @@ public class AIConnection {
 	position = spawnTile;
 	position.playerOnTile = this;
 	health = 100;
+	needsRespawn = false;
     }
     void givePoints(int points){
 	Debug.info("got awarded " + points + " points");

@@ -38,7 +38,6 @@ public class PlayerSelector {
 	rootNode.prev = currentNode;
 	currentPlayer = currentNode;
     }
-    
     public AIConnection[] getListInTurnOrderAndMoveToNextTurn(){
 	// TODO: Dead players are currently not purged anymore. Verify that works...
 	// purgeDeadPlayersFromRing();
@@ -47,11 +46,14 @@ public class PlayerSelector {
 	// TODO: test this code
 	while(true){
 	    currentPlayer = currentPlayer.next;
-	    if(currentPlayer.connection.health == 0){
-		currentPlayer.connection.respawn(); // fill up health and teleport to spawn
-		// player will get a turn again next round
+	    if(currentPlayer.connection.hasToPass){
+		currentPlayer.connection.hasToPass = false;
 	    }
 	    else {
+		// player doesn't have to pass his turn, but he hasn't respawned yet. Respawn him.
+		if(currentPlayer.connection.needsRespawn && !currentPlayer.connection.hasToPass){
+		    currentPlayer.connection.respawn();
+		}
 		break; // we found a player who doesn't have to pass his turn
 	    }
 	}

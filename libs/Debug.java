@@ -1,6 +1,6 @@
 import java.util.concurrent.ConcurrentLinkedQueue;
 public class Debug {
-    public static boolean developerMode = false;
+    public static boolean developerMode = true;
     
     private static int getLineNumber() {
 	return Thread.currentThread().getStackTrace()[3].getLineNumber();
@@ -48,7 +48,7 @@ public class Debug {
 	}
     }
     public static void highlight(String position, int r, int g, int b){
-	if(developerMode){
+	if(false){
 	    GraphicsConnection.debugConnection.sendHighlight(position, r, g, b);
 	}
     }

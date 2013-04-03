@@ -83,22 +83,64 @@ public class GameThread {
 	long startTime = System.nanoTime();
 	long gtsAsLong = gameTimeoutSeconds;
 	int roundNumber = 1;
+
+	boolean sixtyMarker = false;
+	boolean thirtyMarker = false;
+	boolean twentyMarker = false;
+	boolean tenMarker = false;
+	boolean fiveMarker = false;
+
 	while(true){
 	    Debug.printGamestats(globalClients);
 	    int playerNum = world.verifyNumberOfPlayersOnBoard();
 	    if(playerNum != globalClients.size()){
 		Debug.warn(globalClients.size() + " players are supposed to be"
-				   + " on the field, but found " + playerNum
-				   + ". Possible inconsistency during movement?");
+			   + " on the field, but found " + playerNum
+			   + ". Possible inconsistency during movement?");
 	    }
-		    
+	    
 	    long roundStartTime = System.nanoTime();
+	    double timeLeft = ((double)gtsAsLong - ((roundStartTime - startTime)/1000000000.0));
+	    if(timeLeft < 60 && !sixtyMarker){
+		Debug.guiMessage("60 seconds left!");
+		sixtyMarker = true;
+	    }
+	    if(timeLeft < 30 && !thirtyMarker){
+		Debug.guiMessage("30 seconds left!");
+		thirtyMarker = true;
+	    }
+	    if(timeLeft < 20 && !twentyMarker){
+		Debug.guiMessage("20 seconds left!");
+		twentyMarker = true;
+	    }
+	    if(timeLeft < 10 && !tenMarker){
+		Debug.guiMessage("10 seconds left!");
+		tenMarker = true;
+	    }
 	    if((roundStartTime - startTime) > gtsAsLong*1000000000){
 		Debug.info("Time over!");
-		System.exit(0);
+		int highestScore = -1000000000;
+		String winningPlayer = "";
+		for(AIConnection connection: globalClients){
+		    if(connection.score > highestScore){
+			highestScore = connection.score;
+			winningPlayer = connection.username;
+		    }
+		}
+		String wintext = winningPlayer + " wins!";
+		for(AIConnection connection: globalClients){
+		    if(connection.score == highestScore && !winningPlayer.equals(connection.username)){
+			wintext = "Tie!";
+		    }
+		}
+		while(true){
+		    Debug.guiMessage("Time over!");
+		    letClientsThink();
+		    Debug.guiMessage(wintext);
+		    letClientsThink();
+		}
+		//System.exit(0);
 	    }
-	    // TODO: test everything with all levels of weapons -- so far
-	    // only tested with lvl 1 weapons.
 	    AIConnection currentPlayer = sendGamestate(roundNumber);
 	    Debug.marker("START TURN " + roundNumber + " PLAYER: '" + currentPlayer.username + "'");
 	    if(currentPlayer.isAlive || !accelerateDeadPlayers){
@@ -244,8 +286,9 @@ public class GameThread {
 	}
     }
     public AIConnection sendGamestate(int roundNumber){
-	String matrix[][] = world.returnAsRowMajorMatrix();
 	AIConnection playerTurnOrder[] = playerSelector.getListInTurnOrderAndMoveToNextTurn();
+	String matrix[][] = world.returnAsRowMajorMatrix();
+
 	if(roundNumber != 0){
 	    playerTurnOrder[0].clearAllMessages();
 	}
