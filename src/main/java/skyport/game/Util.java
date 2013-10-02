@@ -8,38 +8,39 @@ import org.json.JSONObject;
 import skyport.exception.ProtocolException;
 
 public class Util {
-    public static boolean validateWeapon(String weapon){
-	if(weapon.equals("laser") || weapon.equals("mortar") || weapon.equals("droid")){
+    public static boolean validateWeapon(String weapon) {
+	if (weapon.equals("laser") || weapon.equals("mortar") || weapon.equals("droid")) {
 	    return true;
 	}
 	return false;
     }
+
     public static void validateUsername(String username) throws ProtocolException {
-	if(username.length() < 3){
+	if (username.length() < 3) {
 	    throw new ProtocolException("Username too short: needs to be 3 characters or longer.");
 	}
-	if(username.length() > 16){
+	if (username.length() > 16) {
 	    throw new ProtocolException("Username too long: needs to be 16 characters or less.");
 	}
-	if(!Pattern.matches("[a-zA-Z0-9-_+]+", username)){
-	    throw new ProtocolException("Username contains invalid characters. May only contain "
-					+ "a-z, A-Z, 0-9, -, _, +.");
+	if (!Pattern.matches("[a-zA-Z0-9-_+]+", username)) {
+	    throw new ProtocolException("Username contains invalid characters. May only contain " + "a-z, A-Z, 0-9, -, _, +.");
 	}
     }
-    public static ProtocolException throwInaccessibleTileException(String direction, Tile theTile){
-	if(theTile == null){
-	    return new ProtocolException("Invalid move: tile " + direction
-					 + " is not accessible (outside of map)");
-	}
-	else {
+
+    public static ProtocolException throwInaccessibleTileException(String direction, Tile theTile) {
+	if (theTile == null) {
+	    return new ProtocolException("Invalid move: tile " + direction + " is not accessible (outside of map)");
+	} else {
 	    return new ProtocolException("Invalid move: " + theTile.tileType + " tile is not accessible");
 	}
     }
-    public static boolean wasActionOffensive(JSONObject action){
-	if(action == null) return false;
+
+    public static boolean wasActionOffensive(JSONObject action) {
+	if (action == null)
+	    return false;
 	try {
 	    String actiontype = action.getString("type");
-	    switch (actiontype){
+	    switch (actiontype) {
 	    case "laser":
 		return true;
 	    case "droid":
@@ -49,8 +50,7 @@ public class Util {
 	    default:
 		return false;
 	    }
-	}
-	catch (JSONException e){
+	} catch (JSONException e) {
 	    return false;
 	}
     }
