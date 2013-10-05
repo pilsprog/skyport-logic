@@ -1,4 +1,4 @@
-package skyport.game;
+package skyport.network;
 
 import java.net.*;
 import java.io.*;
@@ -8,8 +8,6 @@ import skyport.debug.Debug;
 import skyport.graphics.GraphicsClientHandler;
 import skyport.graphics.GraphicsConnection;
 import skyport.graphics.GraphicsContainer;
-import skyport.network.AIClientHandler;
-import skyport.network.AIConnection;
 
 public class Acceptor implements Runnable {
     private ServerSocket acceptorSocket;

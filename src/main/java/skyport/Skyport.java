@@ -4,12 +4,12 @@ import java.io.FileNotFoundException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import skyport.debug.Debug;
-import skyport.game.Acceptor;
 import skyport.game.GameThread;
 import skyport.game.World;
 import skyport.game.WorldParser;
 import skyport.graphics.GraphicsContainer;
 import skyport.network.AIConnection;
+import skyport.network.Acceptor;
 
 public class Skyport {
     public static void main(String args[]) {
