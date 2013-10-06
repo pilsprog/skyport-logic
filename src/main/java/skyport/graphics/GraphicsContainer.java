@@ -5,10 +5,10 @@ public class GraphicsContainer {
     private GraphicsConnection graphics = null;
 
     public synchronized GraphicsConnection get() {
-	return graphics;
+        return graphics;
     }
 
     public synchronized void set(GraphicsConnection connection) {
-	graphics = connection;
+        graphics = connection;
     }
 }
