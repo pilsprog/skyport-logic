@@ -323,8 +323,8 @@ the server in a one-on-one match on a very simple map.
     >          "data": [
     >                  ["R", "G", "V", "G", "V"],
     >                  ["G", "E", "G", "G", "S"],
-    > 		       ["G", "G", "O", "G", "G"],
-    >		       ["S", "G", "G", "C", "G"]
+    >                  ["G", "G", "O", "G", "G"],
+    >                  ["S", "G", "G", "C", "G"],
     >                  ["V", "G", "V", "G", "G"]]
     >         },
     >  "players":[
