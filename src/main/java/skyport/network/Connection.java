@@ -8,11 +8,14 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import skyport.debug.Debug;
 import skyport.message.EndTurnMessage;
 import skyport.message.Message;
+import skyport.network.ai.AIConnection;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -77,5 +80,45 @@ public abstract class Connection {
 
     public JSONObject getNextMessage() {
         return messages.poll();
+    }
+
+    public synchronized void sendGamestate(int turnNumber, int dimension, String mapData[][], AIConnection playerlist[]) {
+        JSONObject root = new JSONObject();
+        try {
+            root.put("message", "gamestate");
+            root.put("turn", turnNumber);
+            JSONArray players = new JSONArray();
+            for (AIConnection ai : playerlist) {
+                JSONObject playerObject = new JSONObject();
+                playerObject.put("name", ai.username);
+                if (turnNumber != 0) {
+                    playerObject.put("health", ai.health);
+                    playerObject.put("score", ai.score);
+                    playerObject.put("position", ai.position.coords.getCompactString());
+                    playerObject.put("alive", ai.isAlive);
+                    JSONObject primaryWeaponObject = new JSONObject();
+                    primaryWeaponObject.put("name", ai.primaryWeapon);
+                    primaryWeaponObject.put("level", ai.primaryWeaponLevel);
+                    playerObject.put("primary-weapon", primaryWeaponObject);
+    
+                    JSONObject secondaryWeaponObject = new JSONObject();
+                    secondaryWeaponObject.put("name", ai.secondaryWeapon);
+                    secondaryWeaponObject.put("level", ai.secondaryWeaponLevel);
+                    playerObject.put("secondary-weapon", secondaryWeaponObject);
+                }
+    
+                players.put(playerObject);
+            }
+            root.put("players", players);
+    
+            JSONObject map = new JSONObject();
+            map.put("j-length", dimension);
+            map.put("k-length", dimension);
+            map.put("data", new JSONArray(mapData));
+            root.put("map", map);
+        } catch (JSONException e) {
+        }
+    
+        sendMessage(root);
     }
 }

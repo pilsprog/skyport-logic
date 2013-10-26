@@ -121,46 +121,6 @@ public class AIConnection extends Connection {
         }
     }
 
-    public void sendGamestate(int turnNumber, int dimension, String mapData[][], AIConnection playerlist[]) {
-        JSONObject root = new JSONObject();
-        try {
-            root.put("message", "gamestate");
-            root.put("turn", turnNumber);
-            JSONArray players = new JSONArray();
-
-            for (AIConnection ai : playerlist) {
-                JSONObject playerObject = new JSONObject();
-                playerObject.put("name", ai.username);
-                if (turnNumber != 0) {
-                    playerObject.put("health", ai.health);
-                    playerObject.put("score", ai.score);
-                    playerObject.put("position", ai.position.coords.getCompactString());
-                    JSONObject primaryWeaponObject = new JSONObject();
-                    primaryWeaponObject.put("name", ai.primaryWeapon);
-                    primaryWeaponObject.put("level", ai.primaryWeaponLevel);
-                    playerObject.put("primary-weapon", primaryWeaponObject);
-
-                    JSONObject secondaryWeaponObject = new JSONObject();
-                    secondaryWeaponObject.put("name", ai.secondaryWeapon);
-                    secondaryWeaponObject.put("level", ai.secondaryWeaponLevel);
-                    playerObject.put("secondary-weapon", secondaryWeaponObject);
-                }
-
-                players.put(playerObject);
-            }
-            root.put("players", players);
-
-            JSONObject map = new JSONObject();
-            map.put("j-length", dimension);
-            map.put("k-length", dimension);
-            map.put("data", new JSONArray(mapData));
-            root.put("map", map);
-        } catch (JSONException e) {
-        }
-        
-        sendMessage(root);
-    }
-
     @Override
     public void sendMessage(JSONObject o) {
         if (!isAlive) {
