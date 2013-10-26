@@ -20,13 +20,10 @@ import skyport.game.Util;
 import skyport.game.weapon.Droid;
 import skyport.game.weapon.Laser;
 import skyport.game.weapon.Mortar;
+import skyport.network.Connection;
 import skyport.network.graphics.GraphicsConnection;
 
-public class AIConnection {
-    private Socket socket;
-    private BufferedReader inputReader;
-    private ConcurrentLinkedQueue<JSONObject> messages;
-    private boolean gotHandshake = false;
+public class AIConnection extends Connection {
     public AtomicBoolean gotLoadout = new AtomicBoolean(false);
     public String primaryWeapon = "";
     public String secondaryWeapon = "";
@@ -35,7 +32,6 @@ public class AIConnection {
     public String username;
     public Tile position = null;
     public Tile spawnTile = null;
-    public boolean isAlive = true;
     public int health = 100;
     public int score = 0;
     public int rubidiumResources = 0;
@@ -52,14 +48,6 @@ public class AIConnection {
         } catch (IOException e) {
             Debug.error("error creating connection handler: " + e);
         }
-    }
-
-    public String readLine() throws IOException {
-        return inputReader.readLine();
-    }
-
-    public String getIp() {
-        return socket.getInetAddress() + ":" + Integer.toString(socket.getPort());
     }
 
     public void sendError(String errorString) {

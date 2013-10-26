@@ -30,7 +30,7 @@ public class AIClientHandler implements Runnable {
                 connection.input(o);
             } catch (IOException e) {
                 // globalClientList.remove(connection);
-                Debug.warn("Disconnect from " + connection.getIp() + ". " + globalClientList.size() + " clients active.");
+                Debug.warn("Disconnect from " + connection.getIP() + ". " + globalClientList.size() + " clients active.");
                 connection.isAlive = false;
                 return;
             } catch (ProtocolException e) {

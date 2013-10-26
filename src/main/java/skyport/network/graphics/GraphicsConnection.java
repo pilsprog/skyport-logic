@@ -13,16 +13,12 @@ import org.json.JSONObject;
 import skyport.debug.Debug;
 import skyport.exception.ProtocolException;
 import skyport.game.Coordinate;
+import skyport.network.Connection;
 import skyport.network.ai.AIConnection;
 
-public class GraphicsConnection {
+public class GraphicsConnection extends Connection {
     public static GraphicsConnection debugConnection;
-    private Socket socket;
-    private BufferedReader inputReader;
-    private ConcurrentLinkedQueue<JSONObject> messages;
-    private boolean gotHandshake = false;
     String password = "supersecretpassword";
-    public boolean isAlive = true;
     public GraphicsContainer container = null;
     public boolean isDoneProcessing = true;
     public boolean alternativeLaserStyle = false;
@@ -40,15 +36,6 @@ public class GraphicsConnection {
             Debug.error("error creating connection handler: " + e);
         }
         debugConnection = this;
-    }
-
-    public String readLine() throws IOException {
-        String line = inputReader.readLine();
-        return line;
-    }
-
-    public String getIp() {
-        return socket.getInetAddress() + ":" + Integer.toString(socket.getPort());
     }
 
     public synchronized void input(JSONObject o) throws ProtocolException, IOException {
