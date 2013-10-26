@@ -166,10 +166,6 @@ public class GraphicsConnection extends Connection {
         super.sendMessage(o);
     }
 
-    public JSONObject getNextMessage() {
-        return messages.poll();
-    }
-
     public void waitForGraphics() {
         Debug.debug("Waiting for graphics...");
         while (true) {

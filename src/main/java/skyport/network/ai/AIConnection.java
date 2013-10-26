@@ -170,10 +170,6 @@ public class AIConnection extends Connection {
         super.sendMessage(o);
     }
 
-    public JSONObject getNextMessage() {
-        return messages.poll();
-    }
-
     public synchronized void setSpawnpoint(Tile spawnpoint) {
         Debug.info("Player '" + username + "' spawns at " + spawnpoint.coords.getString());
         position = spawnpoint;

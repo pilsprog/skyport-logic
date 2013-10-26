@@ -74,4 +74,8 @@ public abstract class Connection {
         Message endTurn = new EndTurnMessage();
         this.sendMessage(endTurn);
     }
+
+    public JSONObject getNextMessage() {
+        return messages.poll();
+    }
 }
