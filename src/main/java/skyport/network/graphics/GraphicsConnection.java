@@ -1,10 +1,7 @@
 package skyport.network.graphics;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.Socket;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,6 +15,7 @@ import skyport.network.ai.AIConnection;
 
 public class GraphicsConnection extends Connection {
     public static GraphicsConnection debugConnection;
+    
     String password = "supersecretpassword";
     public GraphicsContainer container = null;
     public boolean isDoneProcessing = true;
@@ -26,15 +24,9 @@ public class GraphicsConnection extends Connection {
     public Coordinate stopHack = null;
     public int thinktime;
 
-    public GraphicsConnection(Socket clientSocket, GraphicsContainer containerArg) {
-        messages = new ConcurrentLinkedQueue<JSONObject>();
+    public GraphicsConnection(Socket socket, GraphicsContainer containerArg) {
+        super(socket);
         container = containerArg;
-        socket = clientSocket;
-        try {
-            inputReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        } catch (IOException e) {
-            Debug.error("error creating connection handler: " + e);
-        }
         debugConnection = this;
     }
 

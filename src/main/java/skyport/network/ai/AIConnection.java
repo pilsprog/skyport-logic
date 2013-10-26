@@ -1,10 +1,7 @@
 package skyport.network.ai;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.Socket;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.json.JSONArray;
@@ -40,14 +37,8 @@ public class AIConnection extends Connection {
     public boolean hasToPass = false;
     public boolean needsRespawn = false;
 
-    public AIConnection(Socket clientSocket) {
-        messages = new ConcurrentLinkedQueue<JSONObject>();
-        socket = clientSocket;
-        try {
-            inputReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        } catch (IOException e) {
-            Debug.error("error creating connection handler: " + e);
-        }
+    public AIConnection(Socket socket) {
+        super(socket);
     }
 
     public void sendError(String errorString) {
