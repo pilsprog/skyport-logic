@@ -8,12 +8,14 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import skyport.debug.Debug;
 
 public abstract class Connection {
     protected Socket socket;
+    protected String identifier;
     protected BufferedReader input;
     protected BufferedWriter output;
     protected ConcurrentLinkedQueue<JSONObject> messages = new ConcurrentLinkedQueue<JSONObject>();
@@ -38,9 +40,14 @@ public abstract class Connection {
         return socket.getInetAddress() + ":" + Integer.toString(socket.getPort());
     }
     
-    public void sendMessage(JSONObject o) throws IOException {
-        output.write(o.toString());
-        output.newLine();
-        output.flush();
+    public void sendMessage(JSONObject o) {
+        try {
+            output.write(o.toString());
+            output.newLine();
+            output.flush();
+        } catch (IOException e) {
+            Debug.error("Error writing to '" + identifier + "': " + e.getMessage());
+        }
+    }
     }
 }

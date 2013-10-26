@@ -46,7 +46,6 @@ public class AIConnection extends Connection {
             JSONObject errorMessage = new JSONObject().put("error", errorString);
             sendMessage(errorMessage);
         } catch (JSONException f) {
-        } catch (IOException g) {
         }
     }
 
@@ -114,6 +113,7 @@ public class AIConnection extends Connection {
             }
             Util.validateUsername(o.getString("name"));
             username = o.getString("name");
+            this.identifier = username;
             gotHandshake = true;
             return true;
         } catch (JSONException e) {
@@ -157,11 +157,8 @@ public class AIConnection extends Connection {
             root.put("map", map);
         } catch (JSONException e) {
         }
-        try {
-            sendMessage(root);
-        } catch (IOException e) {
-            Debug.error("Error writing to '" + username + "': " + e.getMessage());
-        }
+        
+        sendMessage(root);
     }
 
     public void sendDeadline() {
@@ -170,13 +167,11 @@ public class AIConnection extends Connection {
             o.put("message", "endturn");
             sendMessage(o);
         } catch (JSONException e) {
-        } catch (IOException e) {
-            Debug.error("Error writing to '" + username + "': " + e.getMessage());
         }
     }
 
     @Override
-    public void sendMessage(JSONObject o) throws IOException {
+    public void sendMessage(JSONObject o) {
         if (!isAlive) {
             Debug.debug("player '" + this.username + "' disconnected, not sending...");
             return;
@@ -286,7 +281,6 @@ public class AIConnection extends Connection {
                 JSONObject errorMessage = new JSONObject().put("error", "Invalid move packet: " + e.getMessage());
                 sendMessage(errorMessage);
             } catch (JSONException f) {
-            } catch (IOException g) {
             }
             return false;
         } catch (ProtocolException e) {
@@ -294,7 +288,6 @@ public class AIConnection extends Connection {
                 JSONObject errorMessage = new JSONObject().put("error", "Invalid move packet: " + e.getMessage());
                 sendMessage(errorMessage);
             } catch (JSONException f) {
-            } catch (IOException g) {
             }
             return false;
         }
@@ -305,7 +298,6 @@ public class AIConnection extends Connection {
             JSONObject errorMessage = new JSONObject().put("error", "Invalid action: " + action.get("type"));
             sendMessage(errorMessage);
         } catch (JSONException f) {
-        } catch (IOException g) {
         }
     }
 

@@ -1,6 +1,5 @@
 package skyport.game;
 
-import java.io.IOException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -220,17 +219,9 @@ public class GameThread {
             action.put("from", playerWhoPerformedTheAction.username);
         } catch (JSONException e) {
         }
-        try {
-            graphicsContainer.get().sendMessage(action);
-        } catch (IOException e) {
-            Debug.debug("Warning: failed to broadcast action to graphics");
-        }
+        graphicsContainer.get().sendMessage(action);
         for (AIConnection player : globalClients) {
-            try {
-                player.sendMessage(action);
-            } catch (IOException e) {
-                Debug.debug("Warning: Failed to broadcast action to " + player.username);
-            }
+            player.sendMessage(action);
         }
     }
 

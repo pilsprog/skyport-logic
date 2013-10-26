@@ -32,7 +32,6 @@ public class GraphicsClientHandler implements Runnable {
                     JSONObject errorMessage = new JSONObject().put("error", e.getMessage());
                     connection.sendMessage(errorMessage);
                 } catch (JSONException f) {
-                } catch (IOException g) {
                 }
             }
         }

@@ -28,6 +28,7 @@ public class GraphicsConnection extends Connection {
         super(socket);
         container = containerArg;
         debugConnection = this;
+        this.identifier = "graphics";
     }
 
     public synchronized void input(JSONObject o) throws ProtocolException, IOException {
@@ -137,22 +138,19 @@ public class GraphicsConnection extends Connection {
             root.put("map", map);
         } catch (JSONException e) {
         }
-        try {
-            sendMessage(root);
-            isDoneProcessing = false;
-        } catch (IOException e) {
-            Debug.error("Error writing to graphics: " + e.getMessage());
-        }
+
+        sendMessage(root);
+        isDoneProcessing = false;
+
     }
 
     public void sendDeadline() {
         JSONObject o = new JSONObject();
         try {
             o.put("message", "endturn");
-            sendMessage(o);
+       
+            super.sendMessage(o);
         } catch (JSONException e) {
-        } catch (IOException e) {
-            Debug.error("Error writing to graphics: " + e.getMessage());
         }
     }
 
@@ -162,13 +160,11 @@ public class GraphicsConnection extends Connection {
             o.put("message", "endactions");
             sendMessage(o);
         } catch (JSONException e) {
-        } catch (IOException e) {
-            Debug.error("Error writing to graphics: " + e.getMessage());
         }
     }
 
     @Override
-    public void sendMessage(JSONObject o) throws IOException {
+    public void sendMessage(JSONObject o) {
         try {
             if (o.getString("message").equals("action") && o.getString("type").equals("laser")) {
                 o.put("start", startHack.getCompactString());
@@ -211,7 +207,6 @@ public class GraphicsConnection extends Connection {
             o.put("text", title);
             sendMessage(o);
         } catch (JSONException e) {
-        } catch (IOException e) {
         }
     }
 
@@ -222,7 +217,6 @@ public class GraphicsConnection extends Connection {
             o.put("text", subtitle);
             sendMessage(o);
         } catch (JSONException e) {
-        } catch (IOException e) {
         }
     }
 
@@ -234,7 +228,6 @@ public class GraphicsConnection extends Connection {
             o.put("color", new JSONArray().put(r).put(g).put(b));
             sendMessage(o);
         } catch (JSONException e) {
-        } catch (IOException e) {
         }
     }
 
@@ -245,7 +238,6 @@ public class GraphicsConnection extends Connection {
             o.put("text", message);
             this.sendMessage(o);
         } catch (JSONException e) {
-        } catch (IOException e) {
         }
     }
 }
