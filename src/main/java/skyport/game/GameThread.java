@@ -75,7 +75,7 @@ public class GameThread {
             boolean allAreReady = true;
             for (AIConnection conn : globalClients) {
                 if (!conn.gotLoadout.get()) {
-                    Debug.info("Waiting for loadout from " + conn.username);
+                    Debug.info("Waiting for loadout from " + conn.getPlayer().name);
                     allAreReady = false;
                 }
             }
@@ -130,14 +130,14 @@ public class GameThread {
                 int highestScore = -1000000000;
                 String winningPlayer = "";
                 for (AIConnection connection : globalClients) {
-                    if (connection.score > highestScore) {
-                        highestScore = connection.score;
-                        winningPlayer = connection.username;
+                    if (connection.getPlayer().score > highestScore) {
+                        highestScore = connection.getPlayer().score;
+                        winningPlayer = connection.getPlayer().name;
                     }
                 }
                 String wintext = winningPlayer + " wins!";
                 for (AIConnection connection : globalClients) {
-                    if (connection.score == highestScore && !winningPlayer.equals(connection.username)) {
+                    if (connection.getPlayer().score == highestScore && !winningPlayer.equals(connection.getPlayer().name)) {
                         wintext = "Tie!";
                     }
                 }
@@ -150,11 +150,11 @@ public class GameThread {
                 // System.exit(0);
             }
             AIConnection currentPlayer = sendGamestate(roundNumber);
-            Debug.marker("START TURN " + roundNumber + " PLAYER: '" + currentPlayer.username + "'");
+            Debug.marker("START TURN " + roundNumber + " PLAYER: '" + currentPlayer.getPlayer().name + "'");
             if (currentPlayer.isAlive || !accelerateDeadPlayers) {
                 letClientsThink();
             } else {
-                Debug.debug("Player '" + currentPlayer.username + "' is dead and accelerateDeadPlayers flag is set, sending" + " deadline immediately...");
+                Debug.debug("Player '" + currentPlayer.getPlayer().name + "' is dead and accelerateDeadPlayers flag is set, sending" + " deadline immediately...");
             }
             sendDeadline();
             Debug.debug("Deadline! Processing actions...");
@@ -169,8 +169,8 @@ public class GameThread {
     }
 
     private void givePenalityForLingeringOnSpawntile(AIConnection currentPlayer) {
-        if (currentPlayer.position == currentPlayer.spawnTile) {
-            Debug.warn("Player " + currentPlayer.username + " stayed on spawn too long");
+        if (currentPlayer.getPlayer().position == currentPlayer.getPlayer().spawnTile) {
+            Debug.warn("Player " + currentPlayer.getPlayer().name + " stayed on spawn too long");
             currentPlayer.givePenality(10);
         }
     }
@@ -207,7 +207,7 @@ public class GameThread {
         } else {
             Debug.debug("Third action was invalid.");
         }
-        Debug.game("player " + currentPlayer.username + " performed " + validActions + " valid actions");
+        Debug.game("player " + currentPlayer.getPlayer().name + " performed " + validActions + " valid actions");
         if (validActions == 0) {
             currentPlayer.givePenality(10);
         }
@@ -216,7 +216,7 @@ public class GameThread {
     private void broadcastAction(JSONObject action, AIConnection playerWhoPerformedTheAction) {
         Debug.debug("Action was valid, re-broadcasting (FIXME)");
         try {
-            action.put("from", playerWhoPerformedTheAction.username);
+            action.put("from", playerWhoPerformedTheAction.getPlayer().name);
         } catch (JSONException e) {
         }
         graphicsContainer.get().sendMessage(action);
@@ -235,29 +235,29 @@ public class GameThread {
             case "move":
                 return currentPlayer.doMove(action);
             case "laser":
-                if (currentPlayer.position.tileType == TileType.SPAWN) {
+                if (currentPlayer.getPlayer().position.tileType == TileType.SPAWN) {
                     Debug.game("Player attempted to shoot laser from spawn.");
                     return false;
                 }
                 return currentPlayer.shootLaser(action, graphicsContainer.get(), turnsLeft);
             case "droid":
-                if (currentPlayer.position.tileType == TileType.SPAWN) {
+                if (currentPlayer.getPlayer().position.tileType == TileType.SPAWN) {
                     Debug.game("Player attempted to shoot droid from spawn.");
                     return false;
                 }
                 return currentPlayer.shootDroid(action, turnsLeft);
             case "mortar":
-                if (currentPlayer.position.tileType == TileType.SPAWN) {
+                if (currentPlayer.getPlayer().position.tileType == TileType.SPAWN) {
                     Debug.game("Player attempted to shoot mortar from spawn.");
                     return false;
                 }
                 return currentPlayer.shootMortar(action, turnsLeft);
             case "mine":
-                TileType currentTileType = currentPlayer.position.tileType;
+                TileType currentTileType = currentPlayer.getPlayer().position.tileType;
                 if (currentTileType == TileType.RUBIDIUM || currentTileType == TileType.EXPLOSIUM || currentTileType == TileType.SCRAP) {
                     return currentPlayer.mineResource();
                 } else {
-                    Debug.game("Player " + currentPlayer.username + " attempted to mine while not on a resource");
+                    Debug.game("Player " + currentPlayer.getPlayer().name + " attempted to mine while not on a resource");
                     currentPlayer.sendError("Tried to mine while not on a resource tile!");
                     return false;
                 }

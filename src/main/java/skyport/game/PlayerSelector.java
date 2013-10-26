@@ -84,7 +84,7 @@ public class PlayerSelector {
                 if (tempPlayer.next == tempPlayer) {
                     Debug.error("Last player disconnected, press enter to quit");
                 }
-                Debug.warn("Found dead player '" + tempPlayer.connection.username + "' in ring, purging...");
+                Debug.warn("Found dead player '" + tempPlayer.connection.getPlayer().name + "' in ring, purging...");
                 tempPlayer.prev.next = tempPlayer.next;
                 if (tempPlayer == currentPlayer) {
                     currentPlayer = currentPlayer.next;

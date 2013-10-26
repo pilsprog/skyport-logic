@@ -11,9 +11,11 @@ import org.json.JSONObject;
 import skyport.debug.Debug;
 import skyport.exception.ProtocolException;
 import skyport.game.Coordinate;
+import skyport.game.Player;
 import skyport.game.Tile;
 import skyport.game.TileType;
 import skyport.game.Util;
+import skyport.game.Weapon;
 import skyport.game.weapon.Droid;
 import skyport.game.weapon.Laser;
 import skyport.game.weapon.Mortar;
@@ -24,19 +26,7 @@ import skyport.network.Connection;
 import skyport.network.graphics.GraphicsConnection;
 
 public class AIConnection extends Connection {
-    public String primaryWeapon = "";
-    public String secondaryWeapon = "";
-    public int primaryWeaponLevel = 1;
-    public int secondaryWeaponLevel = 1;
-    public String username;
-    public Tile position = null;
-    public int health = 100;
-    public int score = 0;
-    public int rubidiumResources = 0;
-    public int explosiumResources = 0;
-    public int scrapResources = 0;
-    
-    public Tile spawnTile = null;
+    private Player player;
     public AtomicBoolean gotLoadout = new AtomicBoolean(false);
     public boolean hasToPass = false;
     public boolean needsRespawn = false;
@@ -92,9 +82,12 @@ public class AIConnection extends Connection {
             if (o.getString("primary-weapon").equals(o.getString("secondary-weapon"))) {
                 throw new ProtocolException("Invalid loadout: Can't have the same weapon twice.");
             }
-            primaryWeapon = o.getString("primary-weapon");
-            secondaryWeapon = o.getString("secondary-weapon");
-            Debug.info(username + " selected loadout: " + primaryWeapon + " and " + secondaryWeapon + ".");
+                        
+            Weapon primary = new Weapon(o.getString("primary-weapon"));
+            Weapon secondary = new Weapon(o.getString("secondary-weapon"));          
+            player.setLoadout(primary, secondary);
+            
+            Debug.info(player.name + " selected loadout: " + player.primaryWeapon.getName() + " and " + player.secondaryWeapon.getName() + ".");
             gotLoadout.set(true);
         } catch (JSONException e) {
             throw new ProtocolException("Invalid or incomplete packet: " + e.getMessage());
@@ -110,8 +103,8 @@ public class AIConnection extends Connection {
                 throw new ProtocolException("Wrong protocol revision: supporting 1, but got " + o.getInt("revision"));
             }
             Util.validateUsername(o.getString("name"));
-            username = o.getString("name");
-            this.identifier = username;
+            player.name = o.getString("name");
+            this.identifier = player.name;
             gotHandshake = true;
             return true;
         } catch (JSONException e) {
@@ -122,22 +115,22 @@ public class AIConnection extends Connection {
     @Override
     public void sendMessage(JSONObject o) {
         if (!isAlive) {
-            Debug.debug("player '" + this.username + "' disconnected, not sending...");
+            Debug.debug("player '" + this.player.name + "' disconnected, not sending...");
             return;
         }
         super.sendMessage(o);
     }
 
     public synchronized void setSpawnpoint(Tile spawnpoint) {
-        Debug.info("Player '" + username + "' spawns at " + spawnpoint.coords.getString());
-        position = spawnpoint;
-        spawnTile = spawnpoint;
-        position.playerOnTile = this;
+        Debug.info("Player '" + player.name + "' spawns at " + spawnpoint.coords.getString());
+        player.position = spawnpoint;
+        player.spawnTile = spawnpoint;
+        player.position.playerOnTile = this;
     }
 
     public void clearAllMessages() {
         if (messages.size() > 0) {
-            Debug.warn("Message inbox of " + username + " contained " + messages.size() + " extra messages, discarding...");
+            Debug.warn("Message inbox of " + player.name + " contained " + messages.size() + " extra messages, discarding...");
         }
         messages.clear();
     }
@@ -147,76 +140,76 @@ public class AIConnection extends Connection {
         try {
             String direction = o.getString("direction");
             if (direction.equals("up")) {
-                if (position.up != null && position.up.isAccessible()) {
-                    if (position.up.playerOnTile != null) {
-                        throw new ProtocolException("Player " + position.up.playerOnTile.username + " is already on this tile.");
+                if (player.position.up != null && player.position.up.isAccessible()) {
+                    if (player.position.up.playerOnTile != null) {
+                        throw new ProtocolException("Player " + player.position.up.playerOnTile.player.getName() + " is already on this tile.");
                     }
-                    position.playerOnTile = null;
-                    position = position.up;
-                    position.playerOnTile = this;
+                    player.position.playerOnTile = null;
+                    player.position = player.position.up;
+                    player.position.playerOnTile = this;
                     return true;
                 } else {
-                    throw Util.throwInaccessibleTileException("up", position.up);
+                    throw Util.throwInaccessibleTileException("up", player.position.up);
                 }
             } else if (direction.equals("down")) {
-                if (position.down != null && position.down.isAccessible()) {
-                    if (position.down.playerOnTile != null) {
-                        throw new ProtocolException("Player " + position.down.playerOnTile.username + " is already on this tile.");
+                if (player.position.down != null && player.position.down.isAccessible()) {
+                    if (player.position.down.playerOnTile != null) {
+                        throw new ProtocolException("Player " + player.position.down.playerOnTile.player.getName() + " is already on this tile.");
                     }
-                    position.playerOnTile = null;
-                    position = position.down;
-                    position.playerOnTile = this;
+                    player.position.playerOnTile = null;
+                    player.position = player.position.down;
+                    player.position.playerOnTile = this;
                     return true;
                 } else {
-                    throw Util.throwInaccessibleTileException("down", position.down);
+                    throw Util.throwInaccessibleTileException("down", player.position.down);
                 }
             } else if (direction.equals("left-down")) {
-                if (position.leftDown != null && position.leftDown.isAccessible()) {
-                    if (position.leftDown.playerOnTile != null) {
-                        throw new ProtocolException("Player " + position.leftDown.playerOnTile.username + " is already on this tile.");
+                if (player.position.leftDown != null && player.position.leftDown.isAccessible()) {
+                    if (player.position.leftDown.playerOnTile != null) {
+                        throw new ProtocolException("Player " + player.position.leftDown.playerOnTile.player.getName() + " is already on this tile.");
                     }
-                    position.playerOnTile = null;
-                    position = position.leftDown;
-                    position.playerOnTile = this;
+                    player.position.playerOnTile = null;
+                    player.position = player.position.leftDown;
+                    player.position.playerOnTile = this;
                     return true;
                 } else {
-                    throw Util.throwInaccessibleTileException("left-down", position.leftDown);
+                    throw Util.throwInaccessibleTileException("left-down", player.position.leftDown);
                 }
             } else if (direction.equals("left-up")) {
-                if (position.leftUp != null && position.leftUp.isAccessible()) {
-                    if (position.leftUp.playerOnTile != null) {
-                        throw new ProtocolException("Player " + position.leftUp.playerOnTile.username + " is already on this tile.");
+                if (player.position.leftUp != null && player.position.leftUp.isAccessible()) {
+                    if (player.position.leftUp.playerOnTile != null) {
+                        throw new ProtocolException("Player " + player.position.leftUp.playerOnTile.player.getName() + " is already on this tile.");
                     }
-                    position.playerOnTile = null;
-                    position = position.leftUp;
-                    position.playerOnTile = this;
+                    player.position.playerOnTile = null;
+                    player.position = player.position.leftUp;
+                    player.position.playerOnTile = this;
                     return true;
                 } else {
-                    throw Util.throwInaccessibleTileException("left-up", position.leftUp);
+                    throw Util.throwInaccessibleTileException("left-up", player.position.leftUp);
                 }
             } else if (direction.equals("right-down")) {
-                if (position.rightDown != null && position.rightDown.isAccessible()) {
-                    if (position.rightDown.playerOnTile != null) {
-                        throw new ProtocolException("Player " + position.rightDown.playerOnTile.username + " is already on this tile.");
+                if (player.position.rightDown != null && player.position.rightDown.isAccessible()) {
+                    if (player.position.rightDown.playerOnTile != null) {
+                        throw new ProtocolException("Player " + player.position.rightDown.playerOnTile.player.getName() + " is already on this tile.");
                     }
-                    position.playerOnTile = null;
-                    position = position.rightDown;
-                    position.playerOnTile = this;
+                    player.position.playerOnTile = null;
+                    player.position = player.position.rightDown;
+                    player.position.playerOnTile = this;
                     return true;
                 } else {
-                    throw Util.throwInaccessibleTileException("right-down", position.rightDown);
+                    throw Util.throwInaccessibleTileException("right-down", player.position.rightDown);
                 }
             } else if (direction.equals("right-up")) {
-                if (position.rightUp != null && position.rightUp.isAccessible()) {
-                    if (position.rightUp.playerOnTile != null) {
-                        throw new ProtocolException("Player " + position.rightUp.playerOnTile.username + " is already on this tile.");
+                if (player.position.rightUp != null && player.position.rightUp.isAccessible()) {
+                    if (player.position.rightUp.playerOnTile != null) {
+                        throw new ProtocolException("Player " + player.position.rightUp.playerOnTile.player.getName() + " is already on this tile.");
                     }
-                    position.playerOnTile = null;
-                    position = position.rightUp;
-                    position.playerOnTile = this;
+                    player.position.playerOnTile = null;
+                    player.position = player.position.rightUp;
+                    player.position.playerOnTile = this;
                     return true;
                 } else {
-                    throw Util.throwInaccessibleTileException("right-up", position.rightUp);
+                    throw Util.throwInaccessibleTileException("right-up", player.position.rightUp);
                 }
             } else {
                 throw new ProtocolException("Invalid direction: '" + direction + "'");
@@ -248,10 +241,10 @@ public class AIConnection extends Connection {
 
     public boolean shootLaser(JSONObject action, GraphicsConnection graphicsConnection, int turnsLeft) {
         int laserLevel = 1;
-        if (primaryWeapon.equals("laser")) {
-            laserLevel = primaryWeaponLevel;
-        } else if (secondaryWeapon.equals("laser")) {
-            laserLevel = secondaryWeaponLevel;
+        if (player.primaryWeapon.getName().equals("laser")) {
+            laserLevel = player.primaryWeapon.getLevel();
+        } else if (player.secondaryWeapon.getName().equals("laser")) {
+            laserLevel = player.secondaryWeapon.getLevel();
         } else {
             return false;
         }
@@ -259,9 +252,9 @@ public class AIConnection extends Connection {
             String direction = action.getString("direction");
             Laser laser = new Laser(this, turnsLeft);
             if (laser.setDirection(direction)) {
-                laser.setPosition(position);
+                laser.setPosition(player.position);
                 Coordinate endvector = laser.performShot(laserLevel);
-                graphicsConnection.setStartStopHack(position.coords, endvector);
+                graphicsConnection.setStartStopHack(player.position.coords, endvector);
             } else {
                 sendError("Invalid shot: unknown direction '" + direction + "'");
                 return false;
@@ -275,12 +268,12 @@ public class AIConnection extends Connection {
 
     public boolean shootDroid(JSONObject action, int turnsLeft) {
         int droidLevel = 1; // TODO
-        if (primaryWeapon.equals("droid")) {
-            droidLevel = primaryWeaponLevel;
-        } else if (secondaryWeapon.equals("droid")) {
-            droidLevel = secondaryWeaponLevel;
+        if (player.primaryWeapon.getName().equals("droid")) {
+            droidLevel = player.primaryWeapon.getLevel();
+        } else if (player.secondaryWeapon.getName().equals("droid")) {
+            droidLevel = player.secondaryWeapon.getLevel();
         } else {
-            Debug.warn("User '" + username + "' attempted to shoot the droid, but doesn't have it");
+            Debug.warn("User '" + player.name + "' attempted to shoot the droid, but doesn't have it");
             return false;
         }
         int range = 3;
@@ -298,7 +291,7 @@ public class AIConnection extends Connection {
                 sendError("Got " + directionSequence.length() + " commands for the droid, but your droids level (" + droidLevel + ") only supports " + range + " steps.");
             }
             if (droid.setDirections(directionSequence, droidLevel)) {
-                droid.setPosition(position);
+                droid.setPosition(player.position);
                 int stepsTaken = droid.performShot();
                 JSONArray truncatedArray = new JSONArray();
                 for (int i = 0; i < stepsTaken; i++) {
@@ -319,18 +312,18 @@ public class AIConnection extends Connection {
 
     public boolean shootMortar(JSONObject action, int turnsLeft) {
         int mortarLevel = 1;
-        if (primaryWeapon.equals("mortar")) {
-            mortarLevel = primaryWeaponLevel;
-        } else if (secondaryWeapon.equals("mortar")) {
-            mortarLevel = secondaryWeaponLevel;
+        if (player.primaryWeapon.getName().equals("mortar")) {
+            mortarLevel = player.primaryWeapon.getLevel();
+        } else if (player.secondaryWeapon.getName().equals("mortar")) {
+            mortarLevel = player.secondaryWeapon.getLevel();
         } else {
-            Debug.warn("User '" + username + "' attempted to shoot the mortar, but doesn't have it");
+            Debug.warn("User '" + player.name + "' attempted to shoot the mortar, but doesn't have it");
             return false;
         }
         try {
             Coordinate relativeTargetCoordinates = new Coordinate(action.getString("coordinates"));
             Mortar mortar = new Mortar(this, turnsLeft);
-            mortar.setPosition(this.position);
+            mortar.setPosition(this.player.position);
             mortar.setTarget(relativeTargetCoordinates, mortarLevel);
             return mortar.performShot();
         } catch (JSONException e) {
@@ -340,72 +333,72 @@ public class AIConnection extends Connection {
     }
 
     public boolean mineResource() {
-        TileType tileType = this.position.tileType;
-        Debug.game("Player " + username + " mining " + tileType);
-        boolean minedResource = this.position.mineTile();
+        TileType tileType = this.player.position.tileType;
+        Debug.game("Player " + player.name + " mining " + tileType);
+        boolean minedResource = this.player.position.mineTile();
         if (minedResource) {
             if (tileType == TileType.RUBIDIUM) {
-                rubidiumResources++;
+                player.rubidiumResources++;
             }
             if (tileType == TileType.EXPLOSIUM) {
-                explosiumResources++;
+                player.explosiumResources++;
             }
             if (tileType == TileType.SCRAP) {
-                scrapResources++;
+                player.scrapResources++;
             }
-            Debug.debug("Resources of player " + username + " are now: Rubidium: " + rubidiumResources + ", Explosium: " + explosiumResources + ", Scrap: " + scrapResources);
+            Debug.debug("Resources of player " + player.name + " are now: Rubidium: " + player.rubidiumResources + ", Explosium: " + player.explosiumResources + ", Scrap: " + player.scrapResources);
             return true;
         }
         return false;
     }
 
     public void damagePlayer(int hitpoints, AIConnection dealingPlayer) {
-        if (health <= 0) {
+        if (player.health <= 0) {
             Debug.warn("Player is already dead.");
             return;
         }
-        Debug.stub("'" + this.username + "' received " + hitpoints + " damage from '" + dealingPlayer.username + "'!");
-        health -= hitpoints;
-        if (!(dealingPlayer.username.equals(this.username))) {
+        Debug.stub("'" + this.player.name + "' received " + hitpoints + " damage from '" + dealingPlayer.player.name + "'!");
+        player.health -= hitpoints;
+        if (!(dealingPlayer.player.name.equals(this.player.name))) {
             dealingPlayer.givePoints(hitpoints); // damaged user other than
             // self, award points
         }
-        if (health <= 0) {
-            Debug.game(this.username + " got killed by " + dealingPlayer.username);
-            if (!(dealingPlayer.username.equals(this.username))) {
+        if (player.health <= 0) {
+            Debug.game(this.player.name + " got killed by " + dealingPlayer.player.name);
+            if (!(dealingPlayer.player.name.equals(this.player.name))) {
                 dealingPlayer.givePoints(20); // 20 bonus points for killing
                 // someone
             }
-            score -= 40;
-            health = 0;
+            player.score -= 40;
+            player.health = 0;
             hasToPass = true;
             needsRespawn = true;
         }
     }
 
     public boolean upgradeWeapon(String weapon) {
-        Debug.debug(username + " upgrading his " + weapon);
-        if (primaryWeapon.equals(weapon)) {
+        Debug.debug(player.name + " upgrading his " + weapon);
+        if (player.primaryWeapon.getName().equals(weapon)) {
             Debug.stub("upgrading primary weapon (" + weapon + ")");
-            boolean success = subtractResourcesForWeaponUpgrade(weapon, primaryWeaponLevel);
+            boolean success = subtractResourcesForWeaponUpgrade(weapon, player.primaryWeapon.getLevel());
             if (success) {
-                primaryWeaponLevel++;
-                Debug.guiMessage(username + " upgrades his " + weapon);
+                player.primaryWeapon.upgrade();
+                Debug.guiMessage(player.name + " upgrades his " + weapon);
                 return true;
             } else {
                 return false;
             }
-        } else if (secondaryWeapon.equals(weapon)) {
-            boolean success = subtractResourcesForWeaponUpgrade(weapon, secondaryWeaponLevel);
+        } else if (player.secondaryWeapon.getName().equals(weapon)) {
+            boolean success = subtractResourcesForWeaponUpgrade(weapon, player.secondaryWeapon.getLevel());
             if (success) {
-                secondaryWeaponLevel++;
-                Debug.guiMessage(username + " upgrades his " + weapon);
+                player.secondaryWeapon.upgrade();
+                Debug.guiMessage(player.name + " upgrades his " + weapon);
                 return true;
             } else {
                 return false;
             }
         } else {
-            Debug.warn(username + " tried to upgrade weapon '" + weapon + "', but doesn't have it.");
+            Debug.warn(player.name + " tried to upgrade weapon '" + weapon + "', but doesn't have it.");
             return false;
         }
     }
@@ -416,12 +409,12 @@ public class AIConnection extends Connection {
             resourcesToSubtract = 5;
         }
         if (currentLevel == 3) {
-            Debug.warn(username + " tried to upgrade his " + weapon + ", but it is already level 3.");
+            Debug.warn(player.name + " tried to upgrade his " + weapon + ", but it is already level 3.");
             return false;
         }
         if (weapon.equals("laser")) {
-            if (rubidiumResources >= resourcesToSubtract) {
-                rubidiumResources -= resourcesToSubtract;
+            if (player.rubidiumResources >= resourcesToSubtract) {
+                player.rubidiumResources -= resourcesToSubtract;
                 return true;
             } else {
                 Debug.warn("Tried to upgrade the laser, but not enough rubidium");
@@ -429,8 +422,8 @@ public class AIConnection extends Connection {
             }
         }
         if (weapon.equals("mortar")) {
-            if (explosiumResources >= resourcesToSubtract) {
-                explosiumResources -= resourcesToSubtract;
+            if (player.explosiumResources >= resourcesToSubtract) {
+                player.explosiumResources -= resourcesToSubtract;
                 return true;
             } else {
                 Debug.warn("Tried to upgrade the mortar, but not enough explosium");
@@ -438,8 +431,8 @@ public class AIConnection extends Connection {
             }
         }
         if (weapon.equals("droid")) {
-            if (scrapResources >= resourcesToSubtract) {
-                scrapResources -= resourcesToSubtract;
+            if (player.scrapResources >= resourcesToSubtract) {
+                player.scrapResources -= resourcesToSubtract;
                 return true;
             } else {
                 Debug.warn("Tried to upgrade the droid, but not enough scrap");
@@ -450,24 +443,35 @@ public class AIConnection extends Connection {
     }
 
     public void respawn() {
-        position.playerOnTile = null;
-        position = spawnTile;
-        position.playerOnTile = this;
-        health = 100;
+        player.position.playerOnTile = null;
+        player.position = player.spawnTile;
+        player.position.playerOnTile = this;
+        player.health = 100;
         needsRespawn = false;
     }
 
     void givePoints(int points) {
         Debug.info("got awarded " + points + " points");
-        score += points;
+        player.score += points;
     }
 
     public void givePenality(int points) {
-        Debug.warn(username + " got " + points + " penality");
-        score -= points;
+        Debug.warn(player.name + " got " + points + " penality");
+        player.score -= points;
+    }
+    
+    public Player getPlayer() {
+        return player;
     }
 
     public void printStats() {
-        System.out.println(username + ": HP: " + health + ", score: " + score + ", RUB:" + rubidiumResources + ", EXP:" + explosiumResources + ", SCR:" + scrapResources + ", prim. lvl:" + primaryWeaponLevel + ", sec. lvl.:" + secondaryWeaponLevel);
+        System.out.println(player.name +
+                ": HP: " + player.health + 
+                ", score: " + player.score +
+                ", RUB:" + player.rubidiumResources +
+                ", EXP:" + player.explosiumResources +
+                ", SCR:" + player.scrapResources +
+                ", prim. lvl:" + player.primaryWeapon.getLevel() + 
+                ", sec. lvl.:" + player.secondaryWeapon.getLevel());
     }
 }

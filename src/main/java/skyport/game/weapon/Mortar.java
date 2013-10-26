@@ -29,7 +29,7 @@ public class Mortar {
     }
 
     public boolean performShot() {
-        Debug.game("'" + dealingPlayer.username + "' performing mortar shot at '" + relativeTargetVector.getString() + "'");
+        Debug.game("'" + dealingPlayer.getPlayer().name + "' performing mortar shot at '" + relativeTargetVector.getString() + "'");
         int range = 2;
         int baseDamage = 20;
         if (level == 2) {

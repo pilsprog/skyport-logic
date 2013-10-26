@@ -32,7 +32,7 @@ public class Laser {
     }
 
     public Coordinate performShot(int level) {
-        Debug.game("'" + dealingPlayer.username + "' performing laser shot in direction " + direction + "!");
+        Debug.game("'" + dealingPlayer.getPlayer().name + "' performing laser shot in direction " + direction + "!");
         int range = 5;
         int baseDamage = 16;
         if (level == 2) {

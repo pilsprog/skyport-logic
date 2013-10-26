@@ -46,7 +46,7 @@ public class Droid {
     }
 
     public int performShot() {
-        Debug.game("'" + dealingPlayer.username + "' performing droid shot with " + directions.length + " steps");
+        Debug.game("'" + dealingPlayer.getPlayer().name + "' performing droid shot with " + directions.length + " steps");
         int range = 3;
         int damage = 22;
         int validStepsTaken = 0;
