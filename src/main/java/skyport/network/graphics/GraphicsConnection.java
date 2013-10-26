@@ -143,17 +143,7 @@ public class GraphicsConnection extends Connection {
         isDoneProcessing = false;
 
     }
-
-    public void sendDeadline() {
-        JSONObject o = new JSONObject();
-        try {
-            o.put("message", "endturn");
-       
-            super.sendMessage(o);
-        } catch (JSONException e) {
-        }
-    }
-
+    
     public void sendEndActions() {
         JSONObject o = new JSONObject();
         try {

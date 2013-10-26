@@ -161,15 +161,6 @@ public class AIConnection extends Connection {
         sendMessage(root);
     }
 
-    public void sendDeadline() {
-        JSONObject o = new JSONObject();
-        try {
-            o.put("message", "endturn");
-            sendMessage(o);
-        } catch (JSONException e) {
-        }
-    }
-
     @Override
     public void sendMessage(JSONObject o) {
         if (!isAlive) {
