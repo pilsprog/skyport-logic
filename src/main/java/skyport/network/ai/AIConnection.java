@@ -17,23 +17,27 @@ import skyport.game.Util;
 import skyport.game.weapon.Droid;
 import skyport.game.weapon.Laser;
 import skyport.game.weapon.Mortar;
+import skyport.message.ErrorMessage;
+import skyport.message.Message;
+import skyport.message.StatusMessage;
 import skyport.network.Connection;
 import skyport.network.graphics.GraphicsConnection;
 
 public class AIConnection extends Connection {
-    public AtomicBoolean gotLoadout = new AtomicBoolean(false);
     public String primaryWeapon = "";
     public String secondaryWeapon = "";
     public int primaryWeaponLevel = 1;
     public int secondaryWeaponLevel = 1;
     public String username;
     public Tile position = null;
-    public Tile spawnTile = null;
     public int health = 100;
     public int score = 0;
     public int rubidiumResources = 0;
     public int explosiumResources = 0;
     public int scrapResources = 0;
+    
+    public Tile spawnTile = null;
+    public AtomicBoolean gotLoadout = new AtomicBoolean(false);
     public boolean hasToPass = false;
     public boolean needsRespawn = false;
 
@@ -42,21 +46,15 @@ public class AIConnection extends Connection {
     }
 
     public void sendError(String errorString) {
-        try {
-            JSONObject errorMessage = new JSONObject().put("error", errorString);
-            sendMessage(errorMessage);
-        } catch (JSONException f) {
-        }
+        Message error = new ErrorMessage(errorString);
+        sendMessage(error);
     }
 
     public synchronized void input(JSONObject o) throws ProtocolException, IOException {
         if (!gotHandshake) {
             if (parseHandshake(o)) {
-                try {
-                    JSONObject successMessage = new JSONObject().put("message", "connect").put("status", true);
-                    sendMessage(successMessage);
-                } catch (JSONException e) {
-                }
+                Message success = new StatusMessage(true);
+                this.sendMessage(success);
             }
             return;
         } else if (!gotLoadout.get()) {

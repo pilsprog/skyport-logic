@@ -3,13 +3,19 @@ package skyport.network.graphics;
 import java.io.IOException;
 import java.net.Socket;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import skyport.debug.Debug;
 import skyport.exception.ProtocolException;
 import skyport.game.Coordinate;
+import skyport.game.action.LaserAction;
+import skyport.message.EndActionsMessage;
+import skyport.message.HighlightMessage;
+import skyport.message.Message;
+import skyport.message.StatusMessage;
+import skyport.message.SubtitleMessage;
+import skyport.message.TitleMessage;
 import skyport.network.Connection;
 import skyport.network.ai.AIConnection;
 
@@ -34,11 +40,8 @@ public class GraphicsConnection extends Connection {
     public synchronized void input(JSONObject o) throws ProtocolException, IOException {
         if (!gotHandshake) {
             if (parseHandshake(o)) {
-                try {
-                    JSONObject successMessage = new JSONObject().put("message", "connect").put("status", true);
-                    sendMessage(successMessage);
-                } catch (JSONException e) {
-                }
+                Message success = new StatusMessage(true);
+                this.sendMessage(success);
             }
             return;
         } else if (o.has("message")) {
@@ -109,12 +112,8 @@ public class GraphicsConnection extends Connection {
     }
     
     public void sendEndActions() {
-        JSONObject o = new JSONObject();
-        try {
-            o.put("message", "endactions");
-            sendMessage(o);
-        } catch (JSONException e) {
-        }
+        Message endActions = new EndActionsMessage();
+        this.sendMessage(endActions);
     }
 
     @Override
@@ -128,6 +127,17 @@ public class GraphicsConnection extends Connection {
         }
 
         super.sendMessage(o);
+    }
+    
+    @Override
+    public void sendMessage(Message message) {
+        if(message instanceof LaserAction) {
+            LaserAction action = (LaserAction)message;
+            action.setInterval(startHack, stopHack);
+            super.sendMessage(action);
+        } else {
+            super.sendMessage(message);
+        }
     }
 
     public void waitForGraphics() {
@@ -151,43 +161,22 @@ public class GraphicsConnection extends Connection {
     }
 
     public void sendTitle(String title) {
-        JSONObject o = new JSONObject();
-        try {
-            o.put("message", "title");
-            o.put("text", title);
-            sendMessage(o);
-        } catch (JSONException e) {
-        }
+        Message message = new TitleMessage(title);
+        this.sendMessage(message);
     }
 
     public void sendSubtitle(String subtitle) {
-        JSONObject o = new JSONObject();
-        try {
-            o.put("message", "subtitle");
-            o.put("text", subtitle);
-            sendMessage(o);
-        } catch (JSONException e) {
-        }
+        Message message = new SubtitleMessage(subtitle);
+        this.sendMessage(message);
     }
 
     public void sendHighlight(String position, int r, int g, int b) {
-        JSONObject o = new JSONObject();
-        try {
-            o.put("message", "highlight");
-            o.put("coordinate", position);
-            o.put("color", new JSONArray().put(r).put(g).put(b));
-            sendMessage(o);
-        } catch (JSONException e) {
-        }
+        Message message = new HighlightMessage(position, r, g, b);
+        this.sendMessage(message);
     }
 
     public void sendMessage(String message) {
-        JSONObject o = new JSONObject();
-        try {
-            o.put("message", "subtitle");
-            o.put("text", message);
-            this.sendMessage(o);
-        } catch (JSONException e) {
-        }
+        Message subtitle = new SubtitleMessage(message);
+        this.sendMessage(subtitle);
     }
 }
