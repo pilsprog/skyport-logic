@@ -6,14 +6,17 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import skyport.debug.Debug;
+import skyport.game.GameMap;
+import skyport.game.Player;
 import skyport.message.EndTurnMessage;
+import skyport.message.GameStateMessage;
 import skyport.message.Message;
 import skyport.network.ai.AIConnection;
 
@@ -82,43 +85,13 @@ public abstract class Connection {
         return messages.poll();
     }
 
-    public synchronized void sendGamestate(int turnNumber, int dimension, String mapData[][], AIConnection playerlist[]) {
-        JSONObject root = new JSONObject();
-        try {
-            root.put("message", "gamestate");
-            root.put("turn", turnNumber);
-            JSONArray players = new JSONArray();
-            for (AIConnection ai : playerlist) {
-                JSONObject playerObject = new JSONObject();
-                playerObject.put("name", ai.username);
-                if (turnNumber != 0) {
-                    playerObject.put("health", ai.health);
-                    playerObject.put("score", ai.score);
-                    playerObject.put("position", ai.position.coords.getCompactString());
-                    playerObject.put("alive", ai.isAlive);
-                    JSONObject primaryWeaponObject = new JSONObject();
-                    primaryWeaponObject.put("name", ai.primaryWeapon);
-                    primaryWeaponObject.put("level", ai.primaryWeaponLevel);
-                    playerObject.put("primary-weapon", primaryWeaponObject);
-    
-                    JSONObject secondaryWeaponObject = new JSONObject();
-                    secondaryWeaponObject.put("name", ai.secondaryWeapon);
-                    secondaryWeaponObject.put("level", ai.secondaryWeaponLevel);
-                    playerObject.put("secondary-weapon", secondaryWeaponObject);
-                }
-    
-                players.put(playerObject);
-            }
-            root.put("players", players);
-    
-            JSONObject map = new JSONObject();
-            map.put("j-length", dimension);
-            map.put("k-length", dimension);
-            map.put("data", new JSONArray(mapData));
-            root.put("map", map);
-        } catch (JSONException e) {
+    public synchronized void sendGamestate(int turn, GameMap map, AIConnection playerlist[]) {
+        List<Player> players = new ArrayList<>();
+        for(AIConnection ai : playerlist) {
+            players.add(ai.getPlayer());
         }
-    
-        sendMessage(root);
+
+        Message message = new GameStateMessage(turn, map, players);
+        sendMessage(message);
     }
 }

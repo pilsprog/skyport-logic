@@ -293,13 +293,15 @@ public class GameThread {
     public AIConnection sendGamestate(int roundNumber) {
         AIConnection playerTurnOrder[] = playerSelector.getListInTurnOrderAndMoveToNextTurn();
         String matrix[][] = world.returnAsRowMajorMatrix();
+        
+        GameMap map = new GameMap(world.dimension, world.dimension, matrix);
 
         if (roundNumber != 0) {
             playerTurnOrder[0].clearAllMessages();
         }
-        graphicsContainer.get().sendGamestate(roundNumber, world.dimension, matrix, playerTurnOrder);
+        graphicsContainer.get().sendGamestate(roundNumber, map, playerTurnOrder);
         for (AIConnection client : globalClients) {
-            client.sendGamestate(roundNumber, world.dimension, matrix, playerTurnOrder);
+            client.sendGamestate(roundNumber, map, playerTurnOrder);
         }
         return playerTurnOrder[0];
     }

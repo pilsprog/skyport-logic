@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import skyport.debug.Debug;
 import skyport.exception.ProtocolException;
 import skyport.game.Coordinate;
+import skyport.game.GameMap;
 import skyport.game.action.LaserAction;
 import skyport.message.EndActionsMessage;
 import skyport.message.HighlightMessage;
@@ -106,8 +107,8 @@ public class GraphicsConnection extends Connection {
     }
 
     @Override
-    public synchronized void sendGamestate(int turnNumber, int dimension, String mapData[][], AIConnection playerlist[]) {
-        super.sendGamestate(turnNumber, dimension, mapData, playerlist);
+    public synchronized void sendGamestate(int turn, GameMap map,AIConnection playerlist[]) {
+        super.sendGamestate(turn, map, playerlist);
         isDoneProcessing = false;
     }
     
