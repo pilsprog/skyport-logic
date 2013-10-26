@@ -8,8 +8,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import skyport.debug.Debug;
-import skyport.graphics.GraphicsContainer;
-import skyport.network.AIConnection;
+import skyport.network.ai.AIConnection;
+import skyport.network.graphics.GraphicsContainer;
 
 public class GameThread {
     ConcurrentLinkedQueue<AIConnection> globalClients;

@@ -6,7 +6,7 @@ import org.json.JSONException;
 import skyport.debug.Debug;
 import skyport.game.Tile;
 import skyport.game.TileType;
-import skyport.network.AIConnection;
+import skyport.network.ai.AIConnection;
 
 public class Droid {
     private Tile position;

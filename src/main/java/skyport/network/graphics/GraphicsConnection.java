@@ -1,4 +1,4 @@
-package skyport.graphics;
+package skyport.network.graphics;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,7 +13,7 @@ import org.json.JSONObject;
 import skyport.debug.Debug;
 import skyport.exception.ProtocolException;
 import skyport.game.Coordinate;
-import skyport.network.AIConnection;
+import skyport.network.ai.AIConnection;
 
 public class GraphicsConnection {
     public static GraphicsConnection debugConnection;

@@ -1,4 +1,4 @@
-package skyport.graphics;
+package skyport.network.graphics;
 
 public class GraphicsContainer {
     // could be extended to a multicontainer or so, if needed

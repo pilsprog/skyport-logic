@@ -1,4 +1,4 @@
-package skyport.graphics;
+package skyport.network.graphics;
 
 import java.io.IOException;
 

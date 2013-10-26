@@ -7,9 +7,9 @@ import skyport.debug.Debug;
 import skyport.game.GameThread;
 import skyport.game.World;
 import skyport.game.WorldParser;
-import skyport.graphics.GraphicsContainer;
-import skyport.network.AIConnection;
 import skyport.network.Acceptor;
+import skyport.network.ai.AIConnection;
+import skyport.network.graphics.GraphicsContainer;
 
 public class Skyport {
     public static void main(String args[]) {

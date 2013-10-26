@@ -1,7 +1,7 @@
 package skyport.game;
 
 import skyport.debug.Debug;
-import skyport.network.AIConnection;
+import skyport.network.ai.AIConnection;
 
 public class Tile {
     static int grassTiles = 0;

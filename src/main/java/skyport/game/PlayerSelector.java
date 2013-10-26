@@ -6,7 +6,7 @@ import java.util.ListIterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import skyport.debug.Debug;
-import skyport.network.AIConnection;
+import skyport.network.ai.AIConnection;
 
 class RingNode {
     public AIConnection connection;

@@ -1,4 +1,4 @@
-package skyport.network;
+package skyport.network.ai;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,7 +20,7 @@ import skyport.game.Util;
 import skyport.game.weapon.Droid;
 import skyport.game.weapon.Laser;
 import skyport.game.weapon.Mortar;
-import skyport.graphics.GraphicsConnection;
+import skyport.network.graphics.GraphicsConnection;
 
 public class AIConnection {
     private Socket socket;

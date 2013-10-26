@@ -6,9 +6,11 @@ import java.net.Socket;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import skyport.debug.Debug;
-import skyport.graphics.GraphicsClientHandler;
-import skyport.graphics.GraphicsConnection;
-import skyport.graphics.GraphicsContainer;
+import skyport.network.ai.AIClientHandler;
+import skyport.network.ai.AIConnection;
+import skyport.network.graphics.GraphicsClientHandler;
+import skyport.network.graphics.GraphicsConnection;
+import skyport.network.graphics.GraphicsContainer;
 
 public class Acceptor implements Runnable {
     private ServerSocket acceptorSocket;

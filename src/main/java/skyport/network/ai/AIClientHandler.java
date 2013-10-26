@@ -1,4 +1,4 @@
-package skyport.network;
+package skyport.network.ai;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentLinkedQueue;

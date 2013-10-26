@@ -2,8 +2,8 @@ package skyport.debug;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import skyport.graphics.GraphicsConnection;
-import skyport.network.AIConnection;
+import skyport.network.ai.AIConnection;
+import skyport.network.graphics.GraphicsConnection;
 
 public class Debug {
     public static boolean developerMode = true;
