@@ -61,10 +61,10 @@ public class GameThread {
             }
         }
         Debug.debug("Initializing game");
-        gameMainloop();
+        gameMainLoop();
     }
 
-    public void gameMainloop() {
+    public void gameMainLoop() {
         Debug.debug("All clients connected.");
         initializeBoardWithPlayers();
         playerSelector = new PlayerSelector(globalClients);
