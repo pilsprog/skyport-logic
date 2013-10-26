@@ -167,6 +167,7 @@ public class GraphicsConnection extends Connection {
         }
     }
 
+    @Override
     public void sendMessage(JSONObject o) throws IOException {
         try {
             if (o.getString("message").equals("action") && o.getString("type").equals("laser")) {
@@ -176,7 +177,7 @@ public class GraphicsConnection extends Connection {
         } catch (JSONException e) {
         }
 
-        socket.getOutputStream().write((o.toString() + "\n").getBytes());
+        super.sendMessage(o);
     }
 
     public JSONObject getNextMessage() {
@@ -242,7 +243,7 @@ public class GraphicsConnection extends Connection {
         try {
             o.put("message", "subtitle");
             o.put("text", message);
-            sendMessage(o);
+            this.sendMessage(o);
         } catch (JSONException e) {
         } catch (IOException e) {
         }

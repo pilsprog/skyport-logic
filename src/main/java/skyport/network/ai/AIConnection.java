@@ -175,12 +175,13 @@ public class AIConnection extends Connection {
         }
     }
 
+    @Override
     public void sendMessage(JSONObject o) throws IOException {
         if (!isAlive) {
             Debug.debug("player '" + this.username + "' disconnected, not sending...");
             return;
         }
-        socket.getOutputStream().write((o.toString() + "\n").getBytes());
+        super.sendMessage(o);
     }
 
     public JSONObject getNextMessage() {
