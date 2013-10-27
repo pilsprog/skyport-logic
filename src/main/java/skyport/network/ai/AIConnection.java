@@ -15,10 +15,10 @@ import skyport.game.Player;
 import skyport.game.Tile;
 import skyport.game.TileType;
 import skyport.game.Util;
-import skyport.game.Weapon;
 import skyport.game.weapon.Droid;
 import skyport.game.weapon.Laser;
 import skyport.game.weapon.Mortar;
+import skyport.game.weapon.Weapon;
 import skyport.message.ErrorMessage;
 import skyport.message.Message;
 import skyport.message.StatusMessage;
@@ -102,8 +102,9 @@ public class AIConnection extends Connection {
             if (!(o.getInt("revision") == 1)) {
                 throw new ProtocolException("Wrong protocol revision: supporting 1, but got " + o.getInt("revision"));
             }
-            Util.validateUsername(o.getString("name"));
-            player.name = o.getString("name");
+            String name = o.getString("name");
+            Util.validateUsername(name);
+            this.player = new Player(name);
             this.identifier = player.name;
             gotHandshake = true;
             return true;

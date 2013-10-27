@@ -1,43 +1,31 @@
 package skyport.game;
 
+import skyport.game.weapon.Weapon;
+
 import com.google.gson.annotations.Expose;
 
 
 public class Player {
     public String name;
     public Tile position;
-    public int health;
-    public int score;
+    public int health = 100;
+    public int score = 0;
     
     public Weapon primaryWeapon;
     public Weapon secondaryWeapon;
     
     @Expose (serialize = false)
-    public int rubidiumResources;
+    public int rubidiumResources = 0;
     @Expose (serialize = false)
-    public int explosiumResources;
+    public int explosiumResources = 0;
     @Expose (serialize = false)
-    public int scrapResources;
+    public int scrapResources = 0;
+    
     @Expose (serialize = false)
     public Tile spawnTile;
 
-    public Player(
-            String name,
-            Tile position,
-            int health,
-            int score, 
-            int rubidiumResources,
-            int explosiumResources, 
-            int scrapResources,
-            Tile spawnTile) {
-        this.position = position;
-        this.health = health;
-        
-        this.score = score;
-        this.rubidiumResources = rubidiumResources;
-        this.explosiumResources = explosiumResources;
-        this.scrapResources = scrapResources;
-        this.spawnTile = spawnTile;
+    public Player(String name) {
+        this.name = name;
     }
     
     public void setLoadout(Weapon primary, Weapon secondary) {
