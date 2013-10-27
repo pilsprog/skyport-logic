@@ -3,9 +3,6 @@ package skyport.network.ai;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import skyport.debug.Debug;
 import skyport.exception.ProtocolException;
 
@@ -34,11 +31,7 @@ public class AIClientHandler implements Runnable {
                 connection.isAlive = false;
                 return;
             } catch (ProtocolException e) {
-                try {
-                    JSONObject errorMessage = new JSONObject().put("error", e.getMessage());
-                    connection.sendMessage(errorMessage);
-                } catch (JSONException f) {
-                }
+                connection.sendError(e.getMessage());
             }
         }
     }
