@@ -12,11 +12,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.json.JSONObject;
 
+import skyport.adapter.CoordinateAdapter;
 import skyport.debug.Debug;
 import skyport.game.Coordinate;
 import skyport.game.GameMap;
 import skyport.game.Player;
-import skyport.game.adapter.CoordinateAdapter;
 import skyport.message.EndTurnMessage;
 import skyport.message.GameStateMessage;
 import skyport.message.Message;

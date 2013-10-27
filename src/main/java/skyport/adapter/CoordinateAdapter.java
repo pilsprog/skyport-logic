@@ -1,4 +1,4 @@
-package skyport.game.adapter;
+package skyport.adapter;
 
 import java.io.IOException;
 
