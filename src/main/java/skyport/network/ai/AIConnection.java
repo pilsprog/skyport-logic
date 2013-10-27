@@ -19,7 +19,6 @@ import skyport.game.weapon.Droid;
 import skyport.game.weapon.Laser;
 import skyport.game.weapon.Mortar;
 import skyport.game.weapon.Weapon;
-import skyport.message.ErrorMessage;
 import skyport.message.HandshakeMessage;
 import skyport.message.LoadoutMessage;
 import skyport.message.Message;
@@ -35,11 +34,6 @@ public class AIConnection extends Connection {
 
     public AIConnection(Socket socket) {
         super(socket);
-    }
-
-    public void sendError(String errorString) {
-        Message error = new ErrorMessage(errorString);
-        sendMessage(error);
     }
 
     public synchronized void input(String json) throws IOException, ProtocolException {

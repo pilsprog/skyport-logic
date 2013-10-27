@@ -18,6 +18,7 @@ import skyport.game.Coordinate;
 import skyport.game.GameMap;
 import skyport.game.Player;
 import skyport.message.EndTurnMessage;
+import skyport.message.ErrorMessage;
 import skyport.message.GameStateMessage;
 import skyport.message.Message;
 import skyport.network.ai.AIConnection;
@@ -96,5 +97,10 @@ public abstract class Connection {
 
         Message message = new GameStateMessage(turn, map, players);
         sendMessage(message);
+    }
+
+    public void sendError(String errorString) {
+        Message error = new ErrorMessage(errorString);
+        sendMessage(error);
     }
 }

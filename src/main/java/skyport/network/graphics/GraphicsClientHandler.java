@@ -2,9 +2,6 @@ package skyport.network.graphics;
 
 import java.io.IOException;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import skyport.debug.Debug;
 import skyport.exception.ProtocolException;
 
@@ -28,11 +25,7 @@ public class GraphicsClientHandler implements Runnable {
             } catch (IOException e) {
                 Debug.error("GUI disconnected, exiting!");
             } catch (ProtocolException e) {
-                try {
-                    JSONObject errorMessage = new JSONObject().put("error", e.getMessage());
-                    connection.sendMessage(errorMessage);
-                } catch (JSONException f) {
-                }
+                connection.sendError(e.getMessage());
             }
         }
     }
