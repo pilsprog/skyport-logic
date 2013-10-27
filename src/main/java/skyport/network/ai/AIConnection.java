@@ -217,19 +217,8 @@ public class AIConnection extends Connection {
             } else {
                 throw new ProtocolException("Invalid direction: '" + direction + "'");
             }
-        } catch (JSONException e) {
-            try {
-                JSONObject errorMessage = new JSONObject().put("error", "Invalid move packet: " + e.getMessage());
-                sendMessage(errorMessage);
-            } catch (JSONException f) {
-            }
-            return false;
-        } catch (ProtocolException e) {
-            try {
-                JSONObject errorMessage = new JSONObject().put("error", "Invalid move packet: " + e.getMessage());
-                sendMessage(errorMessage);
-            } catch (JSONException f) {
-            }
+        } catch (JSONException | ProtocolException e) {
+            this.sendError("Invalid move packet: " + e.getMessage());
             return false;
         }
     }
