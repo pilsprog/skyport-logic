@@ -265,7 +265,7 @@ public class GameThread {
                 // "weapon":"mortar",
                 return currentPlayer.upgradeWeapon(action.getString("weapon"));
             default:
-                currentPlayer.invalidAction(action);
+                currentPlayer.invalidAction(action.getString("type"));
                 return false;
             }
         } catch (JSONException e) { // TODO: send back error about missing type

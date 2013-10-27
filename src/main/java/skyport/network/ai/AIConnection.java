@@ -234,12 +234,8 @@ public class AIConnection extends Connection {
         }
     }
 
-    public void invalidAction(JSONObject action) {
-        try {
-            JSONObject errorMessage = new JSONObject().put("error", "Invalid action: " + action.get("type"));
-            sendMessage(errorMessage);
-        } catch (JSONException f) {
-        }
+    public void invalidAction(String type) {
+        this.sendError("Invalid action: " + type);
     }
 
     public boolean shootLaser(JSONObject action, GraphicsConnection graphicsConnection, int turnsLeft) {
