@@ -20,7 +20,7 @@ public class GraphicsClientHandler implements Runnable {
     public void run() {
         while (true) {
             try {
-                JSONObject o = read();
+                String o = read();
                 if (o == null) {
                     throw new IOException("Graphics disconnected");
                 }
@@ -37,17 +37,7 @@ public class GraphicsClientHandler implements Runnable {
         }
     }
 
-    public synchronized JSONObject read() throws IOException, ProtocolException {
-        String line = connection.readLine();
-        JSONObject obj = null;
-        if (line == null) {
-            return null;
-        }
-        try {
-            obj = new JSONObject(line);
-            return obj;
-        } catch (JSONException e) {
-            throw new ProtocolException("Invalid packet received: " + e.getMessage());
-        }
+    public synchronized String read() throws IOException {
+        return connection.readLine();
     }
 }

@@ -11,6 +11,7 @@ import skyport.exception.ProtocolException;
 import skyport.game.Coordinate;
 import skyport.game.GameMap;
 import skyport.message.EndActionsMessage;
+import skyport.message.GraphicsHandshakeMessage;
 import skyport.message.HighlightMessage;
 import skyport.message.Message;
 import skyport.message.StatusMessage;
@@ -38,19 +39,21 @@ public class GraphicsConnection extends Connection {
         this.identifier = "graphics";
     }
 
-    public synchronized void input(JSONObject o) throws ProtocolException, IOException {
+    public synchronized void input(String json) throws ProtocolException, IOException {
         if (!gotHandshake) {
-            if (parseHandshake(o)) {
+            if (parseHandshake(json)) {
                 Message success = new StatusMessage(true);
                 this.sendMessage(success);
             }
             return;
-        } else if (o.has("message")) {
-            try {
-                if (o.get("message").equals("ready")) {
+        } else {
+            Message message = gson.fromJson(json, Message.class);
+            String text = message.getMessage();
+            if (text != null) {
+                if (text.equals("ready")) {
                     Debug.debug("DONE PROCESSING");
                     isDoneProcessing = true;
-                } else if (o.get("message").equals("faster")) {
+                } else if (text.equals("faster")) {
                     if (thinktime >= 200) {
                         thinktime -= 100;
                         Debug.info("New timeout: " + thinktime + " milliseconds");
@@ -58,52 +61,44 @@ public class GraphicsConnection extends Connection {
                         Debug.guiMessage("Can't go faster");
                         Debug.info("Can't go faster");
                     }
-
-                } else if (o.get("message").equals("slower")) {
+                } else if (text.equals("slower")) {
                     thinktime += 100;
                     Debug.info("New timeout: " + thinktime + " milliseconds");
                 } else {
-                    throw new ProtocolException("Unexpected message, got '" + o.get("message") + "' but expected 'action'");
+                    throw new ProtocolException("Unexpected message, got '" + text + "' but expected 'action'");
                 }
-            } catch (JSONException e) {
-                Debug.warn("Invalid or incomplete packet: " + e.getMessage());
-                throw new ProtocolException("Invalid or incomplete packet: " + e.getMessage());
-            }
-        } else {
-            try {
-                Debug.warn("Unexpected packet: " + o.get("message"));
-                throw new ProtocolException("Unexpected packet: '" + o.get("message") + "'");
-            } catch (JSONException e) {
-                throw new ProtocolException("Invalid or incomplete packet");
+            } else {
+                Debug.warn("Unexpected packet: " + text);
+                throw new ProtocolException("Unexpected packet: '" + text + "'");
             }
         }
     }
 
-    private boolean parseHandshake(JSONObject o) throws ProtocolException {
-        try {
-            if (!(o.get("message").equals("connect"))) {
-                throw new ProtocolException("Expected 'connect' handshake, but got '" + o.get("message") + "' key");
-            }
-            if (!(o.getInt("revision") == 1)) {
-                throw new ProtocolException("Wrong protocol revision: supporting 1, but got " + o.getInt("revision"));
-            }
-            if (!o.getString("password").equals(password)) {
-                Debug.warn("GUI sent wrong password");
-                throw new ProtocolException("Wrong password!");
-            }
-            Debug.debug("Correct password");
-            gotHandshake = true;
-            container.set(this);
-            try {
-                if (!o.getString("laserstyle").equals("start-stop")) {
-                    alternativeLaserStyle = true;
-                }
-            } catch (JSONException e) {
-            }
-            return true;
-        } catch (JSONException e) {
-            throw new ProtocolException("Invalid or incomplete packet: " + e.getMessage());
+    private boolean parseHandshake(String json) throws ProtocolException {
+        GraphicsHandshakeMessage handshake = gson.fromJson(json, GraphicsHandshakeMessage.class);
+        String message = handshake.getMessage();
+        if (!message.equals("connect")) {
+            throw new ProtocolException("Expected 'connect' handshake, but got '" + message + "' key");
         }
+
+        int revision = handshake.getRevision();
+        if (revision != 1) {
+            throw new ProtocolException("Wrong protocol revision: supporting 1, but got " + revision);
+        }
+        if (!handshake.validatePassword(this.password)) {
+            Debug.warn("GUI sent wrong password");
+            throw new ProtocolException("Wrong password!");
+        }
+        Debug.debug("Correct password");
+        gotHandshake = true;
+        container.set(this);
+
+        String laserStyle = handshake.getLaserStyle();
+        if (laserStyle.equals("start-stop")) {
+            alternativeLaserStyle = true;
+        }
+
+        return true;
     }
 
     @Override
