@@ -1,23 +1,28 @@
-package skyport.game;
+package skyport.game.weapon;
 
 public class Weapon {
     private String name;
     private int level;
     
     public Weapon(String name) {
-        this.level = 1;
         this.name = name;
+        this.level = 1;
+    }
+    
+    public Weapon(String name, int level) {
+        this.name = name;
+        this.level = level;
     }
     
     public String getName() {
-        return name;
+        return this.name;
     }
     
     public int getLevel() {
-        return level;
+        return this.level;
     }
-    
+
     public void upgrade() {
-        level++;
+        this.level++;
     }
 }

@@ -1,9 +1,9 @@
-package skyport.game.action;
+package skyport.message.action;
 
 import skyport.game.Coordinate;
 import skyport.game.Direction;
 
-public class LaserAction extends Action {
+public class LaserActionMessage extends ActionMessage {
     @SuppressWarnings("unused")
     private Direction direction;
     @SuppressWarnings("unused")

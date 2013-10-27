@@ -10,13 +10,13 @@ import skyport.debug.Debug;
 import skyport.exception.ProtocolException;
 import skyport.game.Coordinate;
 import skyport.game.GameMap;
-import skyport.game.action.LaserAction;
 import skyport.message.EndActionsMessage;
 import skyport.message.HighlightMessage;
 import skyport.message.Message;
 import skyport.message.StatusMessage;
 import skyport.message.SubtitleMessage;
 import skyport.message.TitleMessage;
+import skyport.message.action.LaserActionMessage;
 import skyport.network.Connection;
 import skyport.network.ai.AIConnection;
 
@@ -132,8 +132,8 @@ public class GraphicsConnection extends Connection {
     
     @Override
     public void sendMessage(Message message) {
-        if(message instanceof LaserAction) {
-            LaserAction action = (LaserAction)message;
+        if(message instanceof LaserActionMessage) {
+            LaserActionMessage action = (LaserActionMessage)message;
             action.setInterval(startHack, stopHack);
             super.sendMessage(action);
         } else {
