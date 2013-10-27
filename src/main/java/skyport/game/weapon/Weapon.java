@@ -2,11 +2,10 @@ package skyport.game.weapon;
 
 public class Weapon {
     private String name;
-    private int level;
+    private int level = 1;
     
     public Weapon(String name) {
         this.name = name;
-        this.level = 1;
     }
     
     public Weapon(String name, int level) {
@@ -24,5 +23,15 @@ public class Weapon {
 
     public void upgrade() {
         this.level++;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Weapon) {
+            Weapon other = (Weapon)o;
+            return this.name.equals(other.name) && this.level == other.level;
+        } else {
+            return false;
+        }
     }
 }

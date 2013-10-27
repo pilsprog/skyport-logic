@@ -20,6 +20,8 @@ import skyport.game.weapon.Laser;
 import skyport.game.weapon.Mortar;
 import skyport.game.weapon.Weapon;
 import skyport.message.ErrorMessage;
+import skyport.message.HandshakeMessage;
+import skyport.message.LoadoutMessage;
 import skyport.message.Message;
 import skyport.message.StatusMessage;
 import skyport.network.Connection;
@@ -40,77 +42,77 @@ public class AIConnection extends Connection {
         sendMessage(error);
     }
 
-    public synchronized void input(JSONObject o) throws ProtocolException, IOException {
+    public synchronized void input(String json) throws IOException, ProtocolException {
         if (!gotHandshake) {
-            if (parseHandshake(o)) {
+            if (parseHandshake(json)) {
                 Message success = new StatusMessage(true);
                 this.sendMessage(success);
             }
             return;
         } else if (!gotLoadout.get()) {
-            parseLoadout(o);
-        } else if (o.has("message")) {
-            try {
-                if (o.get("message").equals("action")) {
-                    messages.add(o);
-                } else {
-                    throw new ProtocolException("Unexpected message, got '" + o.get("message") + "' but expected 'action'");
-                }
-            } catch (JSONException e) {
-                throw new ProtocolException("Invalid or incomplete packet: " + e.getMessage());
-            }
+            parseLoadout(json);
         } else {
-            try {
-                throw new ProtocolException("Unexpected packet: '" + o.get("message") + "'");
-            } catch (JSONException e) {
-                throw new ProtocolException("Invalid or incomplete packet");
+            Message message = gson.fromJson(json, Message.class);
+            if (message.getMessage() != null) {
+                String m = message.getMessage();
+                if (m.equals("action")) {
+                    JSONObject obj = null;
+                    try {
+                        obj = new JSONObject(json);
+                    } catch (JSONException e) {
+                        throw new ProtocolException("Invalid packet received: " + e.getMessage());
+                    }
+                    messages.add(obj);
+                } else {
+                    throw new ProtocolException("Unexpected message, got '" + m + "' but expected 'action'");
+                }
+            } else {
+                throw new ProtocolException("Unexpected packet: '" + json + "'");
             }
         }
     }
 
-    private void parseLoadout(JSONObject o) throws ProtocolException {
-        try {
-            if (!(o.get("message").equals("loadout"))) {
-                throw new ProtocolException("Expected 'loadout', but got '" + o.get("message") + "' key");
-            }
-            if (!Util.validateWeapon(o.getString("primary-weapon"))) {
-                throw new ProtocolException("Invalid primary weapon: '" + o.getString("primary-weapon") + "'");
-            }
-            if (!Util.validateWeapon(o.getString("secondary-weapon"))) {
-                throw new ProtocolException("Invalid secondary weapon: '" + o.getString("secondary-weapon") + "'");
-            }
-            if (o.getString("primary-weapon").equals(o.getString("secondary-weapon"))) {
-                throw new ProtocolException("Invalid loadout: Can't have the same weapon twice.");
-            }
-                        
-            Weapon primary = new Weapon(o.getString("primary-weapon"));
-            Weapon secondary = new Weapon(o.getString("secondary-weapon"));          
-            player.setLoadout(primary, secondary);
-            
-            Debug.info(player.name + " selected loadout: " + player.primaryWeapon.getName() + " and " + player.secondaryWeapon.getName() + ".");
-            gotLoadout.set(true);
-        } catch (JSONException e) {
-            throw new ProtocolException("Invalid or incomplete packet: " + e.getMessage());
+    private void parseLoadout(String json) throws ProtocolException {
+        LoadoutMessage loadout = gson.fromJson(json, LoadoutMessage.class);
+        String message = loadout.getMessage();
+        if (!message.equals("loadout")) {
+            throw new ProtocolException("Expected 'loadout', but got '" + message + "' key");
         }
+        Weapon primary = loadout.getPrimaryWeapon();
+        Weapon secondary = loadout.getSecondaryWeapon();
+
+        if (!Util.validateWeapon(primary)) {
+            throw new ProtocolException("Invalid primary weapon: '" + primary.getName() + "'");
+        }
+        if (!Util.validateWeapon(secondary)) {
+            throw new ProtocolException("Invalid secondary weapon: '" + secondary.getName() + "'");
+        }
+        if (primary.equals(secondary)) {
+            throw new ProtocolException("Invalid loadout: Can't have the same weapon twice.");
+        }
+
+        player.setLoadout(primary, secondary);
+
+        Debug.info(player.name + " selected loadout: " + player.primaryWeapon.getName() + " and " + player.secondaryWeapon.getName() + ".");
+        gotLoadout.set(true);
     }
 
-    private boolean parseHandshake(JSONObject o) throws ProtocolException {
-        try {
-            if (!(o.get("message").equals("connect"))) {
-                throw new ProtocolException("Expected 'connect' handshake, but got '" + o.get("message") + "' key");
-            }
-            if (!(o.getInt("revision") == 1)) {
-                throw new ProtocolException("Wrong protocol revision: supporting 1, but got " + o.getInt("revision"));
-            }
-            String name = o.getString("name");
-            Util.validateUsername(name);
-            this.player = new Player(name);
-            this.identifier = player.name;
-            gotHandshake = true;
-            return true;
-        } catch (JSONException e) {
-            throw new ProtocolException("Invalid or incomplete packet: " + e.getMessage());
+    private boolean parseHandshake(String json) throws ProtocolException {
+        HandshakeMessage message = gson.fromJson(json, HandshakeMessage.class);
+        String m = message.getMessage();
+        if (!m.equals("connect")) {
+            throw new ProtocolException("Expected 'connect' handshake, but got '" + m + "' key");
         }
+        int revision = message.getRevision();
+        if (revision != 1) {
+            throw new ProtocolException("Wrong protocol revision: supporting 1, but got " + revision);
+        }
+        String name = message.getName();
+        Util.validateUsername(name);
+        this.player = new Player(name);
+        this.identifier = player.name;
+        gotHandshake = true;
+        return true;
     }
 
     @Override

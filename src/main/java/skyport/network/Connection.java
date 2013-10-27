@@ -35,7 +35,7 @@ public abstract class Connection {
     public boolean isAlive = true;
     protected boolean gotHandshake = false;
 
-    private Gson gson = new GsonBuilder()
+    protected Gson gson = new GsonBuilder()
         .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES)
         .registerTypeAdapter(Coordinate.class, new CoordinateAdapter())
         .create();

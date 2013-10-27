@@ -6,10 +6,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import skyport.exception.ProtocolException;
+import skyport.game.weapon.Weapon;
 
 public class Util {
-    public static boolean validateWeapon(String weapon) {
-        if (weapon.equals("laser") || weapon.equals("mortar") || weapon.equals("droid")) {
+    public static boolean validateWeapon(Weapon weapon) {
+        if (weapon.getName().equals("laser") || weapon.getName().equals("mortar") || weapon.getName().equals("droid")) {
             return true;
         }
         return false;

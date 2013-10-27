@@ -23,11 +23,11 @@ public class AIClientHandler implements Runnable {
     public void run() {
         while (true) {
             try {
-                JSONObject o = read();
-                if (o == null) {
+                String json = read();
+                if (json == null) {
                     throw new IOException("Client disconnected");
                 }
-                connection.input(o);
+                connection.input(json);
             } catch (IOException e) {
                 // globalClientList.remove(connection);
                 Debug.warn("Disconnect from " + connection.getIP() + ". " + globalClientList.size() + " clients active.");
@@ -43,17 +43,7 @@ public class AIClientHandler implements Runnable {
         }
     }
 
-    public synchronized JSONObject read() throws IOException, ProtocolException {
-        String line = connection.readLine();
-        JSONObject obj = null;
-        if (line == null) {
-            return null;
-        }
-        try {
-            obj = new JSONObject(line);
-            return obj;
-        } catch (JSONException e) {
-            throw new ProtocolException("Invalid packet received: " + e.getMessage());
-        }
+    public synchronized String read() throws IOException {
+        return connection.readLine();        
     }
 }
