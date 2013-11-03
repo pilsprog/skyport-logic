@@ -121,83 +121,19 @@ public class AIConnection extends Connection {
     }
 
     public synchronized boolean doMove(MoveActionMessage action) {
-        // TODO verify that this is all exactly right
         try {
             Direction direction = action.getDirection();
-            if (direction.equals(Direction.UP)) {
-                if (player.position.up != null && player.position.up.isAccessible()) {
-                    if (player.position.up.playerOnTile != null) {
-                        throw new ProtocolException("Player " + player.position.up.playerOnTile.player.getName() + " is already on this tile.");
-                    }
-                    player.position.playerOnTile = null;
-                    player.position = player.position.up;
-                    player.position.playerOnTile = this;
-                    return true;
-                } else {
-                    throw Util.throwInaccessibleTileException("up", player.position.up);
+            Tile next = player.position.getTileInDirection(direction);
+            if (next != null && next.isAccessible()) {
+                if (next.playerOnTile != null ){
+                    throw new ProtocolException("Player " + next.playerOnTile.player.getName() + " is already on this tile.");
                 }
-            } else if (direction.equals(Direction.DOWN)) {
-                if (player.position.down != null && player.position.down.isAccessible()) {
-                    if (player.position.down.playerOnTile != null) {
-                        throw new ProtocolException("Player " + player.position.down.playerOnTile.player.getName() + " is already on this tile.");
-                    }
-                    player.position.playerOnTile = null;
-                    player.position = player.position.down;
-                    player.position.playerOnTile = this;
-                    return true;
-                } else {
-                    throw Util.throwInaccessibleTileException("down", player.position.down);
-                }
-            } else if (direction.equals(Direction.LEFT_DOWN)) {
-                if (player.position.leftDown != null && player.position.leftDown.isAccessible()) {
-                    if (player.position.leftDown.playerOnTile != null) {
-                        throw new ProtocolException("Player " + player.position.leftDown.playerOnTile.player.getName() + " is already on this tile.");
-                    }
-                    player.position.playerOnTile = null;
-                    player.position = player.position.leftDown;
-                    player.position.playerOnTile = this;
-                    return true;
-                } else {
-                    throw Util.throwInaccessibleTileException("left-down", player.position.leftDown);
-                }
-            } else if (direction.equals(Direction.LEFT_UP)) {
-                if (player.position.leftUp != null && player.position.leftUp.isAccessible()) {
-                    if (player.position.leftUp.playerOnTile != null) {
-                        throw new ProtocolException("Player " + player.position.leftUp.playerOnTile.player.getName() + " is already on this tile.");
-                    }
-                    player.position.playerOnTile = null;
-                    player.position = player.position.leftUp;
-                    player.position.playerOnTile = this;
-                    return true;
-                } else {
-                    throw Util.throwInaccessibleTileException("left-up", player.position.leftUp);
-                }
-            } else if (direction.equals(Direction.RIGHT_DOWN)) {
-                if (player.position.rightDown != null && player.position.rightDown.isAccessible()) {
-                    if (player.position.rightDown.playerOnTile != null) {
-                        throw new ProtocolException("Player " + player.position.rightDown.playerOnTile.player.getName() + " is already on this tile.");
-                    }
-                    player.position.playerOnTile = null;
-                    player.position = player.position.rightDown;
-                    player.position.playerOnTile = this;
-                    return true;
-                } else {
-                    throw Util.throwInaccessibleTileException("right-down", player.position.rightDown);
-                }
-            } else if (direction.equals(Direction.RIGHT_UP)) {
-                if (player.position.rightUp != null && player.position.rightUp.isAccessible()) {
-                    if (player.position.rightUp.playerOnTile != null) {
-                        throw new ProtocolException("Player " + player.position.rightUp.playerOnTile.player.getName() + " is already on this tile.");
-                    }
-                    player.position.playerOnTile = null;
-                    player.position = player.position.rightUp;
-                    player.position.playerOnTile = this;
-                    return true;
-                } else {
-                    throw Util.throwInaccessibleTileException("right-up", player.position.rightUp);
-                }
+                player.position.playerOnTile = null;
+                player.position = next;
+                player.position.playerOnTile = this;
+                return true;
             } else {
-                throw new ProtocolException("Invalid direction: '" + direction + "'");
+                throw Util.throwInaccessibleTileException(direction.name(), next);
             }
         } catch (ProtocolException e) {
             this.sendError("Invalid move packet: " + e.getMessage());
