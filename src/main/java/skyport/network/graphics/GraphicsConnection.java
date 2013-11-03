@@ -3,9 +3,6 @@ package skyport.network.graphics;
 import java.io.IOException;
 import java.net.Socket;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import skyport.debug.Debug;
 import skyport.exception.ProtocolException;
 import skyport.game.GameMap;
@@ -110,19 +107,6 @@ public class GraphicsConnection extends Connection {
     public void sendEndActions() {
         Message endActions = new EndActionsMessage();
         this.sendMessage(endActions);
-    }
-
-    @Override
-    public void sendMessage(JSONObject o) {
-        try {
-            if (o.getString("message").equals("action") && o.getString("type").equals("laser")) {
-                o.put("start", startHack.getCompactString());
-                o.put("stop", stopHack.getCompactString());
-            }
-        } catch (JSONException e) {
-        }
-
-        super.sendMessage(o);
     }
     
     @Override

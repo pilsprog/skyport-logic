@@ -2,14 +2,12 @@ package skyport.network.ai;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import skyport.debug.Debug;
 import skyport.exception.ProtocolException;
+import skyport.game.Direction;
 import skyport.game.Player;
 import skyport.game.Point;
 import skyport.game.Tile;
@@ -23,6 +21,11 @@ import skyport.message.HandshakeMessage;
 import skyport.message.LoadoutMessage;
 import skyport.message.Message;
 import skyport.message.StatusMessage;
+import skyport.message.action.ActionMessage;
+import skyport.message.action.DroidActionMessage;
+import skyport.message.action.LaserActionMessage;
+import skyport.message.action.MortarActionMessage;
+import skyport.message.action.MoveActionMessage;
 import skyport.network.Connection;
 import skyport.network.graphics.GraphicsConnection;
 
@@ -46,17 +49,11 @@ public class AIConnection extends Connection {
         } else if (!gotLoadout.get()) {
             parseLoadout(json);
         } else {
-            Message message = gson.fromJson(json, Message.class);
+            ActionMessage message = gson.fromJson(json, ActionMessage.class);
             if (message.getMessage() != null) {
                 String m = message.getMessage();
                 if (m.equals("action")) {
-                    JSONObject obj = null;
-                    try {
-                        obj = new JSONObject(json);
-                    } catch (JSONException e) {
-                        throw new ProtocolException("Invalid packet received: " + e.getMessage());
-                    }
-                    messages.add(obj);
+                    messages.add(message);
                 } else {
                     throw new ProtocolException("Unexpected message, got '" + m + "' but expected 'action'");
                 }
@@ -109,15 +106,6 @@ public class AIConnection extends Connection {
         return true;
     }
 
-    @Override
-    public void sendMessage(JSONObject o) {
-        if (!isAlive) {
-            Debug.debug("player '" + this.player.name + "' disconnected, not sending...");
-            return;
-        }
-        super.sendMessage(o);
-    }
-
     public synchronized void setSpawnpoint(Tile spawnpoint) {
         Debug.info("Player '" + player.name + "' spawns at " + spawnpoint.coords.getString());
         player.position = spawnpoint;
@@ -132,11 +120,11 @@ public class AIConnection extends Connection {
         messages.clear();
     }
 
-    public synchronized boolean doMove(JSONObject o) {
+    public synchronized boolean doMove(MoveActionMessage action) {
         // TODO verify that this is all exactly right
         try {
-            String direction = o.getString("direction");
-            if (direction.equals("up")) {
+            Direction direction = action.getDirection();
+            if (direction.equals(Direction.UP)) {
                 if (player.position.up != null && player.position.up.isAccessible()) {
                     if (player.position.up.playerOnTile != null) {
                         throw new ProtocolException("Player " + player.position.up.playerOnTile.player.getName() + " is already on this tile.");
@@ -148,7 +136,7 @@ public class AIConnection extends Connection {
                 } else {
                     throw Util.throwInaccessibleTileException("up", player.position.up);
                 }
-            } else if (direction.equals("down")) {
+            } else if (direction.equals(Direction.DOWN)) {
                 if (player.position.down != null && player.position.down.isAccessible()) {
                     if (player.position.down.playerOnTile != null) {
                         throw new ProtocolException("Player " + player.position.down.playerOnTile.player.getName() + " is already on this tile.");
@@ -160,7 +148,7 @@ public class AIConnection extends Connection {
                 } else {
                     throw Util.throwInaccessibleTileException("down", player.position.down);
                 }
-            } else if (direction.equals("left-down")) {
+            } else if (direction.equals(Direction.LEFT_DOWN)) {
                 if (player.position.leftDown != null && player.position.leftDown.isAccessible()) {
                     if (player.position.leftDown.playerOnTile != null) {
                         throw new ProtocolException("Player " + player.position.leftDown.playerOnTile.player.getName() + " is already on this tile.");
@@ -172,7 +160,7 @@ public class AIConnection extends Connection {
                 } else {
                     throw Util.throwInaccessibleTileException("left-down", player.position.leftDown);
                 }
-            } else if (direction.equals("left-up")) {
+            } else if (direction.equals(Direction.LEFT_UP)) {
                 if (player.position.leftUp != null && player.position.leftUp.isAccessible()) {
                     if (player.position.leftUp.playerOnTile != null) {
                         throw new ProtocolException("Player " + player.position.leftUp.playerOnTile.player.getName() + " is already on this tile.");
@@ -184,7 +172,7 @@ public class AIConnection extends Connection {
                 } else {
                     throw Util.throwInaccessibleTileException("left-up", player.position.leftUp);
                 }
-            } else if (direction.equals("right-down")) {
+            } else if (direction.equals(Direction.RIGHT_DOWN)) {
                 if (player.position.rightDown != null && player.position.rightDown.isAccessible()) {
                     if (player.position.rightDown.playerOnTile != null) {
                         throw new ProtocolException("Player " + player.position.rightDown.playerOnTile.player.getName() + " is already on this tile.");
@@ -196,7 +184,7 @@ public class AIConnection extends Connection {
                 } else {
                     throw Util.throwInaccessibleTileException("right-down", player.position.rightDown);
                 }
-            } else if (direction.equals("right-up")) {
+            } else if (direction.equals(Direction.RIGHT_UP)) {
                 if (player.position.rightUp != null && player.position.rightUp.isAccessible()) {
                     if (player.position.rightUp.playerOnTile != null) {
                         throw new ProtocolException("Player " + player.position.rightUp.playerOnTile.player.getName() + " is already on this tile.");
@@ -211,7 +199,7 @@ public class AIConnection extends Connection {
             } else {
                 throw new ProtocolException("Invalid direction: '" + direction + "'");
             }
-        } catch (JSONException | ProtocolException e) {
+        } catch (ProtocolException e) {
             this.sendError("Invalid move packet: " + e.getMessage());
             return false;
         }
@@ -221,7 +209,7 @@ public class AIConnection extends Connection {
         this.sendError("Invalid action: " + type);
     }
 
-    public boolean shootLaser(JSONObject action, GraphicsConnection graphicsConnection, int turnsLeft) {
+    public boolean shootLaser(LaserActionMessage action, GraphicsConnection graphicsConnection, int turnsLeft) {
         int laserLevel = 1;
         if (player.primaryWeapon.getName().equals("laser")) {
             laserLevel = player.primaryWeapon.getLevel();
@@ -230,25 +218,22 @@ public class AIConnection extends Connection {
         } else {
             return false;
         }
-        try {
-            String direction = action.getString("direction");
-            Laser laser = new Laser(this, turnsLeft);
-            if (laser.setDirection(direction)) {
-                laser.setPosition(player.position);
-                graphicsConnection.setStartStopHack(player.position.coords, endvector);
-            } else {
-                sendError("Invalid shot: unknown direction '" + direction + "'");
-                return false;
-            }
-            return true;
-        } catch (JSONException e) {
-            sendError("Invalid shot: lacks a direction key");
+
+        Direction direction = action.getDirection();
+        Laser laser = new Laser(this, turnsLeft);
+        if (laser.setDirection(direction)) {
+            laser.setPosition(player.position);
             Point endvector = laser.performShot(laserLevel);
+            graphicsConnection.setStartStopHack(player.position.coords, endvector);
+        } else {
+            sendError("Invalid shot: unknown direction '" + direction + "'");
+            return false;
         }
-        return false;
+        return true;
+
     }
 
-    public boolean shootDroid(JSONObject action, int turnsLeft) {
+    public boolean shootDroid(DroidActionMessage action, int turnsLeft) {
         int droidLevel = 1; // TODO
         if (player.primaryWeapon.getName().equals("droid")) {
             droidLevel = player.primaryWeapon.getLevel();
@@ -265,34 +250,26 @@ public class AIConnection extends Connection {
         if (droidLevel == 3) {
             range = 5;
         } // replicated here for more friendly error messages
-        try {
-            JSONArray directionSequence = action.getJSONArray("sequence");
-            Droid droid = new Droid(this, turnsLeft);
-            if (directionSequence.length() > range) {
-                Debug.warn("Got " + directionSequence.length() + " commands for the droid, but your droids level (" + droidLevel + ") only supports " + range + " steps.");
-                sendError("Got " + directionSequence.length() + " commands for the droid, but your droids level (" + droidLevel + ") only supports " + range + " steps.");
-            }
-            if (droid.setDirections(directionSequence, droidLevel)) {
-                droid.setPosition(player.position);
-                int stepsTaken = droid.performShot();
-                JSONArray truncatedArray = new JSONArray();
-                for (int i = 0; i < stepsTaken; i++) {
-                    truncatedArray.put(directionSequence.get(i));
-                }
-                action.put("sequence", truncatedArray);
-                Debug.debug("droid steps taken: " + stepsTaken);
-            } else {
-                sendError("Invalid shot: unknown direction in droid sequence");
-                return false;
-            }
-            return true;
-        } catch (JSONException e) {
-            sendError("Invalid shot: lacks a direction key");
+        List<Direction> directionSequence = action.getPath();
+        Droid droid = new Droid(this, turnsLeft);
+        if (directionSequence.size() > range) {
+            Debug.warn("Got " + directionSequence.size() + " commands for the droid, but your droids level (" + droidLevel + ") only supports " + range + " steps.");
+            sendError("Got " + directionSequence.size() + " commands for the droid, but your droids level (" + droidLevel + ") only supports " + range + " steps.");
         }
-        return false;
+        if (droid.setDirections(directionSequence, droidLevel)) {
+            droid.setPosition(player.position);
+            int stepsTaken = droid.performShot();
+
+            action.setPath(directionSequence.subList(0, stepsTaken));
+            Debug.debug("droid steps taken: " + stepsTaken);
+        } else {
+            sendError("Invalid shot: unknown direction in droid sequence");
+            return false;
+        }
+        return true;
     }
 
-    public boolean shootMortar(JSONObject action, int turnsLeft) {
+    public boolean shootMortar(MortarActionMessage action, int turnsLeft) {
         int mortarLevel = 1;
         if (player.primaryWeapon.getName().equals("mortar")) {
             mortarLevel = player.primaryWeapon.getLevel();
@@ -302,16 +279,11 @@ public class AIConnection extends Connection {
             Debug.warn("User '" + player.name + "' attempted to shoot the mortar, but doesn't have it");
             return false;
         }
-        try {
-            Coordinate relativeTargetCoordinates = new Coordinate(action.getString("coordinates"));
-            Mortar mortar = new Mortar(this, turnsLeft);
-            mortar.setPosition(this.player.position);
-            mortar.setTarget(relativeTargetCoordinates, mortarLevel);
-            return mortar.performShot();
-        } catch (JSONException e) {
-            sendError("Invalid shot: lacks 'coordinates' key");
-            return false;
-        }
+        Point relativeTargetCoordinates = action.getRelativeTarget();
+        Mortar mortar = new Mortar(this, turnsLeft);
+        mortar.setPosition(this.player.position);
+        mortar.setTarget(relativeTargetCoordinates, mortarLevel);
+        return mortar.performShot();
     }
 
     public boolean mineResource() {

@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.json.JSONObject;
-
+import skyport.adapter.ActionMessageDeserializer;
 import skyport.adapter.PointAdapter;
 import skyport.debug.Debug;
+import skyport.exception.ProtocolException;
 import skyport.game.GameMap;
 import skyport.game.Player;
 import skyport.game.Point;
@@ -21,6 +21,7 @@ import skyport.message.EndTurnMessage;
 import skyport.message.ErrorMessage;
 import skyport.message.GameStateMessage;
 import skyport.message.Message;
+import skyport.message.action.ActionMessage;
 import skyport.network.ai.AIConnection;
 
 import com.google.gson.FieldNamingPolicy;
@@ -32,13 +33,14 @@ public abstract class Connection {
     protected String identifier;
     protected BufferedReader input;
     protected BufferedWriter output;
-    protected ConcurrentLinkedQueue<JSONObject> messages = new ConcurrentLinkedQueue<JSONObject>();
+    protected ConcurrentLinkedQueue<ActionMessage> messages = new ConcurrentLinkedQueue<>();
     public boolean isAlive = true;
     protected boolean gotHandshake = false;
 
     protected Gson gson = new GsonBuilder()
         .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES)
         .registerTypeAdapter(Point.class, new PointAdapter())
+        .registerTypeAdapter(ActionMessage.class, new ActionMessageDeserializer())
         .create();
 
     public Connection(Socket socket) {
@@ -50,6 +52,8 @@ public abstract class Connection {
             Debug.error("error creating connection handler: " + e);
         }
     }
+    
+    public abstract void input(String json) throws IOException, ProtocolException;
 
     public String readLine() throws IOException {
         String line = input.readLine();
@@ -70,10 +74,6 @@ public abstract class Connection {
         }
     }
 
-    public void sendMessage(JSONObject o) {
-        this.sendMessage(o.toString());
-    }
-
     public void sendMessage(Message message) {
         String json = gson.toJson(message);
         this.sendMessage(json);
@@ -85,7 +85,7 @@ public abstract class Connection {
         this.sendMessage(endTurn);
     }
 
-    public JSONObject getNextMessage() {
+    public ActionMessage getNextMessage() {
         return messages.poll();
     }
 

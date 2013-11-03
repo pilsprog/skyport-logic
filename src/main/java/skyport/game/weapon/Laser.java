@@ -1,6 +1,7 @@
 package skyport.game.weapon;
 
 import skyport.debug.Debug;
+import skyport.game.Direction;
 import skyport.game.Point;
 import skyport.game.Tile;
 import skyport.game.TileType;
@@ -8,7 +9,7 @@ import skyport.network.ai.AIConnection;
 
 public class Laser {
     private Tile position;
-    private String direction;
+    private Direction direction;
     private AIConnection dealingPlayer;
     private int turnsLeft;
 
@@ -22,13 +23,9 @@ public class Laser {
         return true;
     }
 
-    public boolean setDirection(String directionArg) {
-        if (directionArg.equals("up") || directionArg.equals("down") || directionArg.equals("left-up") || directionArg.equals("left-down") || directionArg.equals("right-up") || directionArg.equals("right-down")) {
-            direction = directionArg;
-            return true;
-        } else {
-            return false;
-        }
+    public boolean setDirection(Direction direction) {
+        this.direction = direction;
+        return true;
     }
 
     public Point performShot(int level) {
@@ -48,7 +45,7 @@ public class Laser {
         Tile currentTile = position;
         int i = 0;
         switch (direction) {
-        case "up":
+        case UP:
             for (i = 0; i < range; i++) {
                 if (currentTile.up == null) {
                     break;
@@ -60,7 +57,7 @@ public class Laser {
                 currentTile.damageTile(damage, dealingPlayer);
             }
             break;
-        case "down":
+        case DOWN:
             for (i = 0; i < range; i++) {
                 if (currentTile.down == null) {
                     break;
@@ -73,7 +70,7 @@ public class Laser {
 
             }
             break;
-        case "left-up":
+        case LEFT_UP:
             for (i = 0; i < range; i++) {
                 if (currentTile.leftUp == null) {
                     break;
@@ -85,7 +82,7 @@ public class Laser {
                 currentTile.damageTile(damage, dealingPlayer);
             }
             break;
-        case "left-down":
+        case LEFT_DOWN:
             for (i = 0; i < range; i++) {
                 if (currentTile.leftDown == null) {
                     break;
@@ -97,7 +94,7 @@ public class Laser {
                 currentTile.damageTile(damage, dealingPlayer);
             }
             break;
-        case "right-up":
+        case RIGHT_UP:
             for (i = 0; i < range; i++) {
                 if (currentTile.rightUp == null) {
                     break;
@@ -109,7 +106,7 @@ public class Laser {
                 currentTile.damageTile(damage, dealingPlayer);
             }
             break;
-        case "right-down":
+        case RIGHT_DOWN:
             for (i = 0; i < range; i++) {
                 if (currentTile.rightDown == null) {
                     break;

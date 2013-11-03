@@ -2,11 +2,9 @@ package skyport.game;
 
 import java.util.regex.Pattern;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import skyport.exception.ProtocolException;
 import skyport.game.weapon.Weapon;
+import skyport.message.action.ActionMessage;
 
 public class Util {
     public static boolean validateWeapon(Weapon weapon) {
@@ -36,23 +34,20 @@ public class Util {
         }
     }
 
-    public static boolean wasActionOffensive(JSONObject action) {
+    public static boolean wasActionOffensive(ActionMessage action) {
         if (action == null) {
             return false;
         }
-        try {
-            String actiontype = action.getString("type");
-            switch (actiontype) {
-            case "laser":
-                return true;
-            case "droid":
-                return true;
-            case "mortar":
-                return true;
-            default:
-                return false;
-            }
-        } catch (JSONException e) {
+
+        String actiontype = action.getType();
+        switch (actiontype) {
+        case "laser":
+            return true;
+        case "droid":
+            return true;
+        case "mortar":
+            return true;
+        default:
             return false;
         }
     }

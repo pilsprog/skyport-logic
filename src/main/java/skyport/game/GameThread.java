@@ -1,12 +1,17 @@
 package skyport.game;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import skyport.debug.Debug;
+import skyport.message.action.ActionMessage;
+import skyport.message.action.DroidActionMessage;
+import skyport.message.action.LaserActionMessage;
+import skyport.message.action.MortarActionMessage;
+import skyport.message.action.MoveActionMessage;
+import skyport.message.action.UpgradeActionMessage;
 import skyport.network.ai.AIConnection;
 import skyport.network.graphics.GraphicsContainer;
 
@@ -22,7 +27,10 @@ public class GameThread {
     AtomicInteger readyUsers = new AtomicInteger(0); // for loadouts
     GraphicsContainer graphicsContainer = null;
 
-    public GameThread(ConcurrentLinkedQueue<AIConnection> globalClientsArg, int minUsersArg, int gameTimeoutSecondsArg, int roundTimeMillisecondsArg, World worldArg, GraphicsContainer graphicsContainerArg) {
+    public GameThread(ConcurrentLinkedQueue<AIConnection> globalClientsArg, 
+            int minUsersArg, int gameTimeoutSecondsArg, 
+            int roundTimeMillisecondsArg, World worldArg, 
+            GraphicsContainer graphicsContainerArg) {
         graphicsContainer = graphicsContainerArg;
         world = worldArg;
         globalClients = globalClientsArg;
@@ -176,101 +184,83 @@ public class GameThread {
     }
 
     private void processThreePlayerActions(AIConnection currentPlayer) {
-        JSONObject first = currentPlayer.getNextMessage();
-        JSONObject second = currentPlayer.getNextMessage();
-        JSONObject third = currentPlayer.getNextMessage();
+        List<ActionMessage> actions = Arrays.asList(
+                currentPlayer.getNextMessage(),
+                currentPlayer.getNextMessage(),
+                currentPlayer.getNextMessage());
         int validActions = 0;
-        if (letPlayerPerformAction(first, currentPlayer, 2)) {
-            broadcastAction(first, currentPlayer);
-            validActions++;
-            if (Util.wasActionOffensive(first)) {
-                return;
+        int a = 3;
+        for(ActionMessage action : actions) {
+            if(letPlayerPerformAction(action, currentPlayer, a--)) {
+                broadcastAction(action, currentPlayer);
+                validActions++;
+                if (Util.wasActionOffensive(action)) {
+                    return;
+                }
+            } else {
+                Debug.debug("Action "+a+" was invalid");
             }
-        } else {
-            Debug.debug("First action was invalid.");
         }
-        if (letPlayerPerformAction(second, currentPlayer, 1)) {
-            broadcastAction(second, currentPlayer);
-            validActions++;
-            if (Util.wasActionOffensive(second)) {
-                return;
-            }
-        } else {
-            Debug.debug("Second action was invalid.");
-        }
-        if (letPlayerPerformAction(third, currentPlayer, 0)) {
-            broadcastAction(third, currentPlayer);
-            validActions++;
-            if (Util.wasActionOffensive(third)) {
-                return;
-            }
-        } else {
-            Debug.debug("Third action was invalid.");
-        }
-        Debug.game("player " + currentPlayer.getPlayer().name + " performed " + validActions + " valid actions");
+        Debug.game("player " + currentPlayer.getPlayer().name + " performed " + validActions + " valid actions.");
         if (validActions == 0) {
             currentPlayer.givePenality(10);
         }
     }
 
-    private void broadcastAction(JSONObject action, AIConnection playerWhoPerformedTheAction) {
+    private void broadcastAction(ActionMessage action, AIConnection playerWhoPerformedTheAction) {
         Debug.debug("Action was valid, re-broadcasting (FIXME)");
-        try {
-            action.put("from", playerWhoPerformedTheAction.getPlayer().name);
-        } catch (JSONException e) {
-        }
+        action.setFrom(playerWhoPerformedTheAction.getPlayer().name);
+        System.out.println("ACTION: " + action.toString());
+
         graphicsContainer.get().sendMessage(action);
         for (AIConnection player : globalClients) {
             player.sendMessage(action);
         }
     }
 
-    private boolean letPlayerPerformAction(JSONObject action, AIConnection currentPlayer, int turnsLeft) {
+    private boolean letPlayerPerformAction(ActionMessage action, AIConnection currentPlayer, int turnsLeft) {
         if (action == null) {
             return false;
         }
-        try {
-            String actiontype = action.getString("type");
-            switch (actiontype) {
-            case "move":
-                return currentPlayer.doMove(action);
-            case "laser":
-                if (currentPlayer.getPlayer().position.tileType == TileType.SPAWN) {
-                    Debug.game("Player attempted to shoot laser from spawn.");
-                    return false;
-                }
-                return currentPlayer.shootLaser(action, graphicsContainer.get(), turnsLeft);
-            case "droid":
-                if (currentPlayer.getPlayer().position.tileType == TileType.SPAWN) {
-                    Debug.game("Player attempted to shoot droid from spawn.");
-                    return false;
-                }
-                return currentPlayer.shootDroid(action, turnsLeft);
-            case "mortar":
-                if (currentPlayer.getPlayer().position.tileType == TileType.SPAWN) {
-                    Debug.game("Player attempted to shoot mortar from spawn.");
-                    return false;
-                }
-                return currentPlayer.shootMortar(action, turnsLeft);
-            case "mine":
-                TileType currentTileType = currentPlayer.getPlayer().position.tileType;
-                if (currentTileType == TileType.RUBIDIUM || currentTileType == TileType.EXPLOSIUM || currentTileType == TileType.SCRAP) {
-                    return currentPlayer.mineResource();
-                } else {
-                    Debug.game("Player " + currentPlayer.getPlayer().name + " attempted to mine while not on a resource");
-                    currentPlayer.sendError("Tried to mine while not on a resource tile!");
-                    return false;
-                }
-            case "upgrade": // {"message":"action", "type":"upgrade",
-                // "weapon":"mortar",
-                return currentPlayer.upgradeWeapon(action.getString("weapon"));
-            default:
-                currentPlayer.invalidAction(action.getString("type"));
+        String actiontype = action.getType();
+        switch (actiontype) {
+        case "move":
+            return currentPlayer.doMove((MoveActionMessage)action);
+        case "laser":
+            if (currentPlayer.getPlayer().position.tileType == TileType.SPAWN) {
+                Debug.game("Player attempted to shoot laser from spawn.");
                 return false;
             }
-        } catch (JSONException e) { // TODO: send back error about missing type
+            return currentPlayer.shootLaser((LaserActionMessage)action, graphicsContainer.get(), turnsLeft);
+        case "droid":
+            if (currentPlayer.getPlayer().position.tileType == TileType.SPAWN) {
+                Debug.game("Player attempted to shoot droid from spawn.");
+                return false;
+            }
+            return currentPlayer.shootDroid((DroidActionMessage)action, turnsLeft);
+        case "mortar":
+            if (currentPlayer.getPlayer().position.tileType == TileType.SPAWN) {
+                Debug.game("Player attempted to shoot mortar from spawn.");
+                return false;
+            }
+            return currentPlayer.shootMortar((MortarActionMessage)action, turnsLeft);
+        case "mine":
+            TileType currentTileType = currentPlayer.getPlayer().position.tileType;
+            if (currentTileType == TileType.RUBIDIUM || currentTileType == TileType.EXPLOSIUM || currentTileType == TileType.SCRAP) {
+                return currentPlayer.mineResource();
+            } else {
+                Debug.game("Player " + currentPlayer.getPlayer().name + " attempted to mine while not on a resource");
+                currentPlayer.sendError("Tried to mine while not on a resource tile!");
+                return false;
+            }
+        case "upgrade": // {"message":"action", "type":"upgrade",
+            // "weapon":"mortar",
+            String weapon = ((UpgradeActionMessage) action).getWeaponName();
+            return currentPlayer.upgradeWeapon(weapon);
+        default:
+            currentPlayer.invalidAction(action.getType());
+            return false;
         }
-        return false;
     }
 
     public void syncWithGraphics() {
@@ -290,18 +280,18 @@ public class GameThread {
         }
     }
 
-    public AIConnection sendGamestate(int roundNumber) {
+    public AIConnection sendGamestate(int round) {
         AIConnection playerTurnOrder[] = playerSelector.getListInTurnOrderAndMoveToNextTurn();
         String matrix[][] = world.returnAsRowMajorMatrix();
-        
+
         GameMap map = new GameMap(world.dimension, world.dimension, matrix);
 
-        if (roundNumber != 0) {
+        if (round != 0) {
             playerTurnOrder[0].clearAllMessages();
         }
-        graphicsContainer.get().sendGamestate(roundNumber, map, playerTurnOrder);
+        graphicsContainer.get().sendGamestate(round, map, playerTurnOrder);
         for (AIConnection client : globalClients) {
-            client.sendGamestate(roundNumber, map, playerTurnOrder);
+            client.sendGamestate(round, map, playerTurnOrder);
         }
         return playerTurnOrder[0];
     }
