@@ -86,7 +86,7 @@ public class Tile {
     }
 
     public void damageTile(int hitpoints, AIConnection dealingPlayer) {
-        Debug.highlight(coords.getCompactString(), 255, 0, 0);
+        Debug.highlight(coords.getString(), 255, 0, 0);
         if (playerOnTile == null) {
             return;
         } else {

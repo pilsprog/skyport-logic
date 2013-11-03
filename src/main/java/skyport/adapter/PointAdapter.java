@@ -17,7 +17,7 @@ public class PointAdapter extends TypeAdapter<Point> {
             writer.nullValue();
             return;
         }
-        writer.value(point.getCompactString());
+        writer.value(point.j + "," + point.k);
     }
 
     @Override
@@ -26,7 +26,10 @@ public class PointAdapter extends TypeAdapter<Point> {
             reader.nextNull();
             return null;
         }
-        return new Point(reader.nextString());
+        String[] tokens = reader.nextString().split(",");
+        int j = Integer.parseInt(tokens[0]);
+        int k = Integer.parseInt(tokens[1]);
+        return new Point(j, k);
     }
 
 }
