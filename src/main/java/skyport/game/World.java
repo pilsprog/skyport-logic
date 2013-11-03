@@ -80,7 +80,7 @@ public class World {
         for (int j = 0; j < dimension; j++) {
             Tile currentKTile = currentJTile;
             for (int k = 0; k < dimension; k++) {
-                currentKTile.coords = new Coordinate(j, k);
+                currentKTile.coords = new Point(j, k);
                 currentKTile = currentKTile.rightDown;
             }
             currentJTile = currentJTile.leftDown;

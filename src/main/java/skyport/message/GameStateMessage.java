@@ -3,7 +3,7 @@ package skyport.message;
 import java.util.ArrayList;
 import java.util.List;
 
-import skyport.game.Coordinate;
+import skyport.game.Point;
 import skyport.game.GameMap;
 import skyport.game.Player;
 import skyport.game.Tile;
@@ -20,7 +20,7 @@ public class GameStateMessage extends Message {
         @SuppressWarnings("unused")
         String name;
         @SuppressWarnings("unused")
-        Coordinate position;
+        Point position;
         @SuppressWarnings("unused")
         int health;
         @SuppressWarnings("unused")

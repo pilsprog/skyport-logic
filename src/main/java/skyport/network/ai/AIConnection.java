@@ -10,8 +10,8 @@ import org.json.JSONObject;
 
 import skyport.debug.Debug;
 import skyport.exception.ProtocolException;
-import skyport.game.Coordinate;
 import skyport.game.Player;
+import skyport.game.Point;
 import skyport.game.Tile;
 import skyport.game.TileType;
 import skyport.game.Util;
@@ -235,7 +235,6 @@ public class AIConnection extends Connection {
             Laser laser = new Laser(this, turnsLeft);
             if (laser.setDirection(direction)) {
                 laser.setPosition(player.position);
-                Coordinate endvector = laser.performShot(laserLevel);
                 graphicsConnection.setStartStopHack(player.position.coords, endvector);
             } else {
                 sendError("Invalid shot: unknown direction '" + direction + "'");
@@ -244,6 +243,7 @@ public class AIConnection extends Connection {
             return true;
         } catch (JSONException e) {
             sendError("Invalid shot: lacks a direction key");
+            Point endvector = laser.performShot(laserLevel);
         }
         return false;
     }

@@ -1,7 +1,7 @@
 package skyport.game.weapon;
 
 import skyport.debug.Debug;
-import skyport.game.Coordinate;
+import skyport.game.Point;
 import skyport.game.Tile;
 import skyport.game.TileType;
 import skyport.network.ai.AIConnection;
@@ -9,7 +9,7 @@ import skyport.network.ai.AIConnection;
 public class Mortar {
     private Tile position;
     private Tile absoluteHitPosition;
-    private Coordinate relativeTargetVector;
+    private Point relativeTargetVector;
     private AIConnection dealingPlayer;
     private int level = 1;
     private int turnsLeft;
@@ -23,7 +23,7 @@ public class Mortar {
         position = positionArg;
     }
 
-    public void setTarget(Coordinate relativeTargetVectorArg, int levelArg) {
+    public void setTarget(Point relativeTargetVectorArg, int levelArg) {
         relativeTargetVector = relativeTargetVectorArg;
         level = levelArg;
     }

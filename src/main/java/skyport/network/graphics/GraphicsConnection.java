@@ -8,8 +8,8 @@ import org.json.JSONObject;
 
 import skyport.debug.Debug;
 import skyport.exception.ProtocolException;
-import skyport.game.Coordinate;
 import skyport.game.GameMap;
+import skyport.game.Point;
 import skyport.message.EndActionsMessage;
 import skyport.message.GraphicsHandshakeMessage;
 import skyport.message.HighlightMessage;
@@ -28,8 +28,8 @@ public class GraphicsConnection extends Connection {
     public GraphicsContainer container = null;
     public boolean isDoneProcessing = true;
     public boolean alternativeLaserStyle = false;
-    public Coordinate startHack = null;
-    public Coordinate stopHack = null;
+    public Point startHack = null;
+    public Point stopHack = null;
     public int thinktime;
 
     public GraphicsConnection(Socket socket, GraphicsContainer containerArg) {
@@ -149,7 +149,7 @@ public class GraphicsConnection extends Connection {
         }
     }
 
-    public void setStartStopHack(Coordinate startVector, Coordinate stopVector) {
+    public void setStartStopHack(Point startVector, Point stopVector) {
         // quick'n'dirty hack added for skyport 2D gui to change laser to
         // start-stop format
         startHack = startVector;

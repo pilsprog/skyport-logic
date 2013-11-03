@@ -1,7 +1,7 @@
 package skyport.game.weapon;
 
 import skyport.debug.Debug;
-import skyport.game.Coordinate;
+import skyport.game.Point;
 import skyport.game.Tile;
 import skyport.game.TileType;
 import skyport.network.ai.AIConnection;
@@ -31,7 +31,7 @@ public class Laser {
         }
     }
 
-    public Coordinate performShot(int level) {
+    public Point performShot(int level) {
         Debug.game("'" + dealingPlayer.getPlayer().name + "' performing laser shot in direction " + direction + "!");
         int range = 5;
         int baseDamage = 16;

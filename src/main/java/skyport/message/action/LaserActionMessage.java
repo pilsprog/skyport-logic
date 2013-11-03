@@ -7,11 +7,11 @@ public class LaserActionMessage extends ActionMessage {
     @SuppressWarnings("unused")
     private Direction direction;
     @SuppressWarnings("unused")
-    private Coordinate start;
+    private Point start;
     @SuppressWarnings("unused")
-    private Coordinate stop;
+    private Point stop;
 
-    public void setInterval(Coordinate startHack, Coordinate stopHack) {
+    public void setInterval(Point startHack, Point stopHack) {
         this.start = startHack;
         this.stop = stopHack;
     }

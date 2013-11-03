@@ -22,7 +22,7 @@ public class Tile {
     public int resources = 0;
     public TileType tileType;
     public String id = null;
-    public Coordinate coords;
+    public Point coords;
     public AIConnection playerOnTile = null;
 
     public Tile(String type) {

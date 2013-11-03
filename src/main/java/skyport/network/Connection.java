@@ -12,11 +12,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.json.JSONObject;
 
-import skyport.adapter.CoordinateAdapter;
+import skyport.adapter.PointAdapter;
 import skyport.debug.Debug;
-import skyport.game.Coordinate;
 import skyport.game.GameMap;
 import skyport.game.Player;
+import skyport.game.Point;
 import skyport.message.EndTurnMessage;
 import skyport.message.ErrorMessage;
 import skyport.message.GameStateMessage;
@@ -38,7 +38,7 @@ public abstract class Connection {
 
     protected Gson gson = new GsonBuilder()
         .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES)
-        .registerTypeAdapter(Coordinate.class, new CoordinateAdapter())
+        .registerTypeAdapter(Point.class, new PointAdapter())
         .create();
 
     public Connection(Socket socket) {
