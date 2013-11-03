@@ -78,11 +78,7 @@ public class Tile {
     public boolean isAccessible() {
         // rock, void and spawn are not accessible.
         // grass, rubidium, explosium, scrap are accessible.
-        if (tileType == TileType.GRASS || tileType == TileType.RUBIDIUM || tileType == TileType.EXPLOSIUM || tileType == TileType.SCRAP) {
-            return true;
-        } else {
-            return false;
-        }
+        return !(tileType == TileType.ROCK || tileType == TileType.SPAWN || tileType == TileType.VOID);
     }
 
     public boolean mineTile() {
