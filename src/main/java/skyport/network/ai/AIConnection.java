@@ -227,16 +227,22 @@ public class AIConnection extends Connection {
         Debug.game("Player " + player.name + " mining " + tileType);
         boolean minedResource = this.player.position.mineTile();
         if (minedResource) {
-            if (tileType == TileType.RUBIDIUM) {
+            switch(tileType) {
+            case RUBIDIUM:
                 player.rubidiumResources++;
-            }
-            if (tileType == TileType.EXPLOSIUM) {
+                break;
+            case EXPLOSIUM:
                 player.explosiumResources++;
-            }
-            if (tileType == TileType.SCRAP) {
+                break;
+            case SCRAP:
                 player.scrapResources++;
+                break;
+            default:
             }
-            Debug.debug("Resources of player " + player.name + " are now: Rubidium: " + player.rubidiumResources + ", Explosium: " + player.explosiumResources + ", Scrap: " + player.scrapResources);
+            Debug.debug("Resources of player " + player.name + 
+                    " are now: Rubidium: " + player.rubidiumResources + 
+                           ", Explosium: " + player.explosiumResources + 
+                               ", Scrap: " + player.scrapResources);
             return true;
         }
         return false;
