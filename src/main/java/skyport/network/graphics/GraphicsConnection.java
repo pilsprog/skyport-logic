@@ -6,7 +6,6 @@ import java.net.Socket;
 import skyport.debug.Debug;
 import skyport.exception.ProtocolException;
 import skyport.game.GameMap;
-import skyport.game.Point;
 import skyport.message.EndActionsMessage;
 import skyport.message.GraphicsHandshakeMessage;
 import skyport.message.HighlightMessage;
@@ -14,7 +13,6 @@ import skyport.message.Message;
 import skyport.message.StatusMessage;
 import skyport.message.SubtitleMessage;
 import skyport.message.TitleMessage;
-import skyport.message.action.LaserActionMessage;
 import skyport.network.Connection;
 import skyport.network.ai.AIConnection;
 
@@ -25,8 +23,6 @@ public class GraphicsConnection extends Connection {
     public GraphicsContainer container = null;
     public boolean isDoneProcessing = true;
     public boolean alternativeLaserStyle = false;
-    public Point startHack = null;
-    public Point stopHack = null;
     public int thinktime;
 
     public GraphicsConnection(Socket socket, GraphicsContainer containerArg) {
@@ -108,17 +104,6 @@ public class GraphicsConnection extends Connection {
         Message endActions = new EndActionsMessage();
         this.sendMessage(endActions);
     }
-    
-    @Override
-    public void sendMessage(Message message) {
-        if(message instanceof LaserActionMessage) {
-            LaserActionMessage action = (LaserActionMessage)message;
-            action.setInterval(startHack, stopHack);
-            super.sendMessage(action);
-        } else {
-            super.sendMessage(message);
-        }
-    }
 
     public void waitForGraphics() {
         Debug.debug("Waiting for graphics...");
@@ -131,13 +116,6 @@ public class GraphicsConnection extends Connection {
                 break;
             }
         }
-    }
-
-    public void setStartStopHack(Point startVector, Point stopVector) {
-        // quick'n'dirty hack added for skyport 2D gui to change laser to
-        // start-stop format
-        startHack = startVector;
-        stopHack = stopVector;
     }
 
     public void sendTitle(String title) {

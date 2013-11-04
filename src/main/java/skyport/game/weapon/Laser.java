@@ -2,41 +2,44 @@ package skyport.game.weapon;
 
 import skyport.debug.Debug;
 import skyport.game.Direction;
+import skyport.game.Player;
 import skyport.game.Point;
 import skyport.game.Tile;
 import skyport.game.TileType;
-import skyport.network.ai.AIConnection;
 
-public class Laser {
+public class Laser extends Weapon {
     private Tile position;
     private Direction direction;
-    private AIConnection dealingPlayer;
+    private Player dealingPlayer;
     private int turnsLeft;
 
-    public Laser(AIConnection dealingPlayerArg, int turnsLeftArg) {
+    public Laser(Player dealingPlayerArg, int turnsLeftArg) {
+        super("laser");
         dealingPlayer = dealingPlayerArg;
         turnsLeft = turnsLeftArg;
     }
 
-    public boolean setPosition(Tile positionArg) {
+    public void setPosition(Tile positionArg) {
         position = positionArg;
-        return true;
+    }
+    
+    public void setTurnsLeft(int turns) {
+        this.turnsLeft = turns;
     }
 
-    public boolean setDirection(Direction direction) {
+    public void setDirection(Direction direction) {
         this.direction = direction;
-        return true;
     }
 
-    public Point performShot(int level) {
-        Debug.game("'" + dealingPlayer.getPlayer().name + "' performing laser shot in direction " + direction + "!");
+    public Point performShot() {
+        Debug.game("'" + dealingPlayer.getName() + "' performing laser shot in direction " + direction + "!");
         int range = 5;
         int baseDamage = 16;
-        if (level == 2) {
+        if (this.getLevel() == 2) {
             baseDamage = 18;
             range = 6;
         }
-        if (level == 3) {
+        if (this.getLevel() == 3) {
             baseDamage = 22;
             range = 7;
         }

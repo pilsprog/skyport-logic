@@ -2,7 +2,7 @@ package skyport.game.weapon;
 
 public class Weapon {
     private String name;
-    private int level = 1;
+    protected int level = 1;
     
     public Weapon(String name) {
         this.name = name;

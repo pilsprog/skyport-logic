@@ -1,7 +1,6 @@
 package skyport.game;
 
 import skyport.debug.Debug;
-import skyport.network.ai.AIConnection;
 
 public class Tile {
     static int grassTiles = 0;
@@ -23,7 +22,7 @@ public class Tile {
     public TileType tileType;
     public String id = null;
     public Point coords;
-    public AIConnection playerOnTile = null;
+    public Player playerOnTile = null;
 
     public Tile(String type) {
         id = type;
@@ -99,7 +98,7 @@ public class Tile {
         return false;
     }
 
-    public void damageTile(int hitpoints, AIConnection dealingPlayer) {
+    public void damageTile(int hitpoints, Player dealingPlayer) {
         Debug.highlight(coords.getString(), 255, 0, 0);
         if (playerOnTile == null) {
             return;

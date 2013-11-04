@@ -4,18 +4,18 @@ import java.util.List;
 
 import skyport.debug.Debug;
 import skyport.game.Direction;
+import skyport.game.Player;
 import skyport.game.Tile;
 import skyport.game.TileType;
-import skyport.network.ai.AIConnection;
 
-public class Droid {
+public class Droid extends Weapon {
     private Tile position;
     private List<Direction> directions;
-    private AIConnection dealingPlayer;
-    private int level = 1;
+    private Player dealingPlayer;
     private int turnsLeft;
 
-    public Droid(AIConnection dealingPlayerArg, int turnsLeftArg) {
+    public Droid(Player dealingPlayerArg, int turnsLeftArg) {
+        super("droid");
         dealingPlayer = dealingPlayerArg;
         turnsLeft = turnsLeftArg;
     }
@@ -32,7 +32,7 @@ public class Droid {
     }
 
     public int performShot() {
-        Debug.game("'" + dealingPlayer.getPlayer().name + "' performing droid shot with " + directions.size() + " steps");
+        Debug.game("'" + dealingPlayer.getName() + "' performing droid shot with " + directions.size() + " steps");
         int range = 3;
         int damage = 22;
         int validStepsTaken = 0;

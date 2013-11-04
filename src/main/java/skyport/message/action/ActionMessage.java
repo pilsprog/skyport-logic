@@ -1,8 +1,10 @@
 package skyport.message.action;
 
+import skyport.exception.ProtocolException;
+import skyport.game.Player;
 import skyport.message.Message;
 
-public class ActionMessage extends Message {
+public abstract class ActionMessage extends Message {
     protected String type;
     @SuppressWarnings("unused")
     private String from;
@@ -17,5 +19,9 @@ public class ActionMessage extends Message {
     
     public void setFrom(String name) {
         this.from = name;
+    }
+    
+    public boolean performAction(Player player) throws ProtocolException {
+        throw new ProtocolException("Invalid action: '"+ type +"'.");
     }
 }

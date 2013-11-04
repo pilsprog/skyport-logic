@@ -6,12 +6,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import skyport.debug.Debug;
+import skyport.exception.ProtocolException;
 import skyport.message.action.ActionMessage;
-import skyport.message.action.DroidActionMessage;
-import skyport.message.action.LaserActionMessage;
-import skyport.message.action.MortarActionMessage;
-import skyport.message.action.MoveActionMessage;
-import skyport.message.action.UpgradeActionMessage;
 import skyport.network.ai.AIConnection;
 import skyport.network.graphics.GraphicsContainer;
 
@@ -222,43 +218,11 @@ public class GameThread {
         if (action == null) {
             return false;
         }
-        String actiontype = action.getType();
-        switch (actiontype) {
-        case "move":
-            return currentPlayer.doMove((MoveActionMessage)action);
-        case "laser":
-            if (currentPlayer.getPlayer().position.tileType == TileType.SPAWN) {
-                Debug.game("Player attempted to shoot laser from spawn.");
-                return false;
-            }
-            return currentPlayer.shootLaser((LaserActionMessage)action, graphicsContainer.get(), turnsLeft);
-        case "droid":
-            if (currentPlayer.getPlayer().position.tileType == TileType.SPAWN) {
-                Debug.game("Player attempted to shoot droid from spawn.");
-                return false;
-            }
-            return currentPlayer.shootDroid((DroidActionMessage)action, turnsLeft);
-        case "mortar":
-            if (currentPlayer.getPlayer().position.tileType == TileType.SPAWN) {
-                Debug.game("Player attempted to shoot mortar from spawn.");
-                return false;
-            }
-            return currentPlayer.shootMortar((MortarActionMessage)action, turnsLeft);
-        case "mine":
-            TileType currentTileType = currentPlayer.getPlayer().position.tileType;
-            if (currentTileType == TileType.RUBIDIUM || currentTileType == TileType.EXPLOSIUM || currentTileType == TileType.SCRAP) {
-                return currentPlayer.mineResource();
-            } else {
-                Debug.game("Player " + currentPlayer.getPlayer().name + " attempted to mine while not on a resource");
-                currentPlayer.sendError("Tried to mine while not on a resource tile!");
-                return false;
-            }
-        case "upgrade": // {"message":"action", "type":"upgrade",
-            // "weapon":"mortar",
-            String weapon = ((UpgradeActionMessage) action).getWeaponName();
-            return currentPlayer.upgradeWeapon(weapon);
-        default:
-            currentPlayer.invalidAction(action.getType());
+        currentPlayer.getPlayer().setTurnsLeft(turnsLeft);
+        try {
+            return action.performAction(currentPlayer.getPlayer());
+        } catch (ProtocolException e) {
+            currentPlayer.sendError(e.getMessage());
             return false;
         }
     }

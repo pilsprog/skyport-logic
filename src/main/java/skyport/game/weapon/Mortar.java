@@ -1,20 +1,20 @@
 package skyport.game.weapon;
 
 import skyport.debug.Debug;
+import skyport.game.Player;
 import skyport.game.Point;
 import skyport.game.Tile;
 import skyport.game.TileType;
-import skyport.network.ai.AIConnection;
 
-public class Mortar {
+public class Mortar extends Weapon {
     private Tile position;
     private Tile absoluteHitPosition;
     private Point relativeTargetVector;
-    private AIConnection dealingPlayer;
-    private int level = 1;
+    private Player dealingPlayer;
     private int turnsLeft;
 
-    public Mortar(AIConnection dealingPlayerArg, int turnsLeftArg) {
+    public Mortar(Player dealingPlayerArg, int turnsLeftArg) {
+        super("mortar");
         dealingPlayer = dealingPlayerArg;
         turnsLeft = turnsLeftArg;
     }
@@ -23,13 +23,12 @@ public class Mortar {
         position = positionArg;
     }
 
-    public void setTarget(Point relativeTargetVectorArg, int levelArg) {
+    public void setTarget(Point relativeTargetVectorArg ) {
         relativeTargetVector = relativeTargetVectorArg;
-        level = levelArg;
     }
 
     public boolean performShot() {
-        Debug.game("'" + dealingPlayer.getPlayer().name + "' performing mortar shot at '" + relativeTargetVector.getString() + "'");
+        Debug.game("'" + dealingPlayer.getName()+ "' performing mortar shot at '" + relativeTargetVector.getString() + "'");
         int range = 2;
         int baseDamage = 20;
         if (level == 2) {
