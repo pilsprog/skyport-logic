@@ -6,22 +6,20 @@ import java.util.LinkedList;
 import skyport.debug.Debug;
 
 public class World {
-    Tile topTile;
-    Tile bottomTile;
-    Tile leftTile;
-    Tile rightTile;
-    int dimension;
-    boolean debugWorld = false;
-    LinkedList<Tile> freeSpawnpoints = new LinkedList<Tile>();
+    private Tile topTile;
+    private Tile bottomTile;
+    
+    private int jLength;
+    private int kLength;
+    
+    private LinkedList<Tile> freeSpawnpoints = new LinkedList<Tile>();
 
-    public World(Tile topTileArg, String filename, int dimensionArg) {
-        dimension = dimensionArg;
+    public World(Tile topTileArg, String filename, int dimension) {
+        this.jLength = dimension;
+        this.kLength = dimension;
         topTile = topTileArg;
-        leftTile = topTile;
-        while (leftTile.leftDown != null) {
-            leftTile = leftTile.leftDown;
-        }
-        rightTile = topTile;
+
+        Tile rightTile = topTile;
         while (rightTile.rightDown != null) {
             rightTile = rightTile.rightDown;
         }
@@ -49,37 +47,35 @@ public class World {
         }
         returnAsRowMajorMatrix();
     }
+    
+    public int getJLength() {
+        return this.jLength;
+    }
+    
+    public int getKLength() {
+        return this.kLength;
+    }
 
-    public String[][] returnAsRowMajorMatrix() {
+    public TileType[][] returnAsRowMajorMatrix() {
         Tile currentJTile = topTile;
-        String matrix[][] = new String[dimension][dimension];
-        for (int j = 0; j < dimension; j++) {
+        TileType matrix[][] = new TileType[jLength][kLength];
+        for (int j = 0; j < jLength; j++) {
             Tile currentKTile = currentJTile;
-            for (int k = 0; k < dimension; k++) {
-                matrix[j][k] = currentKTile.id;
+            for (int k = 0; k < kLength; k++) {
+                matrix[j][k] = currentKTile.tileType;
                 currentKTile = currentKTile.rightDown;
             }
             currentJTile = currentJTile.leftDown;
         }
-        if (debugWorld) {
-            System.out.print("[");
-            for (int l = 0; l < dimension; l++) {
-                System.out.print("[");
-                for (String s : matrix[l]) {
-                    System.out.print(s + ", ");
-                }
-                System.out.print("],\n");
-            }
-            System.out.println("]");
-        }
+       
         return matrix;
     }
 
     public void enumerateCoordinates(Tile topTile) {
         Tile currentJTile = topTile;
-        for (int j = 0; j < dimension; j++) {
+        for (int j = 0; j < jLength; j++) {
             Tile currentKTile = currentJTile;
-            for (int k = 0; k < dimension; k++) {
+            for (int k = 0; k < kLength; k++) {
                 currentKTile.coords = new Point(j, k);
                 currentKTile = currentKTile.rightDown;
             }
@@ -89,9 +85,9 @@ public class World {
 
     public void findAndRandomizeSpawnpoints(Tile topTile) {
         Tile currentJTile = topTile;
-        for (int j = 0; j < dimension; j++) {
+        for (int j = 0; j < jLength; j++) {
             Tile currentKTile = currentJTile;
-            for (int k = 0; k < dimension; k++) {
+            for (int k = 0; k < kLength; k++) {
                 if (currentKTile.tileType == TileType.SPAWN) {
                     freeSpawnpoints.add(currentKTile);
                 }
@@ -174,9 +170,9 @@ public class World {
     public int verifyNumberOfPlayersOnBoard() {
         int players = 0;
         Tile currentJTile = topTile;
-        for (int j = 0; j < dimension; j++) {
+        for (int j = 0; j < jLength; j++) {
             Tile currentKTile = currentJTile;
-            for (int k = 0; k < dimension; k++) {
+            for (int k = 0; k < kLength; k++) {
                 if (currentKTile.playerOnTile != null) {
                     players++;
                 }
@@ -187,12 +183,12 @@ public class World {
         return players;
     }
 
-    public int getSpawnpointNumber() {
+    public int getNumberOfSpawnpoints() {
         int spawnpoints = 0;
         Tile currentJTile = topTile;
-        for (int j = 0; j < dimension; j++) {
+        for (int j = 0; j < jLength; j++) {
             Tile currentKTile = currentJTile;
-            for (int k = 0; k < dimension; k++) {
+            for (int k = 0; k < kLength; k++) {
                 if (currentKTile.tileType == TileType.SPAWN) {
                     spawnpoints++;
                 }
@@ -201,5 +197,22 @@ public class World {
             currentJTile = currentJTile.leftDown;
         }
         return spawnpoints;
+    }
+    
+    public String toString() {
+        String s = new String();
+        Tile currentJTile = topTile;
+        s += "[";
+        for (int j = 0; j < jLength; j++) {
+            Tile currentKTile = currentJTile;
+            for (int k = 0; k < kLength; k++) {
+                s += currentKTile.tileType.name().substring(0, 1);
+                currentKTile = currentKTile.rightDown;
+            }
+            s += "],\n";
+            currentJTile = currentJTile.leftDown;
+        }
+        s+= "]";
+        return s;
     }
 }

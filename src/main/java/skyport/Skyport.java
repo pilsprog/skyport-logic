@@ -39,7 +39,7 @@ public class Skyport {
         try {
             WorldParser wp = new WorldParser(mapfile);
             world = wp.parseFile();
-            spawnPoints = world.getSpawnpointNumber();
+            spawnPoints = world.getNumberOfSpawnpoints();
             if (minUsers != 0) {
                 if (spawnPoints < minUsers) {
                     Debug.error("requested to wait for " + minUsers + " AIs, but this map only supports " + spawnPoints + ".");
