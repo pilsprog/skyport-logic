@@ -20,12 +20,10 @@ public class Tile {
     public Tile leftDown = null;
     public int resources = 0;
     public TileType tileType;
-    public String id = null;
     public Point coords;
     public Player playerOnTile = null;
 
     public Tile(String type) {
-        id = type;
         if (type.equals("G")) {
             tileType = TileType.GRASS;
             grassTiles++;
@@ -86,7 +84,6 @@ public class Tile {
             if (resources == 0) {
                 Debug.game(tileType + " tile is depleted of resources and became a grass-tile.");
                 tileType = TileType.GRASS;
-                id = "G";
                 // TODO: it may be of interest later to *Tiles-- and
                 // grassTiles++.
                 // Doesn't seem particularly important, though -- we currently
