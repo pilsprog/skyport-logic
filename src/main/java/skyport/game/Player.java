@@ -8,7 +8,7 @@ import com.google.gson.annotations.Expose;
 
 
 public class Player {
-    public String name;
+    private String name;
     public Tile position;
     public int health = 100;
     public int score = 0;
@@ -95,5 +95,19 @@ public class Player {
 
     public int getTurnsLeft() {
         return turns;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Player) {
+            Player other = (Player)o;
+            return this.name == other.name;
+        }
+        return false;
+    }
+    
+    @Override
+    public String toString() {
+        return name;
     }
 }

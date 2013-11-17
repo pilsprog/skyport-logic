@@ -53,7 +53,7 @@ public class GameStateMessage extends Message {
         this.players = new ArrayList<>();
         for(Player player : players) {
             PlayerMessage p = new PlayerMessage(
-                    player.name,
+                    player.getName(),
                     player.position, 
                     player.health, 
                     player.score,

@@ -25,7 +25,7 @@ public class MortarActionMessage extends ActionMessage {
         } else if (player.secondaryWeapon.getName().equals("mortar")) {
             mortar = (Mortar) player.secondaryWeapon;
         } else {
-            Debug.warn("User '" + player.name + "' attempted to shoot the mortar, but doesn't have it");
+            Debug.warn("User '" + player + "' attempted to shoot the mortar, but doesn't have it");
             return false;
         }
         mortar.setPosition(player.position);

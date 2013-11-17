@@ -2,7 +2,6 @@ package skyport.network.ai;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import skyport.debug.Debug;
 import skyport.exception.ProtocolException;
@@ -19,12 +18,16 @@ import skyport.network.Connection;
 
 public class AIConnection extends Connection {
     private Player player;
-    public AtomicBoolean gotLoadout = new AtomicBoolean(false);
+    private boolean gotLoadout = false;
     public boolean hasToPass = false;
     public boolean needsRespawn = false;
 
     public AIConnection(Socket socket) {
         super(socket);
+    }
+    
+    public synchronized boolean gotLoadout() {
+        return this.gotLoadout;
     }
 
     public synchronized void input(String json) throws IOException, ProtocolException {
@@ -34,7 +37,7 @@ public class AIConnection extends Connection {
                 this.sendMessage(success);
             }
             return;
-        } else if (!gotLoadout.get()) {
+        } else if (!gotLoadout()) {
             parseLoadout(json);
         } else {
             ActionMessage message = gson.fromJson(json, ActionMessage.class);
@@ -72,8 +75,11 @@ public class AIConnection extends Connection {
 
         player.setLoadout(primary, secondary);
 
-        Debug.info(player.name + " selected loadout: " + player.primaryWeapon.getName() + " and " + player.secondaryWeapon.getName() + ".");
-        gotLoadout.set(true);
+        Debug.info(player.getName() + " selected loadout: " + player.primaryWeapon.getName() + " and " + player.secondaryWeapon.getName() + ".");
+       
+        synchronized(this) {
+            gotLoadout = true;
+        }
     }
 
     private boolean parseHandshake(String json) throws ProtocolException {
@@ -89,13 +95,13 @@ public class AIConnection extends Connection {
         String name = message.getName();
         Util.validateUsername(name);
         this.player = new Player(name);
-        this.identifier = player.name;
+        this.identifier = player.getName();
         gotHandshake = true;
         return true;
     }
 
     public synchronized void setSpawnpoint(Tile spawnpoint) {
-        Debug.info("Player '" + player.name + "' spawns at " + spawnpoint.coords.getString());
+        Debug.info("Player '" + player.getName() + "' spawns at " + spawnpoint.coords.getString());
         player.position = spawnpoint;
         player.spawnTile = spawnpoint;
         player.position.playerOnTile = this.player;
@@ -103,7 +109,7 @@ public class AIConnection extends Connection {
 
     public void clearAllMessages() {
         if (messages.size() > 0) {
-            Debug.warn("Message inbox of " + player.name + " contained " + messages.size() + " extra messages, discarding...");
+            Debug.warn("Message inbox of " + player.getName() + " contained " + messages.size() + " extra messages, discarding...");
         }
         messages.clear();
     }
@@ -121,7 +127,7 @@ public class AIConnection extends Connection {
     }
 
     public void givePenality(int points) {
-        Debug.warn(player.name + " got " + points + " penality");
+        Debug.warn(player.getName() + " got " + points + " penality");
         player.score -= points;
     }
     
@@ -130,7 +136,7 @@ public class AIConnection extends Connection {
     }
 
     public void printStats() {
-        System.out.println(player.name +
+        System.out.println(player.getName() +
                 ": HP: " + player.health + 
                 ", score: " + player.score +
                 ", RUB:" + player.rubidiumResources +

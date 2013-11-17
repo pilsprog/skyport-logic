@@ -78,8 +78,8 @@ public class GameThread {
         while (true) {
             boolean allAreReady = true;
             for (AIConnection conn : globalClients) {
-                if (!conn.gotLoadout.get()) {
-                    Debug.info("Waiting for loadout from " + conn.getPlayer().name);
+                if (!conn.gotLoadout()) {
+                    Debug.info("Waiting for loadout from " + conn.getPlayer().getName());
                     allAreReady = false;
                 }
             }
@@ -134,16 +134,16 @@ public class GameThread {
             if ((roundStartTime - startTime) > gtsAsLong * 1000000000) {
                 Debug.info("Time over!");
                 int highestScore = -1000000000;
-                String winningPlayer = "";
+                Player winningPlayer = globalClients.peek().getPlayer();
                 for (AIConnection connection : globalClients) {
                     if (connection.getPlayer().score > highestScore) {
                         highestScore = connection.getPlayer().score;
-                        winningPlayer = connection.getPlayer().name;
+                        winningPlayer = connection.getPlayer();
                     }
                 }
-                String wintext = winningPlayer + " wins!";
+                String wintext = winningPlayer.getName() + " wins!";
                 for (AIConnection connection : globalClients) {
-                    if (connection.getPlayer().score == highestScore && !winningPlayer.equals(connection.getPlayer().name)) {
+                    if (connection.getPlayer().score == highestScore && !winningPlayer.equals(connection.getPlayer())) {
                         wintext = "Tie!";
                     }
                 }
@@ -153,14 +153,13 @@ public class GameThread {
                     Debug.guiMessage(wintext);
                     letClientsThink();
                 }
-                // System.exit(0);
             }
             AIConnection currentPlayer = sendGamestate(roundNumber);
-            Debug.marker("START TURN " + roundNumber + " PLAYER: '" + currentPlayer.getPlayer().name + "'");
+            Debug.marker("START TURN " + roundNumber + " PLAYER: '" + currentPlayer.getPlayer().getName() + "'");
             if (currentPlayer.isAlive() || !accelerateDeadPlayers) {
                 letClientsThink();
             } else {
-                Debug.debug("Player '" + currentPlayer.getPlayer().name +
+                Debug.debug("Player '" + currentPlayer.getPlayer().getName() +
                           "' is dead and accelerateDeadPlayers flag is set, sending" + " deadline immediately...");
             }
             sendDeadline();
@@ -177,7 +176,7 @@ public class GameThread {
 
     private void givePenalityForLingeringOnSpawntile(AIConnection currentPlayer) {
         if (currentPlayer.getPlayer().position == currentPlayer.getPlayer().spawnTile) {
-            Debug.warn("Player " + currentPlayer.getPlayer().name + " stayed on spawn too long");
+            Debug.warn("Player " + currentPlayer.getPlayer() + " stayed on spawn too long");
             currentPlayer.givePenality(10);
         }
     }
@@ -200,7 +199,7 @@ public class GameThread {
                 Debug.debug("Action "+a+" was invalid");
             }
         }
-        Debug.game("player " + currentPlayer.getPlayer().name + " performed " + validActions + " valid actions.");
+        Debug.game("player " + currentPlayer.getPlayer() + " performed " + validActions + " valid actions.");
         if (validActions == 0) {
             currentPlayer.givePenality(10);
         }
@@ -208,7 +207,7 @@ public class GameThread {
 
     private void broadcastAction(ActionMessage action, AIConnection playerWhoPerformedTheAction) {
         Debug.debug("Action was valid, re-broadcasting (FIXME)");
-        action.setFrom(playerWhoPerformedTheAction.getPlayer().name);
+        action.setFrom(playerWhoPerformedTheAction.getPlayer().getName());
         System.out.println("ACTION: " + action.toString());
 
         graphicsContainer.get().sendMessage(action);

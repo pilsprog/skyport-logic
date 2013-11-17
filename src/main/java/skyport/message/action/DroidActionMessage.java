@@ -32,7 +32,7 @@ public class DroidActionMessage extends ActionMessage {
         } else if (player.secondaryWeapon.getName().equals("droid")) {
             droid = (Droid)player.secondaryWeapon;
         } else {
-            Debug.warn("User '" + player.name + "' attempted to shoot the droid, but doesn't have it");
+            Debug.warn("User '" + player + "' attempted to shoot the droid, but doesn't have it");
             return false;
         }
         int range = 3;
