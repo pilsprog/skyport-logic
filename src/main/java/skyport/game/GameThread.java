@@ -246,9 +246,9 @@ public class GameThread {
 
     public AIConnection sendGamestate(int round) {
         AIConnection playerTurnOrder[] = playerSelector.getListInTurnOrderAndMoveToNextTurn();
-        String matrix[][] = world.returnAsRowMajorMatrix();
+        TileType matrix[][] = world.returnAsRowMajorMatrix();
 
-        GameMap map = new GameMap(world.dimension, world.dimension, matrix);
+        GameMap map = new GameMap(world.getJLength(), world.getKLength(), matrix);
 
         if (round != 0) {
             playerTurnOrder[0].clearAllMessages();
