@@ -130,11 +130,10 @@ public class WorldParser {
             }
 
             Tile currentTile = lowerCornerTile;
-            tiles[a][k] = currentTile;
             for (int i = 0; i < lines.length; i++) {
                 String tileType = lines[i];
                 Tile newTile = new Tile(tileType);
-                tiles[(a-1)-i][(i+1)+k] = newTile;
+                tiles[a-1][i+k] = newTile;
                 currentTile.rightDown = newTile;
                 currentTile.rightDown.leftUp = currentTile;
                 newTile.up = currentTile.rightUp;
