@@ -137,8 +137,9 @@ public class World {
         s += "[";
         for (int j = 0; j < jLength; j++) {
             Tile currentKTile = currentJTile;
+            s+= "[";
             for (int k = 0; k < kLength; k++) {
-                s += currentKTile.tileType.name().substring(0, 1);
+                s += currentKTile.tileType.name().substring(0, 1) + ", ";
                 currentKTile = currentKTile.rightDown;
             }
             s += "],\n";
