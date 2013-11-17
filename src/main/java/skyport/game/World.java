@@ -7,25 +7,22 @@ import skyport.debug.Debug;
 
 public class World {
     private Tile topTile;
-    private Tile bottomTile;
+    private Tile[][] tiles;
     
     private int jLength;
     private int kLength;
     
     private LinkedList<Tile> freeSpawnpoints = new LinkedList<Tile>();
 
-    public World(Tile topTileArg, String filename, int dimension) {
+    public World(Tile[][] tiles, String filename, int dimension) {
         this.jLength = dimension;
         this.kLength = dimension;
-        topTile = topTileArg;
+        this.tiles = tiles;
+        this.topTile = tiles[0][0];
 
         Tile rightTile = topTile;
         while (rightTile.rightDown != null) {
             rightTile = rightTile.rightDown;
-        }
-        bottomTile = rightTile;
-        while (bottomTile.leftDown != null) {
-            bottomTile = bottomTile.leftDown;
         }
         if (Debug.developerMode) {
             System.out.println("Summary of world " + filename + ":");
@@ -42,10 +39,7 @@ public class World {
         }
         enumerateCoordinates(topTile);
         findAndRandomizeSpawnpoints(topTile);
-        if (Debug.developerMode) {
-            performStructureConsistencyVerification(topTile);
-        }
-        returnAsRowMajorMatrix();
+        this.returnAsRowMajorMatrix();
     }
     
     public int getJLength() {
@@ -64,9 +58,11 @@ public class World {
             for (int k = 0; k < kLength; k++) {
                 matrix[j][k] = currentKTile.tileType;
                 currentKTile = currentKTile.rightDown;
+                assert(matrix[j][k] == tiles[j][k].tileType);
             }
             currentJTile = currentJTile.leftDown;
         }
+        
        
         return matrix;
     }

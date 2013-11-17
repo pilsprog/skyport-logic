@@ -25,9 +25,9 @@ public class WorldParser {
         Debug.info("Players: " + players);
         Debug.info("size: " + jLength);
         Debug.info("description: '" + description + "'");
-        Tile topCorner = parseBody(scanner)[0][0];
+        Tile[][] tiles = parseBody(scanner);
         Debug.debug("Done parsing. Ignored " + ignoredLines + " empty lines.");
-        return new World(topCorner, file, jLength);
+        return new World(tiles, file, jLength);
     }
 
     private void parseHeader(Scanner scanner) {
@@ -52,17 +52,17 @@ public class WorldParser {
         jLength = dimensionsInteger;
         kLength = dimensionsInteger;
     }
-    
+
     private Tile[][] parseBody(Scanner scanner) {
         Tile rootTile = null;
         int currentLength = 1;
         int a = 0;
-        
+
         Tile[][] tiles = new Tile[jLength][];
-        for(int j = 0; j < tiles.length; j ++) {
+        for (int j = 0; j < tiles.length; j++) {
             tiles[j] = new Tile[kLength];
         }
-        
+
         // increasing part of the algorithm
         while (a < jLength) {
             String lines[] = getScannedLine(scanner);
@@ -83,11 +83,11 @@ public class WorldParser {
                 }
                 currentTile.leftDown = new Tile(lines[0]);
                 currentTile.leftDown.rightUp = currentTile;
-                tiles[a][0] = currentTile;
+                tiles[a][0] = currentTile.leftDown;
 
                 for (int b = 1; b < lines.length; b++) {
                     Tile newTile = new Tile(lines[b]);
-                    tiles[a-b][b] = newTile;
+                    tiles[a - b][b] = newTile;
                     currentTile.rightDown = newTile;
                     newTile.leftUp = currentTile;
                     if (currentTile.rightUp != null) {
@@ -133,7 +133,7 @@ public class WorldParser {
             for (int i = 0; i < lines.length; i++) {
                 String tileType = lines[i];
                 Tile newTile = new Tile(tileType);
-                tiles[a-1][i+k] = newTile;
+                tiles[a - i][i + k] = newTile;
                 currentTile.rightDown = newTile;
                 currentTile.rightDown.leftUp = currentTile;
                 newTile.up = currentTile.rightUp;
