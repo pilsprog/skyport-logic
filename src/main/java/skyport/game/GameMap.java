@@ -8,9 +8,9 @@ public class GameMap {
     private int kLength;
     
     @SuppressWarnings("unused")
-    private String[][] data;
+    private TileType[][] data;
     
-    public GameMap(int jLength, int kLength, String[][] data) {
+    public GameMap(int jLength, int kLength, TileType[][] data) {
         this.jLength = jLength;
         this.kLength = kLength;
         this.data = data;
