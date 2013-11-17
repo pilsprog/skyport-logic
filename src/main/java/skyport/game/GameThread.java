@@ -108,7 +108,9 @@ public class GameThread {
             Debug.printGamestats(globalClients);
             int playerNum = world.verifyNumberOfPlayersOnBoard();
             if (playerNum != globalClients.size()) {
-                Debug.warn(globalClients.size() + " players are supposed to be" + " on the field, but found " + playerNum + ". Possible inconsistency during movement?");
+                Debug.warn(globalClients.size() + " players are supposed to be" +
+                           " on the field, but found " + playerNum + 
+                           ". Possible inconsistency during movement?");
             }
 
             long roundStartTime = System.nanoTime();
@@ -158,7 +160,8 @@ public class GameThread {
             if (currentPlayer.isAlive() || !accelerateDeadPlayers) {
                 letClientsThink();
             } else {
-                Debug.debug("Player '" + currentPlayer.getPlayer().name + "' is dead and accelerateDeadPlayers flag is set, sending" + " deadline immediately...");
+                Debug.debug("Player '" + currentPlayer.getPlayer().name +
+                          "' is dead and accelerateDeadPlayers flag is set, sending" + " deadline immediately...");
             }
             sendDeadline();
             Debug.debug("Deadline! Processing actions...");
