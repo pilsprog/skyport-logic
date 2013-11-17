@@ -152,11 +152,7 @@ public class WorldParser {
 
     private String[] getScannedLine(Scanner scanner) {
         String line = scanner.nextLine();
-        line = line.replace("/", "");
-        line = line.replace("\\", "");
-        line = line.replace("_", "");
-        line = line.replace(" ", "");
-        line = line.replace("\t", "");
+        line = line.replaceAll("[/\\_ \t]", "");
         if (line.equals("")) {
             ignoredLines++;
             return new String[0];
