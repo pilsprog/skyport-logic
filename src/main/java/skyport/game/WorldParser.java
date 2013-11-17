@@ -8,7 +8,8 @@ import skyport.debug.Debug;
 
 public class WorldParser {
     private String file;
-    private int dimensions;
+    private int jLength;
+    private int kLength;
     private String description;
     private int players;
     private int ignoredLines = 0;
@@ -22,11 +23,11 @@ public class WorldParser {
         Scanner scanner = new Scanner(new File(file));
         parseHeader(scanner);
         Debug.info("Players: " + players);
-        Debug.info("size: " + dimensions);
+        Debug.info("size: " + jLength);
         Debug.info("description: '" + description + "'");
-        Tile topCorner = parseBody(scanner);
+        Tile topCorner = parseBody(scanner)[0][0];
         Debug.debug("Done parsing. Ignored " + ignoredLines + " empty lines.");
-        return new World(topCorner, file, dimensions);
+        return new World(topCorner, file, jLength);
     }
 
     private void parseHeader(Scanner scanner) {
@@ -48,15 +49,22 @@ public class WorldParser {
         String finalDescription = descriptionBuilder.toString().substring(1, descriptionBuilder.length() - 1);
         players = numPlayers;
         description = finalDescription;
-        dimensions = dimensionsInteger;
+        jLength = dimensionsInteger;
+        kLength = dimensionsInteger;
     }
-
-    private Tile parseBody(Scanner scanner) {
+    
+    private Tile[][] parseBody(Scanner scanner) {
         Tile rootTile = null;
         int currentLength = 1;
-        int i = 0;
+        int a = 0;
+        
+        Tile[][] tiles = new Tile[jLength][];
+        for(int j = 0; j < tiles.length; j ++) {
+            tiles[j] = new Tile[kLength];
+        }
+        
         // increasing part of the algorithm
-        while (i < dimensions) {
+        while (a < jLength) {
             String lines[] = getScannedLine(scanner);
             if (lines.length == 0) {
                 continue;
@@ -67,6 +75,7 @@ public class WorldParser {
             }
             if (currentLength == 1) {
                 rootTile = new Tile(lines[0]);
+                tiles[a][0] = rootTile;
             } else {
                 Tile currentTile = rootTile;
                 while (currentTile.leftDown != null) {
@@ -74,16 +83,18 @@ public class WorldParser {
                 }
                 currentTile.leftDown = new Tile(lines[0]);
                 currentTile.leftDown.rightUp = currentTile;
+                tiles[a][0] = currentTile;
 
-                for (int j = 1; j < lines.length; j++) {
-                    Tile newTile = new Tile(lines[j]);
+                for (int b = 1; b < lines.length; b++) {
+                    Tile newTile = new Tile(lines[b]);
+                    tiles[a-b][b] = newTile;
                     currentTile.rightDown = newTile;
                     newTile.leftUp = currentTile;
                     if (currentTile.rightUp != null) {
                         newTile.up = currentTile.rightUp;
                         currentTile.rightUp.down = newTile;
                     }
-                    if ((currentTile != rootTile) && (j != lines.length - 1)) {
+                    if ((currentTile != rootTile) && (b != lines.length - 1)) {
                         currentTile = currentTile.rightUp.rightDown;
                         currentTile.leftDown = newTile;
                         newTile.rightUp = currentTile;
@@ -92,9 +103,10 @@ public class WorldParser {
             }
 
             currentLength++;
-            i++;
+            a++;
         }
         currentLength -= 2;
+        a--;
         // decreasing part of the algorithm
         Tile cornerTile = rootTile;
         cornerTile = rootTile;
@@ -102,6 +114,7 @@ public class WorldParser {
             cornerTile = cornerTile.leftDown;
         }
         Tile lowerCornerTile = cornerTile;
+        int k = 1;
         while (currentLength > 0) {
             lowerCornerTile = cornerTile;
             while (lowerCornerTile.rightDown != null) {
@@ -110,7 +123,6 @@ public class WorldParser {
             String lines[] = getScannedLine(scanner);
             if (lines.length == 0) {
                 continue;
-                // TODO register skipped lines
             }
             if (lines.length != currentLength) {
                 Debug.warn("(down) Error: expected this line to have length " + currentLength + ", but got " + lines.length);
@@ -118,8 +130,11 @@ public class WorldParser {
             }
 
             Tile currentTile = lowerCornerTile;
-            for (String tileType : lines) {
+            tiles[a][k] = currentTile;
+            for (int i = 0; i < lines.length; i++) {
+                String tileType = lines[i];
                 Tile newTile = new Tile(tileType);
+                tiles[(a-1)-i][(i+1)+k] = newTile;
                 currentTile.rightDown = newTile;
                 currentTile.rightDown.leftUp = currentTile;
                 newTile.up = currentTile.rightUp;
@@ -129,9 +144,10 @@ public class WorldParser {
                 newTile.rightUp = currentTile;
                 currentTile.leftDown = newTile;
             }
+            k++;
             currentLength--;
         }
-        return rootTile;
+        return tiles;
     }
 
     private String[] getScannedLine(Scanner scanner) {
