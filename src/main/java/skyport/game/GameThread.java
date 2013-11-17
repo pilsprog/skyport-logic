@@ -155,7 +155,7 @@ public class GameThread {
             }
             AIConnection currentPlayer = sendGamestate(roundNumber);
             Debug.marker("START TURN " + roundNumber + " PLAYER: '" + currentPlayer.getPlayer().name + "'");
-            if (currentPlayer.isAlive || !accelerateDeadPlayers) {
+            if (currentPlayer.isAlive() || !accelerateDeadPlayers) {
                 letClientsThink();
             } else {
                 Debug.debug("Player '" + currentPlayer.getPlayer().name + "' is dead and accelerateDeadPlayers flag is set, sending" + " deadline immediately...");

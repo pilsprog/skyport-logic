@@ -34,7 +34,7 @@ public abstract class Connection {
     protected BufferedReader input;
     protected BufferedWriter output;
     protected ConcurrentLinkedQueue<ActionMessage> messages = new ConcurrentLinkedQueue<>();
-    public boolean isAlive = true;
+    protected boolean isAlive = true;
     protected boolean gotHandshake = false;
 
     protected Gson gson = new GsonBuilder()
@@ -54,6 +54,14 @@ public abstract class Connection {
     }
     
     public abstract void input(String json) throws IOException, ProtocolException;
+    
+    public boolean isAlive() {
+        return isAlive;
+    }
+    
+    public void close() {
+        isAlive = false;
+    }
 
     public String readLine() throws IOException {
         String line = input.readLine();

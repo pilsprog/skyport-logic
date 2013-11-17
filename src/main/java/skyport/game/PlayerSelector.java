@@ -80,7 +80,7 @@ public class PlayerSelector {
     public void purgeDeadPlayersFromRing() {
         RingNode tempPlayer = currentPlayer;
         do {
-            if (!tempPlayer.connection.isAlive) {
+            if (!tempPlayer.connection.isAlive()) {
                 if (tempPlayer.next == tempPlayer) {
                     Debug.error("Last player disconnected, press enter to quit");
                 }
