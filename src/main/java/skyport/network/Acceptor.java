@@ -5,7 +5,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import skyport.debug.Debug;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import skyport.network.ai.AIClientHandler;
 import skyport.network.ai.AIConnection;
 import skyport.network.graphics.GraphicsClientHandler;
@@ -15,36 +16,38 @@ import skyport.network.graphics.GraphicsContainer;
 public class Acceptor implements Runnable {
     private ServerSocket acceptorSocket;
     private ConcurrentLinkedQueue<AIConnection> globalClientList;
-    private int backlog;
+    private int clients;
     private int clientsAccepted = 0;
     private boolean isGraphicsManager = false;
     public GraphicsContainer graphics;
+    
+    private final Logger logger = LoggerFactory.getLogger(Acceptor.class);
 
-    public Acceptor(int port, ConcurrentLinkedQueue<AIConnection> globalClients, int backlogArg, boolean isGraphicsManagerArg, GraphicsContainer graphicsContainer) {
+    public Acceptor(int port, ConcurrentLinkedQueue<AIConnection> globalClients, int clients, boolean isGraphicsManager, GraphicsContainer graphicsContainer) {
         try {
-            acceptorSocket = new ServerSocket(port);
-            acceptorSocket.setReuseAddress(true);
-            graphics = graphicsContainer;
-            backlog = backlogArg;
-            globalClientList = globalClients;
-            isGraphicsManager = isGraphicsManagerArg;
-            if (isGraphicsManager) {
-                Debug.info("listening on port " + acceptorSocket.toString() + " for the GUI");
+            this.acceptorSocket = new ServerSocket(port);
+            this.acceptorSocket.setReuseAddress(true);
+            this.graphics = graphicsContainer;
+            this.clients = clients;
+            this.globalClientList = globalClients;
+            this.isGraphicsManager = isGraphicsManager;
+            if (this.isGraphicsManager) {
+                logger.info("listening on port " + acceptorSocket.toString() + " for the GUI");
             } else {
-                Debug.info("listening on port " + acceptorSocket.toString() + " for players");
+                logger.info("listening on port " + acceptorSocket.toString() + " for players");
             }
         } catch (IOException e) {
-            Debug.error("Error binding to port: " + e);
+            logger.error("Error binding to port: " + e);
         }
     }
 
     @Override
     public void run() {
-        Debug.debug("Starting to accept incoming connections");
-        while (clientsAccepted < backlog) {
+        logger.debug("Starting to accept incoming connections");
+        while (clientsAccepted < clients) {
             try {
                 Socket clientSocket = acceptorSocket.accept();
-                Debug.debug("Connect from " + clientSocket);
+                logger.debug("Connect from " + clientSocket);
                 if (!isGraphicsManager) {
                     spawnReadHandlerThread(clientSocket);
                 } else {
@@ -52,10 +55,10 @@ public class Acceptor implements Runnable {
                 }
                 clientsAccepted++;
             } catch (IOException e) {
-                Debug.warn("Error accepting connection: " + e);
+                logger.warn("Error accepting connection: " + e);
             }
         }
-        Debug.debug("Accepted " + backlog + " clients, exiting");
+        logger.debug("Accepted " + clients + " clients, exiting");
         try {
             acceptorSocket.close();
         } catch (IOException e) {
@@ -63,7 +66,7 @@ public class Acceptor implements Runnable {
     };
 
     public GraphicsConnection spawnGraphicsHandlerThread(Socket clientSocket) {
-        Debug.debug("Spawning graphics handler!");
+        logger.debug("Spawning graphics handler!");
         GraphicsConnection conn = new GraphicsConnection(clientSocket, graphics);
         GraphicsClientHandler handler = new GraphicsClientHandler(conn);
         Thread thread = new Thread(handler);
