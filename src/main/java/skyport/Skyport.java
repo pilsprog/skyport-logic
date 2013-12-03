@@ -3,7 +3,9 @@ package skyport;
 import java.io.FileNotFoundException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import skyport.debug.Debug;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import skyport.game.GameThread;
 import skyport.game.World;
 import skyport.game.WorldParser;
@@ -12,6 +14,8 @@ import skyport.network.ai.AIConnection;
 import skyport.network.graphics.GraphicsContainer;
 
 public class Skyport {
+    final static Logger logger = LoggerFactory.getLogger(Skyport.class);
+    
     public static void main(String args[]) {
         int port = 54321;
         int minUsers = 2;
@@ -26,12 +30,12 @@ public class Skyport {
             mapfile = args[3];
             if (args.length == 5) {
                 aiThinkTimeout = Integer.parseInt(args[4]);
-                Debug.info("Using an AI think timeout of " + aiThinkTimeout + "ms for each turn");
+                logger.info("Using an AI think timeout of " + aiThinkTimeout + "ms for each turn");
             } else {
-                Debug.info("Using default AI think timeout of " + aiThinkTimeout + "ms for each turn");
+                logger.info("Using default AI think timeout of " + aiThinkTimeout + "ms for each turn");
             }
         } catch (Exception e) {
-            Debug.info("Usage: ./server <port> <number of users> <game time> <mapfile> [think-timeout in milliseconds]");
+            System.out.println("Usage: ./server <port> <number of users> <game time> <mapfile> [think-timeout in milliseconds]");
             System.exit(1);
         }
         World world = null;
@@ -42,17 +46,18 @@ public class Skyport {
             spawnPoints = world.getNumberOfSpawnpoints();
             if (minUsers != 0) {
                 if (spawnPoints < minUsers) {
-                    Debug.error("requested to wait for " + minUsers + " AIs, but this map only supports " + spawnPoints + ".");
+                    logger.error("requested to wait for " + minUsers + " AIs, but this map only supports " + spawnPoints + ".");
                     System.exit(1);
                 }
                 if (spawnPoints > minUsers) {
-                    Debug.warn("playing with " + minUsers + " on a map for " + spawnPoints + " users, gameplay may be unbalanced.");
+                    logger.warn("playing with " + minUsers + " on a map for " + spawnPoints + " users, gameplay may be unbalanced.");
                 }
             } else {
                 minUsers = spawnPoints;
             }
         } catch (FileNotFoundException e) {
-            Debug.error("File not found: '" + mapfile + "'");
+            logger.error("Map file not found: '" + mapfile + "'");
+            System.exit(1);
         }
 
         ConcurrentLinkedQueue<AIConnection> globalClientList = new ConcurrentLinkedQueue<AIConnection>();
