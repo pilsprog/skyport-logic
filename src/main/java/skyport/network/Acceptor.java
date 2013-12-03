@@ -7,9 +7,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import skyport.network.ai.AIClientHandler;
+
 import skyport.network.ai.AIConnection;
-import skyport.network.graphics.GraphicsClientHandler;
 import skyport.network.graphics.GraphicsConnection;
 import skyport.network.graphics.GraphicsContainer;
 
@@ -68,7 +67,7 @@ public class Acceptor implements Runnable {
     public GraphicsConnection spawnGraphicsHandlerThread(Socket clientSocket) {
         logger.debug("Spawning graphics handler!");
         GraphicsConnection conn = new GraphicsConnection(clientSocket, graphics);
-        GraphicsClientHandler handler = new GraphicsClientHandler(conn);
+        ClientHandler handler = new ClientHandler(conn);
         Thread thread = new Thread(handler);
         thread.start();
         return conn;
@@ -77,7 +76,7 @@ public class Acceptor implements Runnable {
     public void spawnReadHandlerThread(Socket clientSocket) {
         AIConnection aiConnectionObject = new AIConnection(clientSocket);
         globalClientList.add(aiConnectionObject);
-        AIClientHandler handler = new AIClientHandler(aiConnectionObject, globalClientList);
+        ClientHandler handler = new ClientHandler(aiConnectionObject);
         Thread thread = new Thread(handler);
         thread.start();
     }
