@@ -1,8 +1,6 @@
 package skyport.game;
 
-import java.util.Collections;
-import java.util.LinkedList;
-
+import java.util.Queue;
 
 public class World {
     private Tile topTile;
@@ -11,13 +9,14 @@ public class World {
     private int jLength;
     private int kLength;
     
-    private LinkedList<Tile> freeSpawnpoints = new LinkedList<Tile>();
+    private Queue<Tile> spawnpoints;
 
-    public World(Tile[][] tiles, String filename, int dimension) {
+    public World(Tile[][] tiles, String filename, int dimension, Queue<Tile> spawnpoints) {
         this.jLength = dimension;
         this.kLength = dimension;
         this.tiles = tiles;
         this.topTile = tiles[0][0];
+        this.spawnpoints = spawnpoints;
 
         Tile rightTile = topTile;
         while (rightTile.rightDown != null) {
@@ -25,7 +24,6 @@ public class World {
         }
 
         enumerateCoordinates(topTile);
-        findAndRandomizeSpawnpoints(topTile);
         this.returnAsRowMajorMatrix();
     }
     
@@ -66,24 +64,8 @@ public class World {
         }
     }
 
-    public void findAndRandomizeSpawnpoints(Tile topTile) {
-        Tile currentJTile = topTile;
-        for (int j = 0; j < jLength; j++) {
-            Tile currentKTile = currentJTile;
-            for (int k = 0; k < kLength; k++) {
-                if (currentKTile.tileType == TileType.SPAWN) {
-                    freeSpawnpoints.add(currentKTile);
-                }
-                currentKTile = currentKTile.rightDown;
-            }
-            currentJTile = currentJTile.leftDown;
-        }
-        Debug.debug("Found " + freeSpawnpoints.size() + " spawnpoints. Randomizing...");
-        Collections.shuffle(freeSpawnpoints);
-    }
-
-    public Tile getRandomSpawnpoint() {
-        return freeSpawnpoints.poll();
+    public Queue<Tile> getSpawnpoints() {
+        return spawnpoints;
     }
 
     public int verifyNumberOfPlayersOnBoard() {
@@ -118,6 +100,7 @@ public class World {
         return spawnpoints;
     }
     
+    @Override
     public String toString() {
         String s = new String();
         Tile currentJTile = topTile;

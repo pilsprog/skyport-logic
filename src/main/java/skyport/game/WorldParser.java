@@ -2,6 +2,8 @@ package skyport.game;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Scanner;
 
 import org.slf4j.Logger;
@@ -30,7 +32,17 @@ public class WorldParser {
         logger.info("description: '" + description + "'");
         Tile[][] tiles = parseBody(scanner);
         logger.debug("Done parsing. Ignored " + ignoredLines + " empty lines.");
-        return new World(tiles, file, jLength);
+        
+        Queue<Tile> spawnpoints = new LinkedList<>();
+        for (Tile[] ts : tiles) {
+            for (Tile t : ts) {
+                if (t.tileType.equals(TileType.SPAWN)) {
+                    spawnpoints.add(t);
+                }
+            }
+        }
+                
+        return new World(tiles, file, jLength, spawnpoints);
     }
 
     private void parseHeader(Scanner scanner) {
