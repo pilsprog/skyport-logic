@@ -12,7 +12,7 @@ import skyport.game.World;
 import skyport.game.WorldParser;
 import skyport.network.Acceptor;
 import skyport.network.ai.AIConnection;
-import skyport.network.graphics.GraphicsContainer;
+import skyport.network.graphics.GraphicsConnection;
 
 public class Skyport {
     final static Logger logger = LoggerFactory.getLogger(Skyport.class);

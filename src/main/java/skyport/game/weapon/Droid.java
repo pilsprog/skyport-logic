@@ -2,7 +2,9 @@ package skyport.game.weapon;
 
 import java.util.List;
 
-import skyport.debug.Debug;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import skyport.game.Direction;
 import skyport.game.Player;
 import skyport.game.Tile;
@@ -13,6 +15,8 @@ public class Droid extends Weapon {
     private List<Direction> directions;
     private Player dealingPlayer;
     private int turnsLeft;
+    
+    private final Logger logger = LoggerFactory.getLogger(Droid.class);
 
     public Droid(Player dealingPlayerArg, int turnsLeftArg) {
         super("droid");
@@ -32,7 +36,7 @@ public class Droid extends Weapon {
     }
 
     public int performShot() {
-        Debug.game("'" + dealingPlayer.getName() + "' performing droid shot with " + directions.size() + " steps");
+        logger.info("==> '" + dealingPlayer.getName() + "' performing droid shot with " + directions.size() + " steps");
         int range = 3;
         int damage = 22;
         int validStepsTaken = 0;
@@ -47,15 +51,15 @@ public class Droid extends Weapon {
 
         for (int i = 0; i < range; i++) {
             if (i > directions.size() - 1) {
-                Debug.debug("no more commands, detonating...");
+                logger.debug("no more commands, detonating...");
                 break;
             }
             if (!performOneStep(directions.get(i))) {
-                Debug.warn("Droid hit inaccessible tile, detonating...");
+                logger.warn("Droid hit inaccessible tile, detonating...");
                 break;
             } else {
                 validStepsTaken++;
-                Debug.debug("droid executed command successfully, reading next instruction...");
+                logger.debug("droid executed command successfully, reading next instruction...");
             }
         }
         explode(damage);
@@ -87,7 +91,7 @@ public class Droid extends Weapon {
     }
 
     boolean performOneStep(Direction direction) {
-        Debug.debug("droid moving '" + direction + "'");
+        logger.debug("Droid moving '" + direction + "'");
         if (position.up == null || 
                 position.up.tileType == TileType.SPAWN || 
                 position.up.tileType == TileType.ROCK || 

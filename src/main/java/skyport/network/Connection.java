@@ -9,10 +9,11 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import skyport.adapter.ActionMessageDeserializer;
 import skyport.adapter.PointAdapter;
-import skyport.debug.Debug;
 import skyport.exception.ProtocolException;
 import skyport.game.GameMap;
 import skyport.game.Player;
@@ -37,6 +38,8 @@ public abstract class Connection {
     protected boolean isAlive = true;
     protected boolean gotHandshake = false;
 
+    private final Logger logger = LoggerFactory.getLogger(Connection.class);
+
     protected Gson gson = new GsonBuilder()
         .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES)
         .registerTypeAdapter(Point.class, new PointAdapter())
@@ -49,7 +52,9 @@ public abstract class Connection {
             input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         } catch (IOException e) {
-            Debug.error("error creating connection handler: " + e);
+            logger.error("error creating connection handler: " + e);
+        }
+    }
         }
     }
     
@@ -78,7 +83,7 @@ public abstract class Connection {
             output.newLine();
             output.flush();
         } catch (IOException e) {
-            Debug.error("Error writing to '" + identifier + "': " + e.getMessage());
+            logger.error("Error writing to '" + identifier + "': " + e.getMessage());
         }
     }
 

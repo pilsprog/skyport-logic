@@ -3,7 +3,6 @@ package skyport.game;
 import java.util.Collections;
 import java.util.LinkedList;
 
-import skyport.debug.Debug;
 
 public class World {
     private Tile topTile;
@@ -24,19 +23,7 @@ public class World {
         while (rightTile.rightDown != null) {
             rightTile = rightTile.rightDown;
         }
-        if (Debug.developerMode) {
-            System.out.println("Summary of world " + filename + ":");
-            System.out.println("Total tiles: " + Tile.totalTiles);
-            System.out.println("\tGrass tiles: " + Tile.grassTiles);
-            System.out.println("\tRock tiles: " + Tile.rockTiles);
-            System.out.println("\tVoid tiles: " + Tile.voidTiles);
-            System.out.println("\tSpawn tiles: " + Tile.spawnTiles);
-            System.out.println("Resources:");
 
-            System.out.println("\tScrap tiles: " + Tile.scrapTiles + ", total scrap: " + Tile.scrapTiles * 2);
-            System.out.println("\tRubidium tiles: " + Tile.rubidiumTiles + ", total rubidium: " + Tile.rubidiumTiles * 2);
-            System.out.println("\tExplosium tiles: " + Tile.explosiumTiles + ", total explosium: " + Tile.explosiumTiles * 2);
-        }
         enumerateCoordinates(topTile);
         findAndRandomizeSpawnpoints(topTile);
         this.returnAsRowMajorMatrix();

@@ -1,6 +1,7 @@
 package skyport.game;
 
-import skyport.debug.Debug;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Tile {
     static int grassTiles = 0;
@@ -22,6 +23,8 @@ public class Tile {
     public TileType tileType;
     public Point coords;
     public Player playerOnTile = null;
+    
+    private final Logger logger = LoggerFactory.getLogger(Tile.class);
 
     public Tile(String type) {
         if (type.equals("G")) {
@@ -82,7 +85,7 @@ public class Tile {
         if (resources > 0) {
             resources--;
             if (resources == 0) {
-                Debug.game(tileType + " tile is depleted of resources and became a grass-tile.");
+                logger.info("==> " + tileType + " tile is depleted of resources and became a grass-tile.");
                 tileType = TileType.GRASS;
                 // TODO: it may be of interest later to *Tiles-- and
                 // grassTiles++.
@@ -96,12 +99,11 @@ public class Tile {
     }
 
     public void damageTile(int hitpoints, Player dealingPlayer) {
-        Debug.highlight(coords.getString(), 255, 0, 0);
         if (playerOnTile == null) {
             return;
         } else {
             if (tileType == TileType.SPAWN) {
-                Debug.info("Hit spawn tile, no damage received.");
+                logger.info("Hit spawn tile, no damage received.");
             } else {
                 playerOnTile.damagePlayer(hitpoints, dealingPlayer);
             }

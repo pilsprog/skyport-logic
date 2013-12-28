@@ -3,7 +3,9 @@ package skyport.network.ai;
 import java.io.IOException;
 import java.net.Socket;
 
-import skyport.debug.Debug;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import skyport.exception.ProtocolException;
 import skyport.game.Player;
 import skyport.game.Tile;
@@ -21,6 +23,8 @@ public class AIConnection extends Connection {
     private boolean gotLoadout = false;
     public boolean hasToPass = false;
     public boolean needsRespawn = false;
+    
+    private final Logger logger = LoggerFactory.getLogger(AIConnection.class);
 
     public AIConnection(Socket socket) {
         super(socket);
@@ -75,7 +79,7 @@ public class AIConnection extends Connection {
 
         player.setLoadout(primary, secondary);
 
-        Debug.info(player.getName() + " selected loadout: " + player.primaryWeapon.getName() + " and " + player.secondaryWeapon.getName() + ".");
+        logger.info(player.getName() + " selected loadout: " + player.primaryWeapon.getName() + " and " + player.secondaryWeapon.getName() + ".");
        
         synchronized(this) {
             gotLoadout = true;
@@ -101,15 +105,15 @@ public class AIConnection extends Connection {
     }
 
     public synchronized void setSpawnpoint(Tile spawnpoint) {
-        Debug.info("Player '" + player.getName() + "' spawns at " + spawnpoint.coords.getString());
+        logger.info("Player '" + player.getName() + "' spawns at " + spawnpoint.coords.getString());
         player.position = spawnpoint;
         player.spawnTile = spawnpoint;
         player.position.playerOnTile = this.player;
     }
 
-    public void clearAllMessages() {
+    synchronized public void clearAllMessages() {
         if (messages.size() > 0) {
-            Debug.warn("Message inbox of " + player.getName() + " contained " + messages.size() + " extra messages, discarding...");
+            logger.warn("Message inbox of " + player.getName() + " contained " + messages.size() + " extra messages, discarding...");
         }
         messages.clear();
     }
@@ -127,7 +131,7 @@ public class AIConnection extends Connection {
     }
 
     public void givePenality(int points) {
-        Debug.warn(player.getName() + " got " + points + " penality");
+        logger.warn(player.getName() + " got " + points + " penality");
         player.score -= points;
     }
     

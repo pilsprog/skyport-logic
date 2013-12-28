@@ -2,8 +2,9 @@ package skyport.network.graphics;
 
 import java.io.IOException;
 import java.net.Socket;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import skyport.debug.Debug;
 import skyport.exception.ProtocolException;
 import skyport.game.GameMap;
 import skyport.message.EndActionsMessage;
@@ -17,18 +18,16 @@ import skyport.network.Connection;
 import skyport.network.ai.AIConnection;
 
 public class GraphicsConnection extends Connection {
-    public static GraphicsConnection debugConnection;
+    private String password = "supersecretpassword";
     
-    String password = "supersecretpassword";
-    public GraphicsContainer container = null;
     public boolean isDoneProcessing = true;
     public boolean alternativeLaserStyle = false;
     public int thinktime;
+    
+    private final Logger logger = LoggerFactory.getLogger(GraphicsConnection.class);
 
-    public GraphicsConnection(Socket socket, GraphicsContainer containerArg) {
+    public GraphicsConnection(Socket socket) {
         super(socket);
-        container = containerArg;
-        debugConnection = this;
         this.identifier = "graphics";
     }
 
@@ -44,24 +43,24 @@ public class GraphicsConnection extends Connection {
             String text = message.getMessage();
             if (text != null) {
                 if (text.equals("ready")) {
-                    Debug.debug("DONE PROCESSING");
+                    logger.debug("DONE PROCESSING");
                     isDoneProcessing = true;
                 } else if (text.equals("faster")) {
                     if (thinktime >= 200) {
                         thinktime -= 100;
-                        Debug.info("New timeout: " + thinktime + " milliseconds");
+                        logger.info("New timeout: " + thinktime + " milliseconds");
                     } else {
-                        Debug.guiMessage("Can't go faster");
-                        Debug.info("Can't go faster");
+                        this.sendMessage("Can't go faster");
+                        logger.info("Can't go faster");
                     }
                 } else if (text.equals("slower")) {
                     thinktime += 100;
-                    Debug.info("New timeout: " + thinktime + " milliseconds");
+                    logger.info("New timeout: " + thinktime + " milliseconds");
                 } else {
                     throw new ProtocolException("Unexpected message, got '" + text + "' but expected 'action'");
                 }
             } else {
-                Debug.warn("Unexpected packet: " + text);
+                logger.warn("Unexpected packet: " + text);
                 throw new ProtocolException("Unexpected packet: '" + text + "'");
             }
         }
@@ -79,12 +78,11 @@ public class GraphicsConnection extends Connection {
             throw new ProtocolException("Wrong protocol revision: supporting 1, but got " + revision);
         }
         if (!handshake.validatePassword(this.password)) {
-            Debug.warn("GUI sent wrong password");
+            logger.warn("GUI sent wrong password");
             throw new ProtocolException("Wrong password!");
         }
-        Debug.debug("Correct password");
+        logger.debug("Correct password");
         gotHandshake = true;
-        container.set(this);
 
         String laserStyle = handshake.getLaserStyle();
         if (laserStyle.equals("start-stop")) {
@@ -106,7 +104,7 @@ public class GraphicsConnection extends Connection {
     }
 
     public void waitForGraphics() {
-        Debug.debug("Waiting for graphics...");
+        logger.debug("Waiting for graphics...");
         while (true) {
             try {
                 Thread.sleep(10);

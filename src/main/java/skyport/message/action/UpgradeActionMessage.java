@@ -1,10 +1,14 @@
 package skyport.message.action;
 
-import skyport.debug.Debug;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import skyport.game.Player;
 
 public class UpgradeActionMessage extends ActionMessage {
     private String weapon;
+    
+    private final Logger logger = LoggerFactory.getLogger(UpgradeActionMessage.class);
 
     public String getWeaponName() {
         return weapon;
@@ -16,7 +20,7 @@ public class UpgradeActionMessage extends ActionMessage {
             resourcesToSubtract = 5;
         }
         if (currentLevel == 3) {
-            Debug.warn(player + " tried to upgrade his " + weapon + ", but it is already level 3.");
+            logger.warn(player + " tried to upgrade his " + weapon + ", but it is already level 3.");
             return false;
         }
         if (weapon.equals("laser")) {
@@ -24,7 +28,7 @@ public class UpgradeActionMessage extends ActionMessage {
                 player.rubidiumResources -= resourcesToSubtract;
                 return true;
             } else {
-                Debug.warn("Tried to upgrade the laser, but not enough rubidium");
+                logger.warn("Tried to upgrade the laser, but not enough rubidium");
                 return false;
             }
         }
@@ -33,7 +37,7 @@ public class UpgradeActionMessage extends ActionMessage {
                 player.explosiumResources -= resourcesToSubtract;
                 return true;
             } else {
-                Debug.warn("Tried to upgrade the mortar, but not enough explosium");
+                logger.warn("Tried to upgrade the mortar, but not enough explosium");
                 return false;
             }
         }
@@ -42,7 +46,7 @@ public class UpgradeActionMessage extends ActionMessage {
                 player.scrapResources -= resourcesToSubtract;
                 return true;
             } else {
-                Debug.warn("Tried to upgrade the droid, but not enough scrap");
+                logger.warn("Tried to upgrade the droid, but not enough scrap");
                 return false;
             }
         }
@@ -51,14 +55,12 @@ public class UpgradeActionMessage extends ActionMessage {
 
     @Override
     public boolean performAction(Player player) {
-
-        Debug.debug(player + " upgrading his " + weapon);
+        logger.debug(player + " upgrading his " + weapon);
         if (player.primaryWeapon.getName().equals(weapon)) {
-            Debug.stub("upgrading primary weapon (" + weapon + ")");
+            logger.debug("Upgrading primary weapon (" + weapon + ")");
             boolean success = subtractResourcesForWeaponUpgrade(player, weapon, player.primaryWeapon.getLevel());
             if (success) {
                 player.primaryWeapon.upgrade();
-                Debug.guiMessage(player + " upgrades his " + weapon);
                 return true;
             } else {
                 return false;
@@ -67,13 +69,12 @@ public class UpgradeActionMessage extends ActionMessage {
             boolean success = subtractResourcesForWeaponUpgrade(player, weapon, player.secondaryWeapon.getLevel());
             if (success) {
                 player.secondaryWeapon.upgrade();
-                Debug.guiMessage(player + " upgrades his " + weapon);
                 return true;
             } else {
                 return false;
             }
         } else {
-            Debug.warn(player + " tried to upgrade weapon '" + weapon + "', but doesn't have it.");
+            logger.warn(player + " tried to upgrade weapon '" + weapon + "', but doesn't have it.");
             return false;
         }
     }

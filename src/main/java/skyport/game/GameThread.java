@@ -1,85 +1,59 @@
 package skyport.game;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Queue;
 
-import skyport.debug.Debug;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import skyport.exception.ProtocolException;
 import skyport.message.action.ActionMessage;
 import skyport.network.ai.AIConnection;
-import skyport.network.graphics.GraphicsContainer;
+import skyport.network.graphics.GraphicsConnection;
 
 public class GameThread {
-    ConcurrentLinkedQueue<AIConnection> globalClients;
-    int minUsers;
-    int gameTimeoutSeconds;
-    public int roundTimeMilliseconds;
-    boolean accelerateDeadPlayers = true; // TODO: set this to 'false' to be
-    // more compliant with spec
-    World world;
-    PlayerSelector playerSelector;
-    AtomicInteger readyUsers = new AtomicInteger(0); // for loadouts
-    GraphicsContainer graphicsContainer = null;
+    private List<AIConnection> clients;
+    private int gameTimeoutSeconds;
+    private int roundTimeMilliseconds;
+    // TODO: set this to 'false' to be more compliant with spec
+    private boolean accelerateDeadPlayers = true;
+    private World world;
+    private GraphicsConnection graphics;
+    
+    private final Logger logger = LoggerFactory.getLogger(GameThread.class);
 
-    public GameThread(ConcurrentLinkedQueue<AIConnection> globalClientsArg, 
-            int minUsersArg, int gameTimeoutSecondsArg, 
-            int roundTimeMillisecondsArg, World worldArg, 
-            GraphicsContainer graphicsContainerArg) {
-        graphicsContainer = graphicsContainerArg;
-        world = worldArg;
-        globalClients = globalClientsArg;
-        minUsers = minUsersArg;
-        gameTimeoutSeconds = gameTimeoutSecondsArg;
-        roundTimeMilliseconds = roundTimeMillisecondsArg;
+    public GameThread(GraphicsConnection graphics, List<AIConnection> clients, 
+            int gameTimeoutSeconds, int roundTimeMilliseconds, World world) {
+        this.graphics = graphics;
+        this.world = world;
+        this.clients = clients;
+        Collections.shuffle(this.clients);
+        this.gameTimeoutSeconds = gameTimeoutSeconds;
+        this.roundTimeMilliseconds = roundTimeMilliseconds;
     }
 
     public void run(int gameSecondsTimeout) {
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
+        logger.debug("Initializing game");
+        
+        Queue<Tile> spawnpoints = world.getSpawnpoints();
+        for (AIConnection client : clients) {
+            Tile spawn = spawnpoints.poll();
+            if (spawn == null) {
+                throw new RuntimeException("Fewer spawnpoints then clients.");
+            }
+            client.setSpawnpoint(spawn);
         }
-        Debug.info("waiting for graphics engine to connect");
-        while (true) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-            }
-            if (graphicsContainer.get() != null) {
-                break;
-            }
-        }
-        graphicsContainer.get().thinktime = roundTimeMilliseconds;
-        Debug.info("got graphics engine connection");
-        Debug.info("waiting for " + minUsers + " users to connect");
-
-        while (true) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-            }
-            if (globalClients.size() == minUsers) {
-                Debug.info("Got " + minUsers + " users, starting the round");
-                break;
-            }
-        }
-        Debug.debug("Initializing game");
-        gameMainLoop();
-    }
-
-    public void gameMainLoop() {
-        Debug.debug("All clients connected.");
-        initializeBoardWithPlayers();
-        playerSelector = new PlayerSelector(globalClients);
-        Debug.info("Sending initial gamestart packet");
+        
+        logger.info("Sending initial gamestart packet");
         sendGamestate(0);
         // we just loop until everyone has selected a loadout.
         while (true) {
             boolean allAreReady = true;
-            for (AIConnection conn : globalClients) {
+            for (AIConnection conn : clients) {
                 if (!conn.gotLoadout()) {
-                    Debug.info("Waiting for loadout from " + conn.getPlayer().getName());
+                    logger.info("Waiting for loadout from " + conn.getPlayer().getName());
                     allAreReady = false;
                 }
             }
@@ -88,13 +62,11 @@ public class GameThread {
             }
 
             letClientsThink();
-            // letClientsThink();
-            // letClientsThink();
         }
         sendDeadline();
-        graphicsContainer.get().sendEndActions();
-        graphicsContainer.get().waitForGraphics();
-        Debug.debug("All clients have sent a loadout");
+        graphics.sendEndActions();
+        graphics.waitForGraphics();
+        logger.debug("All clients have sent a loadout.");
         long startTime = System.nanoTime();
         long gtsAsLong = gameTimeoutSeconds;
         int roundNumber = 1;
@@ -105,10 +77,14 @@ public class GameThread {
         boolean tenMarker = false;
 
         while (true) {
-            Debug.printGamestats(globalClients);
+            logger.debug("####################### GAME STATS: #######################");
+            for (AIConnection ai : clients) {
+                ai.printStats();
+            }
+            logger.debug("###########################################################");
             int playerNum = world.verifyNumberOfPlayersOnBoard();
-            if (playerNum != globalClients.size()) {
-                Debug.warn(globalClients.size() + " players are supposed to be" +
+            if (playerNum != clients.size()) {
+                logger.warn(clients.size() + " players are supposed to be" +
                            " on the field, but found " + playerNum + 
                            ". Possible inconsistency during movement?");
             }
@@ -116,67 +92,66 @@ public class GameThread {
             long roundStartTime = System.nanoTime();
             double timeLeft = (gtsAsLong - ((roundStartTime - startTime) / 1000000000.0));
             if (timeLeft < 60 && !sixtyMarker) {
-                Debug.guiMessage("60 seconds left!");
+                graphics.sendMessage("60 seconds left!");
                 sixtyMarker = true;
             }
             if (timeLeft < 30 && !thirtyMarker) {
-                Debug.guiMessage("30 seconds left!");
+                graphics.sendMessage("30 seconds left!");
                 thirtyMarker = true;
             }
             if (timeLeft < 20 && !twentyMarker) {
-                Debug.guiMessage("20 seconds left!");
+                graphics.sendMessage("20 seconds left!");
                 twentyMarker = true;
             }
             if (timeLeft < 10 && !tenMarker) {
-                Debug.guiMessage("10 seconds left!");
+                graphics.sendMessage("10 seconds left!");
                 tenMarker = true;
             }
             if ((roundStartTime - startTime) > gtsAsLong * 1000000000) {
-                Debug.info("Time over!");
+                logger.info("Time over!");
                 int highestScore = -1000000000;
-                Player winningPlayer = globalClients.peek().getPlayer();
-                for (AIConnection connection : globalClients) {
+                Player winningPlayer = clients.get(0).getPlayer();
+                for (AIConnection connection : clients) {
                     if (connection.getPlayer().score > highestScore) {
                         highestScore = connection.getPlayer().score;
                         winningPlayer = connection.getPlayer();
                     }
                 }
                 String wintext = winningPlayer.getName() + " wins!";
-                for (AIConnection connection : globalClients) {
+                for (AIConnection connection : clients) {
                     if (connection.getPlayer().score == highestScore && !winningPlayer.equals(connection.getPlayer())) {
                         wintext = "Tie!";
                     }
                 }
                 while (true) {
-                    Debug.guiMessage("Time over!");
+                    graphics.sendMessage("Time over!");
                     letClientsThink();
-                    Debug.guiMessage(wintext);
+                    graphics.sendMessage(wintext);
                     letClientsThink();
                 }
             }
             AIConnection currentPlayer = sendGamestate(roundNumber);
-            Debug.marker("START TURN " + roundNumber + " PLAYER: '" + currentPlayer.getPlayer().getName() + "'");
+            logger.info("############### START TURN " + roundNumber + " PLAYER: '" + currentPlayer.getPlayer().getName() + "' ###############");
             if (currentPlayer.isAlive() || !accelerateDeadPlayers) {
                 letClientsThink();
             } else {
-                Debug.debug("Player '" + currentPlayer.getPlayer().getName() +
+                logger.debug("Player '" + currentPlayer.getPlayer().getName() +
                           "' is dead and accelerateDeadPlayers flag is set, sending" + " deadline immediately...");
             }
             sendDeadline();
-            Debug.debug("Deadline! Processing actions...");
+            logger.debug("Deadline! Processing actions...");
             processThreePlayerActions(currentPlayer);
             givePenalityForLingeringOnSpawntile(currentPlayer);
-            graphicsContainer.get().sendEndActions();
-            graphicsContainer.get().waitForGraphics();
+            graphics.sendEndActions();
+            graphics.waitForGraphics();
             syncWithGraphics();
             roundNumber++;
         }
-
     }
 
     private void givePenalityForLingeringOnSpawntile(AIConnection currentPlayer) {
         if (currentPlayer.getPlayer().position == currentPlayer.getPlayer().spawnTile) {
-            Debug.warn("Player " + currentPlayer.getPlayer() + " stayed on spawn too long");
+            logger.warn("Player " + currentPlayer.getPlayer() + " stayed on spawn too long");
             currentPlayer.givePenality(10);
         }
     }
@@ -196,22 +171,22 @@ public class GameThread {
                     return;
                 }
             } else {
-                Debug.debug("Action "+a+" was invalid");
+                logger.debug("Action "+a+" was invalid");
             }
         }
-        Debug.game("player " + currentPlayer.getPlayer() + " performed " + validActions + " valid actions.");
+        logger.info("==> Player " + currentPlayer.getPlayer() + " performed " + validActions + " valid actions.");
         if (validActions == 0) {
             currentPlayer.givePenality(10);
         }
     }
 
     private void broadcastAction(ActionMessage action, AIConnection playerWhoPerformedTheAction) {
-        Debug.debug("Action was valid, re-broadcasting (FIXME)");
+        logger.debug("Action was valid, re-broadcasting (FIXME)");
         action.setFrom(playerWhoPerformedTheAction.getPlayer().getName());
         System.out.println("ACTION: " + action.toString());
 
-        graphicsContainer.get().sendMessage(action);
-        for (AIConnection player : globalClients) {
+        graphics.sendMessage(action);
+        for (AIConnection player : clients) {
             player.sendMessage(action);
         }
     }
@@ -229,51 +204,43 @@ public class GameThread {
         }
     }
 
-    public void syncWithGraphics() {
-        int newRoundTime = graphicsContainer.get().thinktime;
+    private void syncWithGraphics() {
+        int newRoundTime = graphics.thinktime;
         if (newRoundTime != roundTimeMilliseconds) {
             roundTimeMilliseconds = newRoundTime;
-            Debug.info("Delay changed to " + newRoundTime);
-            Debug.guiMessage("Delay changed to " + newRoundTime);
+            logger.info("Delay changed to " + newRoundTime);
+            graphics.sendMessage("Delay changed to " + newRoundTime);
         }
     }
 
-    public void letClientsThink() {
+    private void letClientsThink() {
         try {
             Thread.sleep(roundTimeMilliseconds); // 1000
         } catch (InterruptedException e) {
-            Debug.warn("INTERRUPTED!");
+            logger.warn("INTERRUPTED!");
         }
     }
 
-    public AIConnection sendGamestate(int round) {
-        AIConnection playerTurnOrder[] = playerSelector.getListInTurnOrderAndMoveToNextTurn();
+    private AIConnection sendGamestate(int round) {
         TileType matrix[][] = world.returnAsRowMajorMatrix();
 
         GameMap map = new GameMap(world.getJLength(), world.getKLength(), matrix);
 
         if (round != 0) {
-            playerTurnOrder[0].clearAllMessages();
+            clients.get(0).clearAllMessages();
         }
-        graphicsContainer.get().sendGamestate(round, map, playerTurnOrder);
-        for (AIConnection client : globalClients) {
-            client.sendGamestate(round, map, playerTurnOrder);
+        graphics.sendGamestate(round, map, clients);
+        for (AIConnection client : clients) {
+            client.sendGamestate(round, map, clients);
         }
-        return playerTurnOrder[0];
+        Collections.rotate(clients, 1);
+        return clients.get(0);
     }
 
-    public void sendDeadline() {
-        graphicsContainer.get().sendDeadline();
-        for (AIConnection client : globalClients) {
+    private void sendDeadline() {
+        graphics.sendDeadline();
+        for (AIConnection client : clients) {
             client.sendDeadline();
-        }
-    }
-
-    public void initializeBoardWithPlayers() {
-        // Associate AIs with players
-        for (AIConnection client : globalClients) {
-            Tile spawn = world.getRandomSpawnpoint();
-            client.setSpawnpoint(spawn);
         }
     }
 }

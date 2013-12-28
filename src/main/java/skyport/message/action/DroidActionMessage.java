@@ -2,7 +2,9 @@ package skyport.message.action;
 
 import java.util.List;
 
-import skyport.debug.Debug;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import skyport.exception.ProtocolException;
 import skyport.game.Direction;
 import skyport.game.Player;
@@ -11,6 +13,8 @@ import skyport.game.weapon.Droid;
 
 public class DroidActionMessage extends ActionMessage {
     private List<Direction> sequence;
+    
+    private final Logger logger = LoggerFactory.getLogger(DroidActionMessage.class);
     
     public List<Direction> getPath() {
         return sequence;
@@ -23,7 +27,7 @@ public class DroidActionMessage extends ActionMessage {
     @Override
     public boolean performAction(Player player) throws ProtocolException {
         if (player.position.tileType == TileType.SPAWN) {
-            Debug.game("Player attempted to shoot droid from spawn.");
+            logger.info("==> Player attempted to shoot droid from spawn.");
             return false;
         }
         Droid droid;
@@ -32,7 +36,7 @@ public class DroidActionMessage extends ActionMessage {
         } else if (player.secondaryWeapon.getName().equals("droid")) {
             droid = (Droid)player.secondaryWeapon;
         } else {
-            Debug.warn("User '" + player + "' attempted to shoot the droid, but doesn't have it");
+            logger.warn("User '" + player + "' attempted to shoot the droid, but doesn't have it");
             return false;
         }
         int range = 3;
@@ -45,7 +49,7 @@ public class DroidActionMessage extends ActionMessage {
         } // replicated here for more friendly error messages
         
         if (sequence.size() > range) {
-            Debug.warn("Got " + sequence.size() + " commands for the droid, but your droids level (" + droidLevel + ") only supports " + range + " steps.");
+            logger.warn("Got " + sequence.size() + " commands for the droid, but your droids level (" + droidLevel + ") only supports " + range + " steps.");
             throw new ProtocolException("Got " + sequence.size() + " commands for the droid, but your droids level (" + droidLevel + ") only supports " + range + " steps.");
         }
         if (droid.setDirections(sequence, droidLevel)) {
@@ -53,7 +57,7 @@ public class DroidActionMessage extends ActionMessage {
             int stepsTaken = droid.performShot();
 
             this.sequence = sequence.subList(0, stepsTaken);
-            Debug.debug("droid steps taken: " + stepsTaken);
+            logger.debug("droid steps taken: " + stepsTaken);
             return true;
         } else {
             throw new ProtocolException("Invalid shot: unknown direction in droid sequence");

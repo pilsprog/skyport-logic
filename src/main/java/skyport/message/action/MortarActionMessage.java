@@ -1,6 +1,8 @@
 package skyport.message.action;
 
-import skyport.debug.Debug;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import skyport.game.Player;
 import skyport.game.Point;
 import skyport.game.TileType;
@@ -9,6 +11,8 @@ import skyport.game.weapon.Mortar;
 public class MortarActionMessage extends ActionMessage {
     private Point coordinates;
     
+    private final Logger logger = LoggerFactory.getLogger(MortarActionMessage.class);
+    
     public Point getRelativeTarget() {
         return coordinates;
     }
@@ -16,7 +20,7 @@ public class MortarActionMessage extends ActionMessage {
     @Override
     public boolean performAction(Player player) {
         if (player.position.tileType == TileType.SPAWN) {
-            Debug.game("Player attempted to shoot mortar from spawn.");
+            logger.info("==> Player attempted to shoot mortar from spawn.");
             return false;
         }
         Mortar mortar;
@@ -25,7 +29,7 @@ public class MortarActionMessage extends ActionMessage {
         } else if (player.secondaryWeapon.getName().equals("mortar")) {
             mortar = (Mortar) player.secondaryWeapon;
         } else {
-            Debug.warn("User '" + player + "' attempted to shoot the mortar, but doesn't have it");
+            logger.warn("User '" + player + "' attempted to shoot the mortar, but doesn't have it");
             return false;
         }
         mortar.setPosition(player.position);

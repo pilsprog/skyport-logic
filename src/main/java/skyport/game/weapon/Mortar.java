@@ -1,6 +1,8 @@
 package skyport.game.weapon;
 
-import skyport.debug.Debug;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import skyport.game.Player;
 import skyport.game.Point;
 import skyport.game.Tile;
@@ -12,6 +14,8 @@ public class Mortar extends Weapon {
     private Point relativeTargetVector;
     private Player dealingPlayer;
     private int turnsLeft;
+    
+    private final Logger logger = LoggerFactory.getLogger(Mortar.class);
 
     public Mortar(Player dealingPlayerArg, int turnsLeftArg) {
         super("mortar");
@@ -28,7 +32,7 @@ public class Mortar extends Weapon {
     }
 
     public boolean performShot() {
-        Debug.game("'" + dealingPlayer.getName()+ "' performing mortar shot at '" + relativeTargetVector.getString() + "'");
+        logger.info("==> '" + dealingPlayer.getName()+ "' performing mortar shot at '" + relativeTargetVector.getString() + "'");
         int range = 2;
         int baseDamage = 20;
         if (level == 2) {
@@ -42,7 +46,7 @@ public class Mortar extends Weapon {
         int damage = (int) Math.round(baseDamage + 0.2 * turnsLeft * baseDamage);
         // TODO: move this down to explode() function
         if (!isTileInRange(range)) {
-            Debug.warn("Mortar shot out of range!");
+            logger.warn("Mortar shot out of range!");
             return false;
         }
         setNewPositionBasedOnRelativeVector();
@@ -56,7 +60,7 @@ public class Mortar extends Weapon {
             for (int i = 0; i < -relativeTargetVector.j; i++) {
                 if (absoluteHitPosition.rightUp == null) {
                     // TODO fix this to not explode?
-                    Debug.warn("Mortar reached end of map, exploding prematurely...");
+                    logger.warn("Mortar reached end of map, exploding prematurely...");
                     break;
                 }
                 absoluteHitPosition = absoluteHitPosition.rightUp;
@@ -64,7 +68,7 @@ public class Mortar extends Weapon {
         } else {
             for (int i = 0; i < relativeTargetVector.j; i++) {
                 if (absoluteHitPosition.leftDown == null) {
-                    Debug.warn("Mortar reached end of map, exploding prematurely...");
+                    logger.warn("Mortar reached end of map, exploding prematurely...");
                     break;
                 }
                 absoluteHitPosition = absoluteHitPosition.leftDown;
@@ -73,7 +77,7 @@ public class Mortar extends Weapon {
         if (relativeTargetVector.k < 0) {
             for (int i = 0; i < -relativeTargetVector.k; i++) {
                 if (absoluteHitPosition.leftUp == null) {
-                    Debug.warn("Mortar reached end of map, exploding prematurely...");
+                    logger.warn("Mortar reached end of map, exploding prematurely...");
                     break;
                 }
                 absoluteHitPosition = absoluteHitPosition.leftUp;
@@ -81,7 +85,7 @@ public class Mortar extends Weapon {
         } else {
             for (int i = 0; i < relativeTargetVector.k; i++) {
                 if (absoluteHitPosition.rightDown == null) {
-                    Debug.warn("Mortar reached end of map, exploding prematurely...");
+                    logger.warn("Mortar reached end of map, exploding prematurely...");
                     break;
                 }
                 absoluteHitPosition = absoluteHitPosition.rightDown;
@@ -91,7 +95,7 @@ public class Mortar extends Weapon {
 
     private void explode(int damage) {
         if (absoluteHitPosition.tileType == TileType.ROCK || absoluteHitPosition.tileType == TileType.VOID || absoluteHitPosition.tileType == TileType.SPAWN) {
-            Debug.warn("Mortar hit " + absoluteHitPosition.tileType + " tile, did not explode");
+            logger.warn("Mortar hit " + absoluteHitPosition.tileType + " tile, did not explode");
             return;
         }
         int baseDamage = damage;
@@ -124,7 +128,7 @@ public class Mortar extends Weapon {
         int k = relativeTargetVector.k;
         assert (range < 8);
         int shotRange = (int) Math.ceil(Math.sqrt(Math.pow(j, 2) + Math.pow(k, 2) - 2 * j * k * 0.5));
-        Debug.debug("shot range was: " + shotRange);
+        logger.debug("shot range was: " + shotRange);
         return shotRange <= range;
     }
 }

@@ -1,6 +1,8 @@
 package skyport.message.action;
 
-import skyport.debug.Debug;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import skyport.exception.ProtocolException;
 import skyport.game.Direction;
 import skyport.game.Player;
@@ -14,6 +16,8 @@ public class LaserActionMessage extends ActionMessage {
     private Point start;
     @SuppressWarnings("unused")
     private Point stop;
+    
+    private final Logger logger = LoggerFactory.getLogger(LaserActionMessage.class);
 
     public void setInterval(Point startHack, Point stopHack) {
         this.start = startHack;
@@ -27,7 +31,7 @@ public class LaserActionMessage extends ActionMessage {
     @Override
     public boolean performAction(Player player) throws ProtocolException {
         if (player.position.tileType == TileType.SPAWN) {
-            Debug.game("Player attempted to shoot laser from spawn.");
+            logger.info("==> Player attempted to shoot laser from spawn.");
             return false;
         }
         Laser laser;

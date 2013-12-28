@@ -1,6 +1,7 @@
 package skyport.game;
 
-import skyport.debug.Debug;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import skyport.exception.ProtocolException;
 import skyport.game.weapon.Weapon;
 
@@ -31,6 +32,8 @@ public class Player {
     
     @Expose (serialize = false)
     private int turns;
+    
+    private final Logger logger = LoggerFactory.getLogger(Player.class);
 
     public Player(String name) {
         this.name = name;
@@ -61,24 +64,24 @@ public class Player {
     }
     
     void givePoints(int points) {
-        Debug.info("got awarded " + points + " points");
+        logger.info("Got awarded " + points + " points");
         this.score += points;
     }
 
     
     public void damagePlayer(int hitpoints, Player dealingPlayer) {
         if (this.health <= 0) {
-            Debug.warn("Player is already dead.");
+            logger.warn("Player is already dead.");
             return;
         }
-        Debug.stub("'" + this.name + "' received " + hitpoints + " damage from '" + dealingPlayer.getName() + "'!");
+        logger.debug("'" + this.name + "' received " + hitpoints + " damage from '" + dealingPlayer.getName() + "'!");
         this.health -= hitpoints;
         if (!(dealingPlayer.name.equals(this.name))) {
             dealingPlayer.givePoints(hitpoints); // damaged user other than
             // self, award points
         }
         if (this.health <= 0) {
-            Debug.game(this.name + " got killed by " + dealingPlayer.name);
+            logger.info("==> "+ this.name + " got killed by " + dealingPlayer.name);
             if (!(dealingPlayer.name.equals(this.name))) {
                 dealingPlayer.givePoints(20); // 20 bonus points for killing
                 // someone

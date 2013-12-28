@@ -1,6 +1,8 @@
 package skyport.game.weapon;
 
-import skyport.debug.Debug;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import skyport.game.Direction;
 import skyport.game.Player;
 import skyport.game.Point;
@@ -12,6 +14,8 @@ public class Laser extends Weapon {
     private Direction direction;
     private Player dealingPlayer;
     private int turnsLeft;
+    
+    private final Logger logger = LoggerFactory.getLogger(Laser.class);
 
     public Laser(Player dealingPlayerArg, int turnsLeftArg) {
         super("laser");
@@ -32,7 +36,7 @@ public class Laser extends Weapon {
     }
 
     public Point performShot() {
-        Debug.game("'" + dealingPlayer.getName() + "' performing laser shot in direction " + direction + "!");
+        logger.info("==> '" + dealingPlayer.getName() + "' performing laser shot in direction " + direction + "!");
         int range = 5;
         int baseDamage = 16;
         if (this.getLevel() == 2) {

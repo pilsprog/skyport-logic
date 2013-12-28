@@ -4,7 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-import skyport.debug.Debug;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WorldParser {
     private String file;
@@ -13,20 +14,22 @@ public class WorldParser {
     private String description;
     private int players;
     private int ignoredLines = 0;
+    
+    private final Logger logger = LoggerFactory.getLogger(WorldParser.class);
 
     public WorldParser(String filename) {
         file = filename;
     }
 
     public World parseFile() throws FileNotFoundException {
-        Debug.info("Parsing map '" + file + "'");
+        logger.info("Parsing map '" + file + "'");
         Scanner scanner = new Scanner(new File(file));
         parseHeader(scanner);
-        Debug.info("Players: " + players);
-        Debug.info("size: " + jLength);
-        Debug.info("description: '" + description + "'");
+        logger.info("Players: " + players);
+        logger.info("size: " + jLength);
+        logger.info("description: '" + description + "'");
         Tile[][] tiles = parseBody(scanner);
-        Debug.debug("Done parsing. Ignored " + ignoredLines + " empty lines.");
+        logger.debug("Done parsing. Ignored " + ignoredLines + " empty lines.");
         return new World(tiles, file, jLength);
     }
 
@@ -70,7 +73,7 @@ public class WorldParser {
                 continue;
             }
             if (lines.length != currentLength) {
-                Debug.warn("Error: expected this line to have length " + currentLength + ", but got " + lines.length);
+                logger.warn("Error: expected this line to have length " + currentLength + ", but got " + lines.length);
                 continue;
             }
             if (currentLength == 1) {
@@ -125,7 +128,7 @@ public class WorldParser {
                 continue;
             }
             if (lines.length != currentLength) {
-                Debug.warn("(down) Error: expected this line to have length " + currentLength + ", but got " + lines.length);
+                logger.warn("(down) Error: expected this line to have length " + currentLength + ", but got " + lines.length);
                 continue;
             }
 

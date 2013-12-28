@@ -1,6 +1,7 @@
 package skyport.game;
 
-import skyport.debug.Debug;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -12,6 +13,8 @@ public enum TileType {
     @SerializedName("R") RUBIDIUM, 
     @SerializedName("E") EXPLOSIUM,
     @SerializedName("C") SCRAP;
+    
+    private static final Logger logger = LoggerFactory.getLogger(TileType.class);
     
     public static TileType getTile(String type) {
         switch (type) {
@@ -30,7 +33,7 @@ public enum TileType {
         case "O":
             return ROCK;
         default:
-            Debug.error("Error: Unknown tile type '" + type + "'");
+            logger.error("Error: Unknown tile type '" + type + "'");
             return VOID;
         }
     }
