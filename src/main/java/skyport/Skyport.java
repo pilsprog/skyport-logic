@@ -3,6 +3,7 @@ package skyport;
 import java.io.FileNotFoundException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.apache.log4j.PropertyConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +18,7 @@ public class Skyport {
     final static Logger logger = LoggerFactory.getLogger(Skyport.class);
     
     public static void main(String args[]) {
+        PropertyConfigurator.configure("log4j.properties");
         int port = 54321;
         int minUsers = 2;
         int gameTimeoutSeconds = 600;
