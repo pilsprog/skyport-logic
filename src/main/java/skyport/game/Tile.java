@@ -4,14 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Tile {
-    static int grassTiles = 0;
-    static int rockTiles = 0;
-    static int voidTiles = 0;
-    static int spawnTiles = 0;
-    static int explosiumTiles = 0;
-    static int rubidiumTiles = 0;
-    static int scrapTiles = 0;
-    static int totalTiles = 0;
 
     public Tile up = null;
     public Tile down = null;
@@ -19,7 +11,9 @@ public class Tile {
     public Tile rightDown = null;
     public Tile leftUp = null;
     public Tile leftDown = null;
+    
     public int resources = 0;
+    
     public TileType tileType;
     public Point coords;
     public Player playerOnTile = null;
@@ -27,34 +21,34 @@ public class Tile {
     private final Logger logger = LoggerFactory.getLogger(Tile.class);
 
     public Tile(String type) {
-        if (type.equals("G")) {
+        switch (type) {
+        case "G":
             tileType = TileType.GRASS;
-            grassTiles++;
-        } else if (type.equals("V")) {
+            break;
+        case "V":
             tileType = TileType.VOID;
-            voidTiles++;
-        } else if (type.equals("S")) {
+            break;
+        case "S":
             tileType = TileType.SPAWN;
-            spawnTiles++;
-        } else if (type.equals("E")) {
+            break;
+        case "E":
             tileType = TileType.EXPLOSIUM;
             resources = 2;
-            explosiumTiles++;
-        } else if (type.equals("R")) {
+            break;
+        case "R":
             tileType = TileType.RUBIDIUM;
             resources = 2;
-            rubidiumTiles++;
-        } else if (type.equals("C")) {
+            break;
+        case "C":
             tileType = TileType.SCRAP;
             resources = 2;
-            scrapTiles++;
-        } else if (type.equals("O")) {
+            break;
+        case "O":
             tileType = TileType.ROCK;
-            rockTiles++;
-        } else {
-            Debug.error("Error: Unknown tile type '" + type + "'");
+            break;
+        default:
+            logger.error("Error: Unknown tile type '" + type + "'");
         }
-        totalTiles++;
     }
     
     public Tile getTileInDirection(Direction dir) {
