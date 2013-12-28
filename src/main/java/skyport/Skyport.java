@@ -1,7 +1,8 @@
 package skyport;
 
 import java.io.FileNotFoundException;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.io.IOException;
+import java.util.List;
 
 import org.apache.log4j.PropertyConfigurator;
 import org.slf4j.Logger;
@@ -10,7 +11,8 @@ import org.slf4j.LoggerFactory;
 import skyport.game.GameThread;
 import skyport.game.World;
 import skyport.game.WorldParser;
-import skyport.network.Acceptor;
+import skyport.network.AIAcceptor;
+import skyport.network.GraphicsAcceptor;
 import skyport.network.ai.AIConnection;
 import skyport.network.graphics.GraphicsConnection;
 
@@ -20,14 +22,14 @@ public class Skyport {
     public static void main(String args[]) {
         PropertyConfigurator.configure("log4j.properties");
         int port = 54321;
-        int minUsers = 2;
+        int users = 2;
         int gameTimeoutSeconds = 600;
         int aiThinkTimeout = 3000;
         String mapfile = "";
         try {
             assert (args.length == 4 || args.length == 5);
             port = Integer.parseInt(args[0]);
-            minUsers = Integer.parseInt(args[1]);
+            users = Integer.parseInt(args[1]);
             gameTimeoutSeconds = Integer.parseInt(args[2]);
             mapfile = args[3];
             if (args.length == 5) {
@@ -46,32 +48,54 @@ public class Skyport {
             WorldParser wp = new WorldParser(mapfile);
             world = wp.parseFile();
             spawnPoints = world.getNumberOfSpawnpoints();
-            if (minUsers != 0) {
-                if (spawnPoints < minUsers) {
-                    logger.error("requested to wait for " + minUsers + " AIs, but this map only supports " + spawnPoints + ".");
+            if (users != 0) {
+                if (spawnPoints < users) {
+                    logger.error("requested to wait for " + users + " AIs, but this map only supports " + spawnPoints + ".");
                     System.exit(1);
                 }
-                if (spawnPoints > minUsers) {
-                    logger.warn("playing with " + minUsers + " on a map for " + spawnPoints + " users, gameplay may be unbalanced.");
+                if (spawnPoints > users) {
+                    logger.warn("playing with " + users + " on a map for " + spawnPoints + " users, gameplay may be unbalanced.");
                 }
             } else {
-                minUsers = spawnPoints;
+                users = spawnPoints;
             }
         } catch (FileNotFoundException e) {
             logger.error("Map file not found: '" + mapfile + "'");
             System.exit(1);
         }
-
-        ConcurrentLinkedQueue<AIConnection> globalClientList = new ConcurrentLinkedQueue<AIConnection>();
-        GraphicsContainer graphicsContainer = new GraphicsContainer();
-        Acceptor aiClientAcceptor = new Acceptor(port, globalClientList, minUsers, false, null);
-        new Thread(aiClientAcceptor).start();
-
-        Acceptor graphicsClientAcceptor = new Acceptor(port + 10, null, 1, true, graphicsContainer);
-        new Thread(graphicsClientAcceptor).start();
+        logger.info("Waiting for clients to connect.");
+        AIAcceptor aiAcceptor = null;
+        try {
+            aiAcceptor = new AIAcceptor(port, users);
+        } catch (IOException e) {
+            logger.error("Error binding to port: ", e);
+            System.exit(1);
+        }
+        GraphicsAcceptor graphicsAcceptor = null;
+        try {
+            graphicsAcceptor = new GraphicsAcceptor(port+10);
+        } catch (IOException e) {
+           logger.error("Error binding to port: ", e);
+           System.exit(1);
+        }
+        Thread ais = new Thread(aiAcceptor);
+        Thread gs = new Thread(graphicsAcceptor);
+        ais.start();
+        gs.start();
+        
+        try {
+            ais.join();
+            gs.join();
+        } catch (InterruptedException e) {
+            logger.warn("Acceptors were interrupted before they finished.");
+        }
+        
+        List<AIConnection> clients = aiAcceptor.getConnections();
+        GraphicsConnection graphics = graphicsAcceptor.getConnection();
+        graphics.setThinkTimeout(aiThinkTimeout);
 
         // the main thread simply becomes the new gamethread.
-        GameThread game = new GameThread(globalClientList, minUsers, gameTimeoutSeconds, aiThinkTimeout, world, graphicsContainer);
+        GameThread game = new GameThread(graphics, clients, gameTimeoutSeconds, aiThinkTimeout, world);
         game.run(gameTimeoutSeconds);
     }
 }

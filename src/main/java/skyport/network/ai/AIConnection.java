@@ -48,7 +48,9 @@ public class AIConnection extends Connection {
             if (message.getMessage() != null) {
                 String m = message.getMessage();
                 if (m.equals("action")) {
-                    messages.add(message);
+                    synchronized (messages) {
+                        messages.add(message);
+                    }
                 } else {
                     throw new ProtocolException("Unexpected message, got '" + m + "' but expected 'action'");
                 }

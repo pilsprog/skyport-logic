@@ -2,6 +2,8 @@ package skyport.network.graphics;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,7 +95,7 @@ public class GraphicsConnection extends Connection {
     }
 
     @Override
-    public synchronized void sendGamestate(int turn, GameMap map,AIConnection playerlist[]) {
+    public synchronized void sendGamestate(int turn, GameMap map, List<AIConnection> playerlist) {
         super.sendGamestate(turn, map, playerlist);
         isDoneProcessing = false;
     }
@@ -134,5 +136,10 @@ public class GraphicsConnection extends Connection {
     public void sendMessage(String message) {
         Message subtitle = new SubtitleMessage(message);
         this.sendMessage(subtitle);
+    }
+
+    synchronized public void setThinkTimeout(int roundTimeMilliseconds) {
+        this.thinktime = roundTimeMilliseconds;
+        
     }
 }

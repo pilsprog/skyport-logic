@@ -7,8 +7,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.Queue;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,12 +31,12 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public abstract class Connection {
+public abstract class Connection implements Runnable {
     protected Socket socket;
     protected String identifier;
     protected BufferedReader input;
     protected BufferedWriter output;
-    protected ConcurrentLinkedQueue<ActionMessage> messages = new ConcurrentLinkedQueue<>();
+    protected Queue<ActionMessage> messages = new LinkedList<>();
     protected boolean isAlive = true;
     protected boolean gotHandshake = false;
 
@@ -55,20 +57,37 @@ public abstract class Connection {
             logger.error("error creating connection handler: " + e);
         }
     }
+
+    @Override
+    public void run() {
+        for (;;) {
+            try {
+                String json = this.readLine();
+                if (json == null) {
+                    throw new IOException("Client disconnected");
+                }
+                this.input(json);
+            } catch (IOException e) {
+                logger.warn("Disconnect from " + this.getClass().getSimpleName() + ":" + this.getIP());
+                this.close();
+                return;
+            } catch (ProtocolException e) {
+                this.sendError(e.getMessage());
+            }
         }
     }
-    
-    public abstract void input(String json) throws IOException, ProtocolException;
-    
+
+    protected abstract void input(String json) throws IOException, ProtocolException;
+
     public boolean isAlive() {
         return isAlive;
     }
-    
+
     public void close() {
         isAlive = false;
     }
 
-    public String readLine() throws IOException {
+    public synchronized String readLine() throws IOException {
         String line = input.readLine();
         return line;
     }
@@ -87,24 +106,24 @@ public abstract class Connection {
         }
     }
 
-    public void sendMessage(Message message) {
+    public synchronized void sendMessage(Message message) {
         String json = gson.toJson(message);
         this.sendMessage(json);
 
     }
 
-    public void sendDeadline() {
+    public synchronized void sendDeadline() {
         Message endTurn = new EndTurnMessage();
         this.sendMessage(endTurn);
     }
 
-    public ActionMessage getNextMessage() {
+    public synchronized ActionMessage getNextMessage() {
         return messages.poll();
     }
 
-    public synchronized void sendGamestate(int turn, GameMap map, AIConnection playerlist[]) {
+    public synchronized void sendGamestate(int turn, GameMap map, List<AIConnection> playerlist) {
         List<Player> players = new ArrayList<>();
-        for(AIConnection ai : playerlist) {
+        for (AIConnection ai : playerlist) {
             players.add(ai.getPlayer());
         }
 
@@ -112,7 +131,7 @@ public abstract class Connection {
         sendMessage(message);
     }
 
-    public void sendError(String errorString) {
+    public synchronized void sendError(String errorString) {
         Message error = new ErrorMessage(errorString);
         sendMessage(error);
     }
