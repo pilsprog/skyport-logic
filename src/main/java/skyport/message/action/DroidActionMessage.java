@@ -11,7 +11,7 @@ import skyport.game.Player;
 import skyport.game.TileType;
 import skyport.game.weapon.Droid;
 
-public class DroidActionMessage extends ActionMessage {
+public class DroidActionMessage extends ActionMessage implements OffensiveAction {
     private List<Direction> sequence;
     
     private final Logger logger = LoggerFactory.getLogger(DroidActionMessage.class);

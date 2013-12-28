@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import skyport.exception.ProtocolException;
 import skyport.message.action.ActionMessage;
+import skyport.message.action.OffensiveAction;
 import skyport.network.ai.AIConnection;
 import skyport.network.graphics.GraphicsConnection;
 
@@ -167,7 +168,7 @@ public class GameThread {
             if(letPlayerPerformAction(action, currentPlayer, a--)) {
                 broadcastAction(action, currentPlayer);
                 validActions++;
-                if (Util.wasActionOffensive(action)) {
+                if (action instanceof OffensiveAction) {
                     return;
                 }
             } else {

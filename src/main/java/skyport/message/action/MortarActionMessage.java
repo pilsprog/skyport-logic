@@ -8,7 +8,7 @@ import skyport.game.Point;
 import skyport.game.TileType;
 import skyport.game.weapon.Mortar;
 
-public class MortarActionMessage extends ActionMessage {
+public class MortarActionMessage extends ActionMessage implements OffensiveAction {
     private Point coordinates;
     
     private final Logger logger = LoggerFactory.getLogger(MortarActionMessage.class);

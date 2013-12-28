@@ -10,7 +10,7 @@ import skyport.game.Point;
 import skyport.game.TileType;
 import skyport.game.weapon.Laser;
 
-public class LaserActionMessage extends ActionMessage {
+public class LaserActionMessage extends ActionMessage implements OffensiveAction {
     private Direction direction;
     @SuppressWarnings("unused")
     private Point start;
