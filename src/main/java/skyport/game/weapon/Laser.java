@@ -14,7 +14,7 @@ public class Laser extends Weapon {
     private Direction direction;
     private Player dealingPlayer;
     private int turnsLeft;
-    
+
     private final Logger logger = LoggerFactory.getLogger(Laser.class);
 
     public Laser(Player dealingPlayerArg, int turnsLeftArg) {
@@ -26,7 +26,7 @@ public class Laser extends Weapon {
     public void setPosition(Tile positionArg) {
         position = positionArg;
     }
-    
+
     public void setTurnsLeft(int turns) {
         this.turnsLeft = turns;
     }

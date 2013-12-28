@@ -16,7 +16,7 @@ public class WorldParser {
     private String description;
     private int players;
     private int ignoredLines = 0;
-    
+
     private final Logger logger = LoggerFactory.getLogger(WorldParser.class);
 
     public WorldParser(String filename) {
@@ -32,7 +32,7 @@ public class WorldParser {
         logger.info("description: '" + description + "'");
         Tile[][] tiles = parseBody(scanner);
         logger.debug("Done parsing. Ignored " + ignoredLines + " empty lines.");
-        
+
         Queue<Tile> spawnpoints = new LinkedList<>();
         for (Tile[] ts : tiles) {
             for (Tile t : ts) {
@@ -41,7 +41,7 @@ public class WorldParser {
                 }
             }
         }
-                
+
         return new World(tiles, file, jLength, spawnpoints);
     }
 

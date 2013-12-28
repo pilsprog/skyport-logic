@@ -22,11 +22,10 @@ public class GameThread {
     private boolean accelerateDeadPlayers = true;
     private World world;
     private GraphicsConnection graphics;
-    
+
     private final Logger logger = LoggerFactory.getLogger(GameThread.class);
 
-    public GameThread(GraphicsConnection graphics, List<AIConnection> clients, 
-            int gameTimeoutSeconds, int roundTimeMilliseconds, World world) {
+    public GameThread(GraphicsConnection graphics, List<AIConnection> clients, int gameTimeoutSeconds, int roundTimeMilliseconds, World world) {
         this.graphics = graphics;
         this.world = world;
         this.clients = clients;
@@ -37,7 +36,7 @@ public class GameThread {
 
     public void run(int gameSecondsTimeout) {
         logger.debug("Initializing game");
-        
+
         Queue<Tile> spawnpoints = world.getSpawnpoints();
         for (AIConnection client : clients) {
             Tile spawn = spawnpoints.poll();
@@ -46,7 +45,7 @@ public class GameThread {
             }
             client.setSpawnpoint(spawn);
         }
-        
+
         logger.info("Sending initial gamestart packet");
         sendGamestate(0);
         // we just loop until everyone has selected a loadout.
@@ -85,9 +84,7 @@ public class GameThread {
             logger.debug("###########################################################");
             int playerNum = world.verifyNumberOfPlayersOnBoard();
             if (playerNum != clients.size()) {
-                logger.warn(clients.size() + " players are supposed to be" +
-                           " on the field, but found " + playerNum + 
-                           ". Possible inconsistency during movement?");
+                logger.warn(clients.size() + " players are supposed to be" + " on the field, but found " + playerNum + ". Possible inconsistency during movement?");
             }
 
             long roundStartTime = System.nanoTime();
@@ -136,8 +133,7 @@ public class GameThread {
             if (currentPlayer.isAlive() || !accelerateDeadPlayers) {
                 letClientsThink();
             } else {
-                logger.debug("Player '" + currentPlayer.getPlayer().getName() +
-                          "' is dead and accelerateDeadPlayers flag is set, sending" + " deadline immediately...");
+                logger.debug("Player '" + currentPlayer.getPlayer().getName() + "' is dead and accelerateDeadPlayers flag is set, sending" + " deadline immediately...");
             }
             sendDeadline();
             logger.debug("Deadline! Processing actions...");
@@ -158,21 +154,18 @@ public class GameThread {
     }
 
     private void processThreePlayerActions(AIConnection currentPlayer) {
-        List<ActionMessage> actions = Arrays.asList(
-                currentPlayer.getNextMessage(),
-                currentPlayer.getNextMessage(),
-                currentPlayer.getNextMessage());
+        List<ActionMessage> actions = Arrays.asList(currentPlayer.getNextMessage(), currentPlayer.getNextMessage(), currentPlayer.getNextMessage());
         int validActions = 0;
         int a = 3;
-        for(ActionMessage action : actions) {
-            if(letPlayerPerformAction(action, currentPlayer, a--)) {
+        for (ActionMessage action : actions) {
+            if (letPlayerPerformAction(action, currentPlayer, a--)) {
                 broadcastAction(action, currentPlayer);
                 validActions++;
                 if (action instanceof OffensiveAction) {
                     return;
                 }
             } else {
-                logger.debug("Action "+a+" was invalid");
+                logger.debug("Action " + a + " was invalid");
             }
         }
         logger.info("==> Player " + currentPlayer.getPlayer() + " performed " + validActions + " valid actions.");

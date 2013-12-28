@@ -18,7 +18,7 @@ import skyport.network.graphics.GraphicsConnection;
 
 public class Skyport {
     final static Logger logger = LoggerFactory.getLogger(Skyport.class);
-    
+
     public static void main(String args[]) {
         PropertyConfigurator.configure("log4j.properties");
         int port = 54321;
@@ -73,23 +73,23 @@ public class Skyport {
         }
         GraphicsAcceptor graphicsAcceptor = null;
         try {
-            graphicsAcceptor = new GraphicsAcceptor(port+10);
+            graphicsAcceptor = new GraphicsAcceptor(port + 10);
         } catch (IOException e) {
-           logger.error("Error binding to port: ", e);
-           System.exit(1);
+            logger.error("Error binding to port: ", e);
+            System.exit(1);
         }
         Thread ais = new Thread(aiAcceptor);
         Thread gs = new Thread(graphicsAcceptor);
         ais.start();
         gs.start();
-        
+
         try {
             ais.join();
             gs.join();
         } catch (InterruptedException e) {
             logger.warn("Acceptors were interrupted before they finished.");
         }
-        
+
         List<AIConnection> clients = aiAcceptor.getConnections();
         GraphicsConnection graphics = graphicsAcceptor.getConnection();
         graphics.setThinkTimeout(aiThinkTimeout);

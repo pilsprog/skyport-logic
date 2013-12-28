@@ -15,7 +15,7 @@ public class Droid extends Weapon {
     private List<Direction> directions;
     private Player dealingPlayer;
     private int turnsLeft;
-    
+
     private final Logger logger = LoggerFactory.getLogger(Droid.class);
 
     public Droid(Player dealingPlayerArg, int turnsLeftArg) {
@@ -92,11 +92,8 @@ public class Droid extends Weapon {
 
     boolean performOneStep(Direction direction) {
         logger.debug("Droid moving '" + direction + "'");
-        if (position.up == null || 
-                position.up.tileType == TileType.SPAWN || 
-                position.up.tileType == TileType.ROCK || 
-                position.up.tileType == TileType.VOID) {
-                return false;
+        if (position.up == null || position.up.tileType == TileType.SPAWN || position.up.tileType == TileType.ROCK || position.up.tileType == TileType.VOID) {
+            return false;
         }
         switch (direction) {
         case UP:

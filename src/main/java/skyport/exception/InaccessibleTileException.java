@@ -9,7 +9,7 @@ public class InaccessibleTileException extends ProtocolException {
     public InaccessibleTileException(Direction direction) {
         super("Invalid move: tile " + direction + " is not accessible (outside of map)");
     }
-    
+
     public InaccessibleTileException(Tile tile) {
         super("Invalid move: " + tile.tileType + " tile is not accessible");
     }

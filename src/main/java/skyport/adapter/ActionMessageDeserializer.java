@@ -21,9 +21,9 @@ public class ActionMessageDeserializer implements JsonDeserializer<ActionMessage
     @Override
     public ActionMessage deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jobj = json.getAsJsonObject();
-        
+
         String type = jobj.get("type").getAsString();
-        switch(type) {
+        switch (type) {
         case "droid":
             return context.deserialize(json, DroidActionMessage.class);
         case "laser":
@@ -37,7 +37,7 @@ public class ActionMessageDeserializer implements JsonDeserializer<ActionMessage
         case "upgrade":
             return context.deserialize(json, UpgradeActionMessage.class);
         }
- 
-        throw new JsonParseException("Unrecognized action type: "+type);
+
+        throw new JsonParseException("Unrecognized action type: " + type);
     }
 }

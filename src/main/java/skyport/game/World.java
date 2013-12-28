@@ -5,10 +5,10 @@ import java.util.Queue;
 public class World {
     private Tile topTile;
     private Tile[][] tiles;
-    
+
     private int jLength;
     private int kLength;
-    
+
     private Queue<Tile> spawnpoints;
 
     public World(Tile[][] tiles, String filename, int dimension, Queue<Tile> spawnpoints) {
@@ -26,11 +26,11 @@ public class World {
         enumerateCoordinates(topTile);
         this.returnAsRowMajorMatrix();
     }
-    
+
     public int getJLength() {
         return this.jLength;
     }
-    
+
     public int getKLength() {
         return this.kLength;
     }
@@ -43,12 +43,11 @@ public class World {
             for (int k = 0; k < kLength; k++) {
                 matrix[j][k] = currentKTile.tileType;
                 currentKTile = currentKTile.rightDown;
-                assert(matrix[j][k] == tiles[j][k].tileType);
+                assert (matrix[j][k] == tiles[j][k].tileType);
             }
             currentJTile = currentJTile.leftDown;
         }
-        
-       
+
         return matrix;
     }
 
@@ -99,7 +98,7 @@ public class World {
         }
         return spawnpoints;
     }
-    
+
     @Override
     public String toString() {
         String s = new String();
@@ -107,7 +106,7 @@ public class World {
         s += "[";
         for (int j = 0; j < jLength; j++) {
             Tile currentKTile = currentJTile;
-            s+= "[";
+            s += "[";
             for (int k = 0; k < kLength; k++) {
                 s += currentKTile.tileType.name().substring(0, 1) + ", ";
                 currentKTile = currentKTile.rightDown;
@@ -115,7 +114,7 @@ public class World {
             s += "],\n";
             currentJTile = currentJTile.leftDown;
         }
-        s+= "]";
+        s += "]";
         return s;
     }
 }

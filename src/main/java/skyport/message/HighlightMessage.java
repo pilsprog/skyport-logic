@@ -8,7 +8,7 @@ public class HighlightMessage extends Message {
     private String coordinate;
     @SuppressWarnings("unused")
     private List<Integer> color;
-    
+
     public HighlightMessage(String position, int r, int g, int b) {
         this.message = "highlight";
         this.coordinate = position;

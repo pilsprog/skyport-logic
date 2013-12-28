@@ -8,7 +8,7 @@ import skyport.game.Player;
 import skyport.game.TileType;
 
 public class MineActionMessage extends ActionMessage {
-    
+
     private final Logger logger = LoggerFactory.getLogger(MineActionMessage.class);
 
     @Override
@@ -16,9 +16,9 @@ public class MineActionMessage extends ActionMessage {
         TileType currentTileType = player.position.tileType;
         if (!(currentTileType == TileType.RUBIDIUM || currentTileType == TileType.EXPLOSIUM || currentTileType == TileType.SCRAP)) {
             logger.info("==> Player " + player + " attempted to mine while not on a resource");
-            throw new ProtocolException("Tried to mine while not on a resource tile!");       
+            throw new ProtocolException("Tried to mine while not on a resource tile!");
         }
-        
+
         TileType tileType = player.position.tileType;
         logger.info("==> Player " + player + " mining " + tileType);
         boolean minedResource = player.position.mineTile();
@@ -35,10 +35,7 @@ public class MineActionMessage extends ActionMessage {
                 break;
             default:
             }
-            logger.debug("Resources of player " + player + 
-                         " are now: Rubidium: " + player.rubidiumResources + 
-                                ", Explosium: " + player.explosiumResources + 
-                                    ", Scrap: " + player.scrapResources);
+            logger.debug("Resources of player " + player + " are now: Rubidium: " + player.rubidiumResources + ", Explosium: " + player.explosiumResources + ", Scrap: " + player.scrapResources);
             return true;
         }
         return false;

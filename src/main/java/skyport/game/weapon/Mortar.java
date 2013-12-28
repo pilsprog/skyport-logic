@@ -14,7 +14,7 @@ public class Mortar extends Weapon {
     private Point relativeTargetVector;
     private Player dealingPlayer;
     private int turnsLeft;
-    
+
     private final Logger logger = LoggerFactory.getLogger(Mortar.class);
 
     public Mortar(Player dealingPlayerArg, int turnsLeftArg) {
@@ -27,12 +27,12 @@ public class Mortar extends Weapon {
         position = positionArg;
     }
 
-    public void setTarget(Point relativeTargetVectorArg ) {
+    public void setTarget(Point relativeTargetVectorArg) {
         relativeTargetVector = relativeTargetVectorArg;
     }
 
     public boolean performShot() {
-        logger.info("==> '" + dealingPlayer.getName()+ "' performing mortar shot at '" + relativeTargetVector.getString() + "'");
+        logger.info("==> '" + dealingPlayer.getName() + "' performing mortar shot at '" + relativeTargetVector.getString() + "'");
         int range = 2;
         int baseDamage = 20;
         if (level == 2) {

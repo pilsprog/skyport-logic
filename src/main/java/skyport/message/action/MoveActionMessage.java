@@ -6,7 +6,7 @@ import skyport.game.Player;
 
 public class MoveActionMessage extends ActionMessage {
     private Direction direction;
-    
+
     public Direction getDirection() {
         return direction;
     }

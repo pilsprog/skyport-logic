@@ -23,17 +23,18 @@ public class AIConnection extends Connection {
     private boolean gotLoadout = false;
     public boolean hasToPass = false;
     public boolean needsRespawn = false;
-    
+
     private final Logger logger = LoggerFactory.getLogger(AIConnection.class);
 
     public AIConnection(Socket socket) {
         super(socket);
     }
-    
+
     public synchronized boolean gotLoadout() {
         return this.gotLoadout;
     }
 
+    @Override
     public synchronized void input(String json) throws IOException, ProtocolException {
         if (!gotHandshake) {
             if (parseHandshake(json)) {
@@ -82,8 +83,8 @@ public class AIConnection extends Connection {
         player.setLoadout(primary, secondary);
 
         logger.info(player.getName() + " selected loadout: " + player.primaryWeapon.getName() + " and " + player.secondaryWeapon.getName() + ".");
-       
-        synchronized(this) {
+
+        synchronized (this) {
             gotLoadout = true;
         }
     }
@@ -136,19 +137,12 @@ public class AIConnection extends Connection {
         logger.warn(player.getName() + " got " + points + " penality");
         player.score -= points;
     }
-    
+
     public Player getPlayer() {
         return player;
     }
 
     public void printStats() {
-        System.out.println(player.getName() +
-                ": HP: " + player.health + 
-                ", score: " + player.score +
-                ", RUB:" + player.rubidiumResources +
-                ", EXP:" + player.explosiumResources +
-                ", SCR:" + player.scrapResources +
-                ", prim. lvl:" + player.primaryWeapon.getLevel() + 
-                ", sec. lvl.:" + player.secondaryWeapon.getLevel());
+        System.out.println(player.getName() + ": HP: " + player.health + ", score: " + player.score + ", RUB:" + player.rubidiumResources + ", EXP:" + player.explosiumResources + ", SCR:" + player.scrapResources + ", prim. lvl:" + player.primaryWeapon.getLevel() + ", sec. lvl.:" + player.secondaryWeapon.getLevel());
     }
 }

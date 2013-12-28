@@ -11,13 +11,13 @@ public class Tile {
     public Tile rightDown = null;
     public Tile leftUp = null;
     public Tile leftDown = null;
-    
+
     public int resources = 0;
-    
+
     public TileType tileType;
     public Point coords;
     public Player playerOnTile = null;
-    
+
     private final Logger logger = LoggerFactory.getLogger(Tile.class);
 
     public Tile(String type) {
@@ -50,9 +50,9 @@ public class Tile {
             logger.error("Error: Unknown tile type '" + type + "'");
         }
     }
-    
+
     public Tile getTileInDirection(Direction dir) {
-        switch(dir) {
+        switch (dir) {
         case UP:
             return this.up;
         case DOWN:

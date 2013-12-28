@@ -15,11 +15,11 @@ public class AIAcceptor implements Runnable {
     private ServerSocket socket;
     private int clients;
     private List<AIConnection> connections;
-    
+
     private final Logger logger = LoggerFactory.getLogger(AIAcceptor.class);
 
     public AIAcceptor(int port, int clients) throws IOException {
-        this.clients = clients;   
+        this.clients = clients;
         this.socket = new ServerSocket(port);
         this.connections = new LinkedList<>();
     }
@@ -38,9 +38,9 @@ public class AIAcceptor implements Runnable {
                 i--;
             }
         }
-        logger.info("Stop waiting for connections, " + clients  + " players has connected.");
+        logger.info("Stop waiting for connections, " + clients + " players has connected.");
     }
-    
+
     synchronized public List<AIConnection> getConnections() {
         return connections;
     }

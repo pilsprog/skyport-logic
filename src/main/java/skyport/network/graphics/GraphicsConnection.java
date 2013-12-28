@@ -21,11 +21,11 @@ import skyport.network.ai.AIConnection;
 
 public class GraphicsConnection extends Connection {
     private String password = "supersecretpassword";
-    
+
     public boolean isDoneProcessing = true;
     public boolean alternativeLaserStyle = false;
     public int thinktime;
-    
+
     private final Logger logger = LoggerFactory.getLogger(GraphicsConnection.class);
 
     public GraphicsConnection(Socket socket) {
@@ -33,6 +33,7 @@ public class GraphicsConnection extends Connection {
         this.identifier = "graphics";
     }
 
+    @Override
     public synchronized void input(String json) throws ProtocolException, IOException {
         if (!gotHandshake) {
             if (parseHandshake(json)) {
@@ -99,7 +100,7 @@ public class GraphicsConnection extends Connection {
         super.sendGamestate(turn, map, playerlist);
         isDoneProcessing = false;
     }
-    
+
     public void sendEndActions() {
         Message endActions = new EndActionsMessage();
         this.sendMessage(endActions);
@@ -140,6 +141,6 @@ public class GraphicsConnection extends Connection {
 
     synchronized public void setThinkTimeout(int roundTimeMilliseconds) {
         this.thinktime = roundTimeMilliseconds;
-        
+
     }
 }

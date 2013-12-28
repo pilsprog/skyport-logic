@@ -13,15 +13,15 @@ import skyport.game.weapon.Droid;
 
 public class DroidActionMessage extends ActionMessage implements OffensiveAction {
     private List<Direction> sequence;
-    
+
     private final Logger logger = LoggerFactory.getLogger(DroidActionMessage.class);
-    
+
     public List<Direction> getPath() {
         return sequence;
     }
 
     public void setPath(List<Direction> sequence) {
-       this.sequence = sequence;
+        this.sequence = sequence;
     }
 
     @Override
@@ -32,9 +32,9 @@ public class DroidActionMessage extends ActionMessage implements OffensiveAction
         }
         Droid droid;
         if (player.primaryWeapon.getName().equals("droid")) {
-            droid = (Droid)player.primaryWeapon;
+            droid = (Droid) player.primaryWeapon;
         } else if (player.secondaryWeapon.getName().equals("droid")) {
-            droid = (Droid)player.secondaryWeapon;
+            droid = (Droid) player.secondaryWeapon;
         } else {
             logger.warn("User '" + player + "' attempted to shoot the droid, but doesn't have it");
             return false;
@@ -47,7 +47,7 @@ public class DroidActionMessage extends ActionMessage implements OffensiveAction
         if (droidLevel == 3) {
             range = 5;
         } // replicated here for more friendly error messages
-        
+
         if (sequence.size() > range) {
             logger.warn("Got " + sequence.size() + " commands for the droid, but your droids level (" + droidLevel + ") only supports " + range + " steps.");
             throw new ProtocolException("Got " + sequence.size() + " commands for the droid, but your droids level (" + droidLevel + ") only supports " + range + " steps.");

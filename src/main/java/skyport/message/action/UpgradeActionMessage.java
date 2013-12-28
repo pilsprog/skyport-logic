@@ -7,7 +7,7 @@ import skyport.game.Player;
 
 public class UpgradeActionMessage extends ActionMessage {
     private String weapon;
-    
+
     private final Logger logger = LoggerFactory.getLogger(UpgradeActionMessage.class);
 
     public String getWeaponName() {
