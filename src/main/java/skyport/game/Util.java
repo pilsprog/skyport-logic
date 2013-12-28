@@ -24,13 +24,4 @@ public class Util {
             throw new ProtocolException("Username contains invalid characters. May only contain " + "a-z, A-Z, 0-9, -, _, +.");
         }
     }
-
-    public static ProtocolException throwInaccessibleTileException(String direction, Tile theTile) {
-        if (theTile == null) {
-            return new ProtocolException("Invalid move: tile " + direction + " is not accessible (outside of map)");
-        } else {
-            return new ProtocolException("Invalid move: " + theTile.tileType + " tile is not accessible");
-        }
-    }
-
 }

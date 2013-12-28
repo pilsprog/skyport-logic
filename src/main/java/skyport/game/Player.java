@@ -2,6 +2,8 @@ package skyport.game;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import skyport.exception.InaccessibleTileException;
 import skyport.exception.ProtocolException;
 import skyport.game.weapon.Weapon;
 
@@ -58,8 +60,10 @@ public class Player {
             this.position = next;
             this.position.playerOnTile = this;
             return true;
+        } else if (next == null) {            
+            throw new InaccessibleTileException(next);
         } else {
-            throw Util.throwInaccessibleTileException(direction.name(), next);
+            throw new InaccessibleTileException(direction);
         }
     }
     
