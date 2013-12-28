@@ -87,11 +87,6 @@ public class Tile {
             if (resources == 0) {
                 logger.info("==> " + tileType + " tile is depleted of resources and became a grass-tile.");
                 tileType = TileType.GRASS;
-                // TODO: it may be of interest later to *Tiles-- and
-                // grassTiles++.
-                // Doesn't seem particularly important, though -- we currently
-                // only use
-                // it for the initial consistency check.
             }
             return true;
         }
