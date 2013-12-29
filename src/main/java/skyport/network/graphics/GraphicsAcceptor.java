@@ -26,6 +26,7 @@ public class GraphicsAcceptor implements Runnable {
                 Socket client = socket.accept();
                 this.connection = new GraphicsConnection(client);
                 logger.info("Graphics client connected.");
+                new Thread(connection, "Graphics").start();
                 return;
             } catch (IOException e) {
                 logger.warn("Error on accepting graphics connection.", e);
