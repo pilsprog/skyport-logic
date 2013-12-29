@@ -11,12 +11,10 @@ import skyport.game.Tile;
 import skyport.game.TileType;
 
 public class Droid extends Weapon {
-    private Tile position;
-    private List<Direction> directions;
-    private Player dealingPlayer;
-    private int turnsLeft;
+    private transient Tile position;
+    private transient List<Direction> directions;
 
-    private final Logger logger = LoggerFactory.getLogger(Droid.class);
+    private transient final Logger logger = LoggerFactory.getLogger(Droid.class);
 
     public Droid(Player dealingPlayerArg, int turnsLeftArg) {
         super("droid");

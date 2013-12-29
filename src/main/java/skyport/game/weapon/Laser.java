@@ -10,17 +10,13 @@ import skyport.game.Tile;
 import skyport.game.TileType;
 
 public class Laser extends Weapon {
-    private Tile position;
-    private Direction direction;
-    private Player dealingPlayer;
-    private int turnsLeft;
+    private transient Tile position;
+    private transient Direction direction;
 
-    private final Logger logger = LoggerFactory.getLogger(Laser.class);
+    private transient final Logger logger = LoggerFactory.getLogger(Laser.class);
 
-    public Laser(Player dealingPlayerArg, int turnsLeftArg) {
+    public Laser() {
         super("laser");
-        dealingPlayer = dealingPlayerArg;
-        turnsLeft = turnsLeftArg;
     }
 
     public void setPosition(Tile positionArg) {

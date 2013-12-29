@@ -9,7 +9,7 @@ import skyport.game.TileType;
 
 public class MineActionMessage extends ActionMessage {
 
-    private final Logger logger = LoggerFactory.getLogger(MineActionMessage.class);
+    private transient final Logger logger = LoggerFactory.getLogger(MineActionMessage.class);
 
     @Override
     public boolean performAction(Player player) throws ProtocolException {

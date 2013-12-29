@@ -11,7 +11,7 @@ import skyport.game.weapon.Mortar;
 public class MortarActionMessage extends ActionMessage implements OffensiveAction {
     private Point coordinates;
 
-    private final Logger logger = LoggerFactory.getLogger(MortarActionMessage.class);
+    private transient final Logger logger = LoggerFactory.getLogger(MortarActionMessage.class);
 
     public Point getRelativeTarget() {
         return coordinates;

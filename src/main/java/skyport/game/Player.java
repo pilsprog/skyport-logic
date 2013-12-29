@@ -7,34 +7,26 @@ import skyport.exception.InaccessibleTileException;
 import skyport.exception.ProtocolException;
 import skyport.game.weapon.Weapon;
 
-import com.google.gson.annotations.Expose;
-
 public class Player {
     private String name;
     public Tile position;
     public int health = 100;
     public int score = 0;
 
-    @Expose(serialize = false)
-    public boolean dead = false;
+    public transient boolean dead = false;
 
     public Weapon primaryWeapon;
     public Weapon secondaryWeapon;
 
-    @Expose(serialize = false)
-    public int rubidiumResources = 0;
-    @Expose(serialize = false)
-    public int explosiumResources = 0;
-    @Expose(serialize = false)
-    public int scrapResources = 0;
+    public transient int rubidiumResources = 0;
+    public transient int explosiumResources = 0;
+    public transient int scrapResources = 0;
 
-    @Expose(serialize = false)
-    private Tile spawn;
+    private transient Tile spawn;
 
-    @Expose(serialize = false)
-    private int turns;
+    private transient int turns;
 
-    private final Logger logger = LoggerFactory.getLogger(Player.class);
+    private transient final Logger logger = LoggerFactory.getLogger(Player.class);
 
     public void setLoadout(Weapon primary, Weapon secondary) {
         this.primaryWeapon = primary;

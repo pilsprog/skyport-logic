@@ -17,7 +17,7 @@ public class LaserActionMessage extends ActionMessage implements OffensiveAction
     @SuppressWarnings("unused")
     private Point stop;
 
-    private final Logger logger = LoggerFactory.getLogger(LaserActionMessage.class);
+    private transient final Logger logger = LoggerFactory.getLogger(LaserActionMessage.class);
 
     public void setInterval(Point startHack, Point stopHack) {
         this.start = startHack;

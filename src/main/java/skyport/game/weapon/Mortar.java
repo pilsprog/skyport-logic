@@ -9,18 +9,14 @@ import skyport.game.Tile;
 import skyport.game.TileType;
 
 public class Mortar extends Weapon {
-    private Tile position;
-    private Tile absoluteHitPosition;
-    private Point relativeTargetVector;
-    private Player dealingPlayer;
-    private int turnsLeft;
+    private transient Tile position;
+    private transient Tile absoluteHitPosition;
+    private transient Point relativeTargetVector;
 
-    private final Logger logger = LoggerFactory.getLogger(Mortar.class);
+    private transient final Logger logger = LoggerFactory.getLogger(Mortar.class);
 
-    public Mortar(Player dealingPlayerArg, int turnsLeftArg) {
+    public Mortar() {
         super("mortar");
-        dealingPlayer = dealingPlayerArg;
-        turnsLeft = turnsLeftArg;
     }
 
     public void setPosition(Tile positionArg) {
