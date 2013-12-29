@@ -29,7 +29,7 @@ public class Player {
     public int scrapResources = 0;
 
     @Expose(serialize = false)
-    public Tile spawnTile;
+    private Tile spawn;
 
     @Expose(serialize = false)
     private int turns;
@@ -47,6 +47,14 @@ public class Player {
 
     public String getName() {
         return name;
+    }
+    
+    public void setSpawn(Tile spawn) {
+        this.spawn = spawn;
+    }
+    
+    public Tile getSpawn() {
+        return spawn;
     }
 
     public boolean move(Direction direction) throws ProtocolException {
