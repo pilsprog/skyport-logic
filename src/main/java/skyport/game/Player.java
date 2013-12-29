@@ -36,13 +36,13 @@ public class Player {
 
     private final Logger logger = LoggerFactory.getLogger(Player.class);
 
-    public Player(String name) {
-        this.name = name;
-    }
-
     public void setLoadout(Weapon primary, Weapon secondary) {
         this.primaryWeapon = primary;
         this.secondaryWeapon = secondary;
+    }
+    
+    public synchronized void setName(String name) {
+        this.name = name;
     }
 
     public String getName() {
