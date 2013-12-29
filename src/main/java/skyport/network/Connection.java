@@ -87,7 +87,7 @@ public abstract class Connection implements Runnable {
         isAlive = false;
     }
 
-    public synchronized String readLine() throws IOException {
+    public String readLine() throws IOException {
         String line = input.readLine();
         return line;
     }
@@ -106,22 +106,22 @@ public abstract class Connection implements Runnable {
         }
     }
 
-    public synchronized void sendMessage(Message message) {
+    public void sendMessage(Message message) {
         String json = gson.toJson(message);
         this.sendMessage(json);
 
     }
 
-    public synchronized void sendDeadline() {
+    public void sendDeadline() {
         Message endTurn = new EndTurnMessage();
         this.sendMessage(endTurn);
     }
 
-    public synchronized ActionMessage getNextMessage() {
+    public ActionMessage getNextMessage() {
         return messages.poll();
     }
 
-    public synchronized void sendGamestate(int turn, GameMap map, List<AIConnection> playerlist) {
+    public void sendGamestate(int turn, GameMap map, List<AIConnection> playerlist) {
         List<Player> players = new ArrayList<>();
         for (AIConnection ai : playerlist) {
             players.add(ai.getPlayer());
@@ -131,7 +131,7 @@ public abstract class Connection implements Runnable {
         sendMessage(message);
     }
 
-    public synchronized void sendError(String errorString) {
+    public void sendError(String errorString) {
         Message error = new ErrorMessage(errorString);
         sendMessage(error);
     }

@@ -34,7 +34,7 @@ public class GraphicsConnection extends Connection {
     }
 
     @Override
-    public synchronized void input(String json) throws ProtocolException, IOException {
+    protected void input(String json) throws ProtocolException, IOException {
         if (!gotHandshake) {
             if (parseHandshake(json)) {
                 Message success = new StatusMessage(true);
@@ -96,7 +96,7 @@ public class GraphicsConnection extends Connection {
     }
 
     @Override
-    public synchronized void sendGamestate(int turn, GameMap map, List<AIConnection> playerlist) {
+    public void sendGamestate(int turn, GameMap map, List<AIConnection> playerlist) {
         super.sendGamestate(turn, map, playerlist);
         isDoneProcessing = false;
     }
@@ -139,7 +139,7 @@ public class GraphicsConnection extends Connection {
         this.sendMessage(subtitle);
     }
 
-    synchronized public void setThinkTimeout(int roundTimeMilliseconds) {
+    public void setThinkTimeout(int roundTimeMilliseconds) {
         this.thinktime = roundTimeMilliseconds;
 
     }

@@ -32,12 +32,12 @@ public class AIConnection extends Connection {
         
     }
 
-    public synchronized boolean gotLoadout() {
+    public boolean gotLoadout() {
         return this.gotLoadout;
     }
 
     @Override
-    public synchronized void input(String json) throws IOException, ProtocolException {
+    protected void input(String json) throws IOException, ProtocolException {
         if (!gotHandshake) {
             if (parseHandshake(json)) {
                 Message success = new StatusMessage(true);
@@ -109,14 +109,14 @@ public class AIConnection extends Connection {
         return true;
     }
 
-    public synchronized void setSpawnpoint(Tile spawnpoint) {
+    public void setSpawnpoint(Tile spawnpoint) {
         logger.info("Player '" + player.getName() + "' spawns at " + spawnpoint.coords.getString());
         player.position = spawnpoint;
         player.setSpawn(spawnpoint);
         player.position.playerOnTile = this.player;
     }
 
-    synchronized public void clearAllMessages() {
+    public void clearAllMessages() {
         if (messages.size() > 0) {
             logger.warn("Message inbox of " + player.getName() + " contained " + messages.size() + " extra messages, discarding...");
         }
