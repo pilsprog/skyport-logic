@@ -16,24 +16,22 @@ public class Droid extends Weapon {
 
     private transient final Logger logger = LoggerFactory.getLogger(Droid.class);
 
-    public Droid(Player dealingPlayerArg, int turnsLeftArg) {
+    public Droid() {
         super("droid");
-        dealingPlayer = dealingPlayerArg;
-        turnsLeft = turnsLeftArg;
     }
 
-    public boolean setPosition(Tile positionArg) {
-        position = positionArg;
+    public boolean setPosition(Tile position) {
+        this.position = position;
         return true;
     }
 
-    public boolean setDirections(List<Direction> directionSequence, int levelArg) {
+    public boolean setDirections(List<Direction> directionSequence, int level) {
         directions = directionSequence;
-        level = levelArg;
+        this.level = level;
         return true;
     }
 
-    public int performShot() {
+    public int performShot(Player dealingPlayer, int turnsLeft) {
         logger.info("==> '" + dealingPlayer.getName() + "' performing droid shot with " + directions.size() + " steps");
         int range = 3;
         int damage = 22;
@@ -60,11 +58,11 @@ public class Droid extends Weapon {
                 logger.debug("droid executed command successfully, reading next instruction...");
             }
         }
-        explode(damage);
+        explode(dealingPlayer, turnsLeft, damage);
         return validStepsTaken;
     }
 
-    void explode(int damage) {
+    private void explode(Player dealingPlayer, int turnsLeft, int damage) {
         int baseDamage = (int) Math.round(damage + 0.2 * turnsLeft * damage);
         int aoeDamage = (int) Math.round(10 + 0.2 * turnsLeft * 10);
         position.damageTile(baseDamage, dealingPlayer);

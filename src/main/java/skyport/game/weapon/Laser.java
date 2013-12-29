@@ -19,19 +19,15 @@ public class Laser extends Weapon {
         super("laser");
     }
 
-    public void setPosition(Tile positionArg) {
-        position = positionArg;
-    }
-
-    public void setTurnsLeft(int turns) {
-        this.turnsLeft = turns;
+    public void setPosition(Tile position) {
+        this.position = position;
     }
 
     public void setDirection(Direction direction) {
         this.direction = direction;
     }
 
-    public Point performShot() {
+    public Point performShot(Player dealingPlayer, int turnsLeft) {
         logger.info("==> '" + dealingPlayer.getName() + "' performing laser shot in direction " + direction + "!");
         int range = 5;
         int baseDamage = 16;

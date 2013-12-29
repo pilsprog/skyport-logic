@@ -44,11 +44,10 @@ public class LaserActionMessage extends ActionMessage implements OffensiveAction
         }
 
         if (direction != null) {
-            laser.setTurnsLeft(player.getTurnsLeft());
             laser.setDirection(direction);
             laser.setPosition(player.position);
-            this.stop = laser.performShot();
             this.start = player.position.coords;
+            this.stop = laser.performShot(player, player.getTurnsLeft());
             return true;
         } else {
             throw new ProtocolException("Invalid shot: unknown direction '" + direction + "'.");

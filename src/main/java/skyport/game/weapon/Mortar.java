@@ -27,7 +27,7 @@ public class Mortar extends Weapon {
         relativeTargetVector = relativeTargetVectorArg;
     }
 
-    public boolean performShot() {
+    public boolean performShot(Player dealingPlayer, int turnsLeft) {
         logger.info("==> '" + dealingPlayer.getName() + "' performing mortar shot at '" + relativeTargetVector.getString() + "'");
         int range = 2;
         int baseDamage = 20;
@@ -46,7 +46,7 @@ public class Mortar extends Weapon {
             return false;
         }
         setNewPositionBasedOnRelativeVector();
-        explode(damage);
+        explode(damage, dealingPlayer, turnsLeft);
         return true;
     }
 
@@ -89,7 +89,7 @@ public class Mortar extends Weapon {
         }
     }
 
-    private void explode(int damage) {
+    private void explode(int damage, Player dealingPlayer, int turnsLeft) {
         if (absoluteHitPosition.tileType == TileType.ROCK || absoluteHitPosition.tileType == TileType.VOID || absoluteHitPosition.tileType == TileType.SPAWN) {
             logger.warn("Mortar hit " + absoluteHitPosition.tileType + " tile, did not explode");
             return;

@@ -1,5 +1,6 @@
 package skyport.message.action;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -54,7 +55,7 @@ public class DroidActionMessage extends ActionMessage implements OffensiveAction
         }
         if (droid.setDirections(sequence, droidLevel)) {
             droid.setPosition(player.position);
-            int stepsTaken = droid.performShot();
+            int stepsTaken = droid.performShot(player, player.getTurnsLeft());
 
             this.sequence = sequence.subList(0, stepsTaken);
             logger.debug("droid steps taken: " + stepsTaken);

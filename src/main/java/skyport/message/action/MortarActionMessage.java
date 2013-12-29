@@ -34,7 +34,8 @@ public class MortarActionMessage extends ActionMessage implements OffensiveActio
         }
         mortar.setPosition(player.position);
         mortar.setTarget(coordinates);
-        return mortar.performShot();
+        return mortar.performShot(player, player.getTurnsLeft());
+    }
     
     @Override
     public String toString() {
