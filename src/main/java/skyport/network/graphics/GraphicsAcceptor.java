@@ -1,4 +1,4 @@
-package skyport.network;
+package skyport.network.graphics;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -7,7 +7,6 @@ import java.net.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import skyport.network.graphics.GraphicsConnection;
 
 public class GraphicsAcceptor implements Runnable {
     private ServerSocket socket;

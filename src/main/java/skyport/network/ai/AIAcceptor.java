@@ -1,4 +1,4 @@
-package skyport.network;
+package skyport.network.ai;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -9,7 +9,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import skyport.network.ai.AIConnection;
 
 public class AIAcceptor implements Runnable {
     private ServerSocket socket;
@@ -32,6 +31,7 @@ public class AIAcceptor implements Runnable {
                 Socket client = socket.accept();
                 AIConnection conn = new AIConnection(client);
                 connections.add(conn);
+                new Thread(conn).start();
                 logger.debug("Player connected from " + client.getInetAddress() + ":" + client.getPort());
             } catch (IOException e) {
                 logger.warn("Error on accepting connection.", e);

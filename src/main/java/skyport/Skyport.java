@@ -11,9 +11,9 @@ import org.slf4j.LoggerFactory;
 import skyport.game.Game;
 import skyport.game.World;
 import skyport.game.WorldParser;
-import skyport.network.AIAcceptor;
-import skyport.network.GraphicsAcceptor;
+import skyport.network.ai.AIAcceptor;
 import skyport.network.ai.AIConnection;
+import skyport.network.graphics.GraphicsAcceptor;
 import skyport.network.graphics.GraphicsConnection;
 
 public class Skyport {
