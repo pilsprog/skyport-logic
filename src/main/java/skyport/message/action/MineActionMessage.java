@@ -40,4 +40,9 @@ public class MineActionMessage extends ActionMessage {
         }
         return false;
     }
+    
+    @Override
+    public String toString() {
+        return from + " mined.";
+    }
 }

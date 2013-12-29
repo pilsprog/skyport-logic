@@ -15,4 +15,9 @@ public class MoveActionMessage extends ActionMessage {
     public boolean performAction(Player player) throws ProtocolException {
         return player.move(direction);
     }
+    
+    @Override
+    public String toString() {
+        return from + " moved in direction " + direction;
+    }
 }

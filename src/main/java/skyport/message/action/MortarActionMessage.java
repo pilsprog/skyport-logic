@@ -35,5 +35,9 @@ public class MortarActionMessage extends ActionMessage implements OffensiveActio
         mortar.setPosition(player.position);
         mortar.setTarget(coordinates);
         return mortar.performShot();
+    
+    @Override
+    public String toString() {
+        return from + " fired " + type + " at " + coordinates;
     }
 }

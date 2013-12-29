@@ -54,4 +54,9 @@ public class LaserActionMessage extends ActionMessage implements OffensiveAction
             throw new ProtocolException("Invalid shot: unknown direction '" + direction + "'.");
         }
     }
+    
+    @Override
+    public String toString() {
+        return from + " fired " + type + "in direction " + direction; 
+    }
 }

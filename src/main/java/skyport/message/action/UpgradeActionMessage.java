@@ -78,4 +78,9 @@ public class UpgradeActionMessage extends ActionMessage {
             return false;
         }
     }
+    
+    @Override
+    public String toString() {
+        return from + " upgraded " + weapon;
+    }
 }

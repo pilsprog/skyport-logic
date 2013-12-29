@@ -63,4 +63,11 @@ public class DroidActionMessage extends ActionMessage implements OffensiveAction
             throw new ProtocolException("Invalid shot: unknown direction in droid sequence");
         }
     }
+    
+    @Override
+    public String toString() {
+        String out = from + " fired " + type + " in sequence ";
+        out += Arrays.toString(sequence.toArray());
+        return out;
+    }
 }

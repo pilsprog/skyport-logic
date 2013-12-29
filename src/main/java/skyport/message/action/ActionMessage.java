@@ -5,9 +5,8 @@ import skyport.game.Player;
 import skyport.message.Message;
 
 public abstract class ActionMessage extends Message {
-    protected String type;
-    @SuppressWarnings("unused")
-    private String from;
+    protected String type;  
+    protected String from;
 
     public ActionMessage() {
         this.message = "action";
