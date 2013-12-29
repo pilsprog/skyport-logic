@@ -19,7 +19,7 @@ import skyport.message.action.ActionMessage;
 import skyport.network.Connection;
 
 public class AIConnection extends Connection {
-    private Player player;
+    private volatile Player player;
     private boolean gotLoadout = false;
     public boolean hasToPass = false;
     public boolean needsRespawn = false;
@@ -28,6 +28,8 @@ public class AIConnection extends Connection {
 
     public AIConnection(Socket socket) {
         super(socket);
+        this.player = new Player();
+        
     }
 
     public synchronized boolean gotLoadout() {
@@ -101,7 +103,7 @@ public class AIConnection extends Connection {
         }
         String name = message.getName();
         Util.validateUsername(name);
-        this.player = new Player(name);
+        this.player.setName(name);
         this.identifier = player.getName();
         gotHandshake = true;
         return true;
@@ -110,7 +112,7 @@ public class AIConnection extends Connection {
     public synchronized void setSpawnpoint(Tile spawnpoint) {
         logger.info("Player '" + player.getName() + "' spawns at " + spawnpoint.coords.getString());
         player.position = spawnpoint;
-        player.spawnTile = spawnpoint;
+        player.setSpawn(spawnpoint);
         player.position.playerOnTile = this.player;
     }
 
@@ -127,7 +129,7 @@ public class AIConnection extends Connection {
 
     public void respawn() {
         player.position.playerOnTile = null;
-        player.position = player.spawnTile;
+        player.position = player.getSpawn();
         player.position.playerOnTile = this.player;
         player.health = 100;
         needsRespawn = false;
