@@ -14,7 +14,7 @@ import skyport.message.action.OffensiveAction;
 import skyport.network.ai.AIConnection;
 import skyport.network.graphics.GraphicsConnection;
 
-public class GameThread {
+public class Game implements Runnable {
     private List<AIConnection> clients;
     private int gameTimeoutSeconds;
     private int roundTimeMilliseconds;
@@ -23,9 +23,9 @@ public class GameThread {
     private World world;
     private GraphicsConnection graphics;
 
-    private final Logger logger = LoggerFactory.getLogger(GameThread.class);
+    private final Logger logger = LoggerFactory.getLogger(Game.class);
 
-    public GameThread(GraphicsConnection graphics, List<AIConnection> clients, int gameTimeoutSeconds, int roundTimeMilliseconds, World world) {
+    public Game(GraphicsConnection graphics, List<AIConnection> clients, int gameTimeoutSeconds, int roundTimeMilliseconds, World world) {
         this.graphics = graphics;
         this.world = world;
         this.clients = clients;
@@ -34,7 +34,8 @@ public class GameThread {
         this.roundTimeMilliseconds = roundTimeMilliseconds;
     }
 
-    public void run(int gameSecondsTimeout) {
+    @Override
+    public void run() {
         logger.debug("Initializing game");
 
         Queue<Tile> spawnpoints = world.getSpawnpoints();
@@ -49,11 +50,11 @@ public class GameThread {
         logger.info("Sending initial gamestart packet");
         sendGamestate(0);
         // we just loop until everyone has selected a loadout.
+        boolean allAreReady = true;
         while (true) {
-            boolean allAreReady = true;
-            for (AIConnection conn : clients) {
-                if (!conn.gotLoadout()) {
-                    logger.info("Waiting for loadout from " + conn.getPlayer().getName());
+            for (AIConnection client : clients) {
+                if (!client.gotLoadout()) {
+                    logger.info("Waiting for loadout from " + client.getPlayer().getName());
                     allAreReady = false;
                 }
             }
@@ -147,7 +148,7 @@ public class GameThread {
     }
 
     private void givePenalityForLingeringOnSpawntile(AIConnection currentPlayer) {
-        if (currentPlayer.getPlayer().position == currentPlayer.getPlayer().spawnTile) {
+        if (currentPlayer.getPlayer().position == currentPlayer.getPlayer().getSpawn()) {
             logger.warn("Player " + currentPlayer.getPlayer() + " stayed on spawn too long");
             currentPlayer.givePenality(10);
         }

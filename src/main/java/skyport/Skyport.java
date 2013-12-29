@@ -8,7 +8,7 @@ import org.apache.log4j.PropertyConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import skyport.game.GameThread;
+import skyport.game.Game;
 import skyport.game.World;
 import skyport.game.WorldParser;
 import skyport.network.AIAcceptor;
@@ -19,7 +19,7 @@ import skyport.network.graphics.GraphicsConnection;
 public class Skyport {
     final static Logger logger = LoggerFactory.getLogger(Skyport.class);
 
-    public static void main(String args[]) {
+    public static void main(String args[]) throws InterruptedException {
         PropertyConfigurator.configure("log4j.properties");
         int port = 54321;
         int users = 2;
@@ -94,8 +94,7 @@ public class Skyport {
         GraphicsConnection graphics = graphicsAcceptor.getConnection();
         graphics.setThinkTimeout(aiThinkTimeout);
 
-        // the main thread simply becomes the new gamethread.
-        GameThread game = new GameThread(graphics, clients, gameTimeoutSeconds, aiThinkTimeout, world);
-        game.run(gameTimeoutSeconds);
+        Game game = new Game(graphics, clients, gameTimeoutSeconds, aiThinkTimeout, world);
+        game.run();
     }
 }
