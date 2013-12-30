@@ -12,43 +12,17 @@ public class Tile {
     public Tile leftUp = null;
     public Tile leftDown = null;
 
-    public int resources = 0;
-
     public TileType tileType;
+    public int resources;
+
     public Point coords;
     public Player playerOnTile = null;
 
     private final Logger logger = LoggerFactory.getLogger(Tile.class);
 
     public Tile(String type) {
-        switch (type) {
-        case "G":
-            tileType = TileType.GRASS;
-            break;
-        case "V":
-            tileType = TileType.VOID;
-            break;
-        case "S":
-            tileType = TileType.SPAWN;
-            break;
-        case "E":
-            tileType = TileType.EXPLOSIUM;
-            resources = 2;
-            break;
-        case "R":
-            tileType = TileType.RUBIDIUM;
-            resources = 2;
-            break;
-        case "C":
-            tileType = TileType.SCRAP;
-            resources = 2;
-            break;
-        case "O":
-            tileType = TileType.ROCK;
-            break;
-        default:
-            logger.error("Error: Unknown tile type '" + type + "'");
-        }
+        tileType = TileType.tileType(type);
+        this.resources = tileType.resources;
     }
 
     public Tile getTileInDirection(Direction dir) {

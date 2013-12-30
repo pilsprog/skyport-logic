@@ -6,17 +6,23 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.annotations.SerializedName;
 
 public enum TileType {
-    @SerializedName("G") GRASS, 
-    @SerializedName("O") ROCK,
-    @SerializedName("S") SPAWN,
-    @SerializedName("V") VOID,
-    @SerializedName("R") RUBIDIUM,
-    @SerializedName("E") EXPLOSIUM, 
-    @SerializedName("C") SCRAP;
+    @SerializedName("G") GRASS (0),
+    @SerializedName("O") ROCK (0),
+    @SerializedName("S") SPAWN (0),
+    @SerializedName("V") VOID (0),
+    @SerializedName("R") RUBIDIUM (2),
+    @SerializedName("E") EXPLOSIUM (2),
+    @SerializedName("C") SCRAP (2);
+
+    public final int resources;
+
+    TileType(int resources) {
+        this.resources = resources;
+    }
 
     private static final Logger logger = LoggerFactory.getLogger(TileType.class);
 
-    public static TileType getTile(String type) {
+    public static TileType tileType(String type) {
         switch (type) {
         case "G":
             return GRASS;
