@@ -136,7 +136,7 @@ public class AIConnection extends Connection {
     }
 
     public void givePenality(int points) {
-        logger.warn(player.getName() + " got " + points + " penality");
+        logger.warn(player.getName() + " got " + points + " penality.");
         player.score -= points;
     }
 
