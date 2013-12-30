@@ -39,7 +39,7 @@ public enum TileType {
         case "O":
             return ROCK;
         default:
-            logger.error("Error: Unknown tile type '" + type + "'");
+            logger.error("Error: Unknown tile type '" + type + "'.");
             return VOID;
         }
     }

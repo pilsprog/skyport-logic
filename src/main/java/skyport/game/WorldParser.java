@@ -140,7 +140,7 @@ public class WorldParser {
                 continue;
             }
             if (lines.length != currentLength) {
-                logger.warn("(down) Error: expected this line to have length " + currentLength + ", but got " + lines.length);
+                logger.warn("(down) Error: expected this line to have length " + currentLength + ", but got " + lines.length + ".");
                 continue;
             }
 

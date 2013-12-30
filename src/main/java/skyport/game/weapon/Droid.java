@@ -32,7 +32,7 @@ public class Droid extends Weapon {
     }
 
     public int performShot(Player dealingPlayer, int turnsLeft) {
-        logger.info("==> '" + dealingPlayer.getName() + "' performing droid shot with " + directions.size() + " steps");
+        logger.info("==> '" + dealingPlayer.getName() + "' performing droid shot with " + directions.size() + " steps.");
         int range = 3;
         int damage = 22;
         int validStepsTaken = 0;
