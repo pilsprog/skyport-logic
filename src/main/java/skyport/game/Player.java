@@ -13,14 +13,14 @@ public class Player {
     public int health = 100;
     public int score = 0;
 
-    public transient boolean dead = false;
-
     public Weapon primaryWeapon;
     public Weapon secondaryWeapon;
 
     public transient int rubidiumResources = 0;
     public transient int explosiumResources = 0;
     public transient int scrapResources = 0;
+
+    public transient boolean dead = false;
 
     private transient Tile spawn;
 
