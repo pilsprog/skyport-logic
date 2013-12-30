@@ -13,8 +13,6 @@ import skyport.game.Util;
 import skyport.game.weapon.Weapon;
 import skyport.message.HandshakeMessage;
 import skyport.message.LoadoutMessage;
-import skyport.message.Message;
-import skyport.message.StatusMessage;
 import skyport.message.action.ActionMessage;
 import skyport.network.Connection;
 
@@ -29,7 +27,25 @@ public class AIConnection extends Connection {
     public AIConnection(Socket socket) {
         super(socket);
         this.player = new Player();
-        
+
+    }
+
+    @Override
+    public void run() {
+        super.run();
+        while (!gotLoadout) {
+            try {
+                String json = this.readLine();
+                parseLoadout(json);
+            } catch (ProtocolException e) {
+                this.sendError(e.getMessage());
+            } catch (IOException e) {
+                logger.warn("Disconnect from " + this.getClass().getSimpleName() + ":" + this.getIP() + ".");
+                this.close();
+                return;
+            }
+        }
+        this.parseActions();
     }
 
     public boolean gotLoadout() {
@@ -38,28 +54,17 @@ public class AIConnection extends Connection {
 
     @Override
     protected void input(String json) throws IOException, ProtocolException {
-        if (!gotHandshake) {
-            if (parseHandshake(json)) {
-                Message success = new StatusMessage(true);
-                this.sendMessage(success);
+        ActionMessage actionMessage = gson.fromJson(json, ActionMessage.class);
+        String message = actionMessage.getMessage();
+        if (message == null) {
+            throw new ProtocolException("Unexpected packet: '" + json + "'.");
+        }
+        if (message.equals("action")) {
+            synchronized (messages) {
+                messages.add(actionMessage);
             }
-            return;
-        } else if (!gotLoadout()) {
-            parseLoadout(json);
         } else {
-            ActionMessage message = gson.fromJson(json, ActionMessage.class);
-            if (message.getMessage() != null) {
-                String m = message.getMessage();
-                if (m.equals("action")) {
-                    synchronized (messages) {
-                        messages.add(message);
-                    }
-                } else {
-                    throw new ProtocolException("Unexpected message, got '" + m + "' but expected 'action'.");
-                }
-            } else {
-                throw new ProtocolException("Unexpected packet: '" + json + "'.");
-            }
+            throw new ProtocolException("Unexpected message, got '" + message + "' but expected 'action'.");
         }
     }
 
@@ -91,7 +96,7 @@ public class AIConnection extends Connection {
         }
     }
 
-    private boolean parseHandshake(String json) throws ProtocolException {
+    protected boolean parseHandshake(String json) throws ProtocolException {
         HandshakeMessage message = gson.fromJson(json, HandshakeMessage.class);
         String m = message.getMessage();
         if (!m.equals("connect")) {

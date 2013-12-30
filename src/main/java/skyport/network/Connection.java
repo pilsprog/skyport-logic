@@ -24,6 +24,7 @@ import skyport.message.EndTurnMessage;
 import skyport.message.ErrorMessage;
 import skyport.message.GameStateMessage;
 import skyport.message.Message;
+import skyport.message.StatusMessage;
 import skyport.message.action.ActionMessage;
 import skyport.network.ai.AIConnection;
 
@@ -42,11 +43,7 @@ public abstract class Connection implements Runnable {
 
     private final Logger logger = LoggerFactory.getLogger(Connection.class);
 
-    protected Gson gson = new GsonBuilder()
-        .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES)
-        .registerTypeAdapter(Point.class, new PointAdapter())
-        .registerTypeAdapter(ActionMessage.class, new ActionMessageDeserializer())
-        .create();
+    protected Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).registerTypeAdapter(Point.class, new PointAdapter()).registerTypeAdapter(ActionMessage.class, new ActionMessageDeserializer()).create();
 
     public Connection(Socket socket) {
         this.socket = socket;
@@ -58,43 +55,17 @@ public abstract class Connection implements Runnable {
         }
     }
 
-    @Override
-    public void run() {
-        for (;;) {
-            try {
-                String json = this.readLine();
-                if (json == null) {
-                    throw new IOException("Client disconnected.");
-                }
-                this.input(json);
-            } catch (IOException e) {
-                logger.warn("Disconnect from " + this.getClass().getSimpleName() + ":" + this.getIP() + ".");
-                this.close();
-                return;
-            } catch (ProtocolException e) {
-                this.sendError(e.getMessage());
-            }
-        }
-    }
-
-    protected abstract void input(String json) throws IOException, ProtocolException;
-
-    public boolean isAlive() {
-        return isAlive;
-    }
-
-    public void close() {
-        isAlive = false;
-    }
-
     public String readLine() throws IOException {
         String line = input.readLine();
+        if (line == null) {
+            throw new IOException("Client disconnected.");
+        }
         return line;
     }
 
-    public String getIP() {
-        return socket.getInetAddress() + ":" + Integer.toString(socket.getPort());
-    }
+    protected abstract boolean parseHandshake(String json) throws ProtocolException;
+
+    protected abstract void input(String json) throws IOException, ProtocolException;
 
     private void sendMessage(String json) {
         try {
@@ -110,6 +81,58 @@ public abstract class Connection implements Runnable {
         String json = gson.toJson(message);
         this.sendMessage(json);
 
+    }
+
+    public void sendError(String errorString) {
+        Message error = new ErrorMessage(errorString);
+        sendMessage(error);
+    }
+
+    public void close() {
+        isAlive = false;
+    }
+
+    public String getIP() {
+        return socket.getInetAddress() + ":" + Integer.toString(socket.getPort());
+    }
+
+    @Override
+    public void run() {
+        while (!gotHandshake) {
+            try {
+                String json = this.readLine();
+                if (parseHandshake(json)) {
+                    Message success = new StatusMessage(true);
+                    this.sendMessage(success);
+                } else {
+                    this.sendError("Handshake failed.");
+                }
+            } catch (ProtocolException e) {
+                this.sendError(e.getMessage());
+            } catch (IOException e) {
+                logger.warn("Disconnect from " + this.getClass().getSimpleName() + ":" + this.getIP() + ".");
+                this.close();
+            }
+        }
+    }
+
+    protected void parseActions() {
+        for (;;) {
+            try {
+                String json = this.readLine();
+                this.input(json);
+            } catch (ProtocolException e) {
+                this.sendError(e.getMessage());
+            } catch (IOException e) {
+                logger.warn("Disconnect from " + this.getClass().getSimpleName() + ":" + this.getIP() + ".");
+                this.close();
+                return;
+            }
+        }
+    }
+
+    public boolean isAlive() {
+        return isAlive;
     }
 
     public void sendDeadline() {
@@ -129,10 +152,5 @@ public abstract class Connection implements Runnable {
 
         Message message = new GameStateMessage(turn, map, players);
         sendMessage(message);
-    }
-
-    public void sendError(String errorString) {
-        Message error = new ErrorMessage(errorString);
-        sendMessage(error);
     }
 }

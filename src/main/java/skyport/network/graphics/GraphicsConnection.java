@@ -13,7 +13,6 @@ import skyport.message.EndActionsMessage;
 import skyport.message.GraphicsHandshakeMessage;
 import skyport.message.HighlightMessage;
 import skyport.message.Message;
-import skyport.message.StatusMessage;
 import skyport.message.SubtitleMessage;
 import skyport.message.TitleMessage;
 import skyport.network.Connection;
@@ -34,42 +33,40 @@ public class GraphicsConnection extends Connection {
     }
 
     @Override
+    public void run() {
+        super.run();
+        this.parseActions();
+    }
+
+    @Override
     protected void input(String json) throws ProtocolException, IOException {
-        if (!gotHandshake) {
-            if (parseHandshake(json)) {
-                Message success = new StatusMessage(true);
-                this.sendMessage(success);
-            }
-            return;
-        } else {
-            Message message = gson.fromJson(json, Message.class);
-            String text = message.getMessage();
-            if (text != null) {
-                if (text.equals("ready")) {
-                    logger.debug("DONE PROCESSING.");
-                    isDoneProcessing = true;
-                } else if (text.equals("faster")) {
-                    if (thinktime >= 200) {
-                        thinktime -= 100;
-                        logger.info("New timeout: " + thinktime + " milliseconds.");
-                    } else {
-                        this.sendMessage("Can't go faster.");
-                        logger.info("Can't go faster.");
-                    }
-                } else if (text.equals("slower")) {
-                    thinktime += 100;
-                    logger.info("New timeout: " + thinktime + " milliseconds.");
-                } else {
-                    throw new ProtocolException("Unexpected message, got '" + text + "' but expected 'action'.");
-                }
+        Message message = gson.fromJson(json, Message.class);
+        String text = message.getMessage();
+        if (text == null) {
+            logger.warn("Unexpected packet: " + text);
+            throw new ProtocolException("Unexpected packet: '" + text + "'.");
+        }
+
+        if (text.equals("ready")) {
+            logger.debug("DONE PROCESSING.");
+            isDoneProcessing = true;
+        } else if (text.equals("faster")) {
+            if (thinktime >= 200) {
+                thinktime -= 100;
+                logger.info("New timeout: " + thinktime + " milliseconds.");
             } else {
-                logger.warn("Unexpected packet: " + text);
-                throw new ProtocolException("Unexpected packet: '" + text + "'.");
+                this.sendMessage("Can't go faster.");
+                logger.info("Can't go faster.");
             }
+        } else if (text.equals("slower")) {
+            thinktime += 100;
+            logger.info("New timeout: " + thinktime + " milliseconds.");
+        } else {
+            throw new ProtocolException("Unexpected message, got '" + text + "' but expected 'action'.");
         }
     }
 
-    private boolean parseHandshake(String json) throws ProtocolException {
+    protected boolean parseHandshake(String json) throws ProtocolException {
         GraphicsHandshakeMessage handshake = gson.fromJson(json, GraphicsHandshakeMessage.class);
         String message = handshake.getMessage();
         if (!message.equals("connect")) {
