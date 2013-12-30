@@ -56,6 +56,6 @@ public class LaserActionMessage extends ActionMessage implements OffensiveAction
     
     @Override
     public String toString() {
-        return from + " fired " + type + "in direction " + direction; 
+        return from + " fired " + type + "in direction " + direction + "."; 
     }
 }

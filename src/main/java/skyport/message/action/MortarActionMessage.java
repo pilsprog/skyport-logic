@@ -29,7 +29,7 @@ public class MortarActionMessage extends ActionMessage implements OffensiveActio
         } else if (player.secondaryWeapon.getName().equals("mortar")) {
             mortar = (Mortar) player.secondaryWeapon;
         } else {
-            logger.warn("User '" + player + "' attempted to shoot the mortar, but doesn't have it");
+            logger.warn("User '" + player + "' attempted to shoot the mortar, but doesn't have it.");
             return false;
         }
         mortar.setPosition(player.position);
@@ -39,6 +39,6 @@ public class MortarActionMessage extends ActionMessage implements OffensiveActio
     
     @Override
     public String toString() {
-        return from + " fired " + type + " at " + coordinates;
+        return from + " fired " + type + " at " + coordinates + ".";
     }
 }

@@ -46,25 +46,25 @@ public class GraphicsConnection extends Connection {
             String text = message.getMessage();
             if (text != null) {
                 if (text.equals("ready")) {
-                    logger.debug("DONE PROCESSING");
+                    logger.debug("DONE PROCESSING.");
                     isDoneProcessing = true;
                 } else if (text.equals("faster")) {
                     if (thinktime >= 200) {
                         thinktime -= 100;
-                        logger.info("New timeout: " + thinktime + " milliseconds");
+                        logger.info("New timeout: " + thinktime + " milliseconds.");
                     } else {
-                        this.sendMessage("Can't go faster");
-                        logger.info("Can't go faster");
+                        this.sendMessage("Can't go faster.");
+                        logger.info("Can't go faster.");
                     }
                 } else if (text.equals("slower")) {
                     thinktime += 100;
-                    logger.info("New timeout: " + thinktime + " milliseconds");
+                    logger.info("New timeout: " + thinktime + " milliseconds.");
                 } else {
-                    throw new ProtocolException("Unexpected message, got '" + text + "' but expected 'action'");
+                    throw new ProtocolException("Unexpected message, got '" + text + "' but expected 'action'.");
                 }
             } else {
                 logger.warn("Unexpected packet: " + text);
-                throw new ProtocolException("Unexpected packet: '" + text + "'");
+                throw new ProtocolException("Unexpected packet: '" + text + "'.");
             }
         }
     }
@@ -73,18 +73,18 @@ public class GraphicsConnection extends Connection {
         GraphicsHandshakeMessage handshake = gson.fromJson(json, GraphicsHandshakeMessage.class);
         String message = handshake.getMessage();
         if (!message.equals("connect")) {
-            throw new ProtocolException("Expected 'connect' handshake, but got '" + message + "' key");
+            throw new ProtocolException("Expected 'connect' handshake, but got '" + message + "' key.");
         }
 
         int revision = handshake.getRevision();
         if (revision != 1) {
-            throw new ProtocolException("Wrong protocol revision: supporting 1, but got " + revision);
+            throw new ProtocolException("Wrong protocol revision: supporting 1, but got " + revision + ".");
         }
         if (!handshake.validatePassword(this.password)) {
-            logger.warn("GUI sent wrong password");
+            logger.warn("GUI sent wrong password.");
             throw new ProtocolException("Wrong password!");
         }
-        logger.debug("Correct password");
+        logger.debug("Correct password.");
         gotHandshake = true;
 
         String laserStyle = handshake.getLaserStyle();

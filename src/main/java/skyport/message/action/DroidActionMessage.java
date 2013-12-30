@@ -37,7 +37,7 @@ public class DroidActionMessage extends ActionMessage implements OffensiveAction
         } else if (player.secondaryWeapon.getName().equals("droid")) {
             droid = (Droid) player.secondaryWeapon;
         } else {
-            logger.warn("User '" + player + "' attempted to shoot the droid, but doesn't have it");
+            logger.warn("User '" + player + "' attempted to shoot the droid, but doesn't have it.");
             return false;
         }
         int range = 3;
@@ -61,7 +61,7 @@ public class DroidActionMessage extends ActionMessage implements OffensiveAction
             logger.debug("droid steps taken: " + stepsTaken);
             return true;
         } else {
-            throw new ProtocolException("Invalid shot: unknown direction in droid sequence");
+            throw new ProtocolException("Invalid shot: unknown direction in droid sequence.");
         }
     }
     
@@ -69,6 +69,6 @@ public class DroidActionMessage extends ActionMessage implements OffensiveAction
     public String toString() {
         String out = from + " fired " + type + " in sequence ";
         out += Arrays.toString(sequence.toArray());
-        return out;
+        return out + ".";
     }
 }

@@ -34,9 +34,9 @@ public class Skyport {
             mapfile = args[3];
             if (args.length == 5) {
                 aiThinkTimeout = Integer.parseInt(args[4]);
-                logger.info("Using an AI think timeout of " + aiThinkTimeout + "ms for each turn");
+                logger.info("Using an AI think timeout of " + aiThinkTimeout + "ms for each turn.");
             } else {
-                logger.info("Using default AI think timeout of " + aiThinkTimeout + "ms for each turn");
+                logger.info("Using default AI think timeout of " + aiThinkTimeout + "ms for each turn.");
             }
         } catch (Exception e) {
             System.out.println("Usage: ./server <port> <number of users> <game time> <mapfile> [think-timeout in milliseconds]");
@@ -60,7 +60,7 @@ public class Skyport {
                 users = spawnPoints;
             }
         } catch (FileNotFoundException e) {
-            logger.error("Map file not found: '" + mapfile + "'");
+            logger.error("Map file not found: '" + mapfile + "'.");
             System.exit(1);
         }
         logger.info("Waiting for clients to connect.");

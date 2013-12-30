@@ -36,7 +36,7 @@ public class Game implements Runnable {
 
     @Override
     public void run() {
-        logger.debug("Initializing game");
+        logger.debug("Initializing game.");
 
         Queue<Tile> spawnpoints = world.getSpawnpoints();
         for (AIConnection client : clients) {
@@ -47,14 +47,14 @@ public class Game implements Runnable {
             client.setSpawnpoint(spawn);
         }
 
-        logger.info("Sending initial gamestart packet");
+        logger.info("Sending initial gamestart packet.");
         sendGamestate(0);
         // we just loop until everyone has selected a loadout.
         boolean allAreReady = true;
         while (true) {
             for (AIConnection client : clients) {
                 if (!client.gotLoadout()) {
-                    logger.info("Waiting for loadout from " + client.getPlayer().getName());
+                    logger.info("Waiting for loadout from " + client.getPlayer().getName() + ".");
                     allAreReady = false;
                 }
             }
@@ -79,8 +79,8 @@ public class Game implements Runnable {
 
         while (true) {
             logger.debug("####################### GAME STATS: #######################");
-            for (AIConnection ai : clients) {
-                ai.printStats();
+            for (AIConnection client : clients) {
+                logger.info(client.getPlayer().toString());
             }
             logger.debug("###########################################################");
             int playerNum = world.verifyNumberOfPlayersOnBoard();
@@ -149,7 +149,7 @@ public class Game implements Runnable {
 
     private void givePenalityForLingeringOnSpawntile(AIConnection currentPlayer) {
         if (currentPlayer.getPlayer().position == currentPlayer.getPlayer().getSpawn()) {
-            logger.warn("Player " + currentPlayer.getPlayer() + " stayed on spawn too long");
+            logger.warn("Player " + currentPlayer.getPlayer() + " stayed on spawn too long.");
             currentPlayer.givePenality(10);
         }
     }
@@ -166,7 +166,7 @@ public class Game implements Runnable {
                     return;
                 }
             } else {
-                logger.debug("Action " + a + " was invalid");
+                logger.debug("Action " + a + " was invalid.");
             }
         }
         logger.info("==> Player " + currentPlayer.getPlayer() + " performed " + validActions + " valid actions.");
@@ -176,7 +176,7 @@ public class Game implements Runnable {
     }
 
     private void broadcastAction(ActionMessage action, AIConnection playerWhoPerformedTheAction) {
-        logger.debug("Action was valid, re-broadcasting (FIXME)");
+        logger.debug("Action was valid, re-broadcasting (FIXME).");
         action.setFrom(playerWhoPerformedTheAction.getPlayer().getName());
         System.out.println("ACTION: " + action.toString());
 
@@ -203,8 +203,8 @@ public class Game implements Runnable {
         int newRoundTime = graphics.thinktime;
         if (newRoundTime != roundTimeMilliseconds) {
             roundTimeMilliseconds = newRoundTime;
-            logger.info("Delay changed to " + newRoundTime);
-            graphics.sendMessage("Delay changed to " + newRoundTime);
+            logger.info("Delay changed to " + newRoundTime + ".");
+            graphics.sendMessage("Delay changed to " + newRoundTime + ".");
         }
     }
 

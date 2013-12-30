@@ -55,10 +55,10 @@ public class AIConnection extends Connection {
                         messages.add(message);
                     }
                 } else {
-                    throw new ProtocolException("Unexpected message, got '" + m + "' but expected 'action'");
+                    throw new ProtocolException("Unexpected message, got '" + m + "' but expected 'action'.");
                 }
             } else {
-                throw new ProtocolException("Unexpected packet: '" + json + "'");
+                throw new ProtocolException("Unexpected packet: '" + json + "'.");
             }
         }
     }
@@ -67,16 +67,16 @@ public class AIConnection extends Connection {
         LoadoutMessage loadout = gson.fromJson(json, LoadoutMessage.class);
         String message = loadout.getMessage();
         if (!message.equals("loadout")) {
-            throw new ProtocolException("Expected 'loadout', but got '" + message + "' key");
+            throw new ProtocolException("Expected 'loadout', but got '" + message + "' key.");
         }
         Weapon primary = loadout.getPrimaryWeapon();
         Weapon secondary = loadout.getSecondaryWeapon();
 
         if (!Util.validateWeapon(primary)) {
-            throw new ProtocolException("Invalid primary weapon: '" + primary.getName() + "'");
+            throw new ProtocolException("Invalid primary weapon: '" + primary.getName() + "'.");
         }
         if (!Util.validateWeapon(secondary)) {
-            throw new ProtocolException("Invalid secondary weapon: '" + secondary.getName() + "'");
+            throw new ProtocolException("Invalid secondary weapon: '" + secondary.getName() + "'.");
         }
         if (primary.equals(secondary)) {
             throw new ProtocolException("Invalid loadout: Can't have the same weapon twice.");
@@ -95,11 +95,11 @@ public class AIConnection extends Connection {
         HandshakeMessage message = gson.fromJson(json, HandshakeMessage.class);
         String m = message.getMessage();
         if (!m.equals("connect")) {
-            throw new ProtocolException("Expected 'connect' handshake, but got '" + m + "' key");
+            throw new ProtocolException("Expected 'connect' handshake, but got '" + m + "' key.");
         }
         int revision = message.getRevision();
         if (revision != 1) {
-            throw new ProtocolException("Wrong protocol revision: supporting 1, but got " + revision);
+            throw new ProtocolException("Wrong protocol revision: supporting 1, but got " + revision + ".");
         }
         String name = message.getName();
         Util.validateUsername(name);
@@ -110,7 +110,7 @@ public class AIConnection extends Connection {
     }
 
     public void setSpawnpoint(Tile spawnpoint) {
-        logger.info("Player '" + player.getName() + "' spawns at " + spawnpoint.coords.getString());
+        logger.info("Player '" + player.getName() + "' spawns at " + spawnpoint.coords.getString() + ".");
         player.position = spawnpoint;
         player.setSpawn(spawnpoint);
         player.position.playerOnTile = this.player;
@@ -124,7 +124,7 @@ public class AIConnection extends Connection {
     }
 
     public void invalidAction(String type) {
-        this.sendError("Invalid action: " + type);
+        this.sendError("Invalid action: " + type + ".");
     }
 
     public void respawn() {
@@ -142,9 +142,5 @@ public class AIConnection extends Connection {
 
     public Player getPlayer() {
         return player;
-    }
-
-    public void printStats() {
-        System.out.println(player.getName() + ": HP: " + player.health + ", score: " + player.score + ", RUB:" + player.rubidiumResources + ", EXP:" + player.explosiumResources + ", SCR:" + player.scrapResources + ", prim. lvl:" + player.primaryWeapon.getLevel() + ", sec. lvl.:" + player.secondaryWeapon.getLevel());
     }
 }

@@ -32,7 +32,7 @@ public class AIAcceptor implements Runnable {
                 AIConnection conn = new AIConnection(client);
                 connections.add(conn);
                 new Thread(conn).start();
-                logger.debug("Player connected from " + client.getInetAddress() + ":" + client.getPort());
+                logger.debug("Player connected from " + client.getInetAddress() + ":" + client.getPort() + ".");
             } catch (IOException e) {
                 logger.warn("Error on accepting connection.", e);
                 i--;

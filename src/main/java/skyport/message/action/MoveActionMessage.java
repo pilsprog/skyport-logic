@@ -18,6 +18,6 @@ public class MoveActionMessage extends ActionMessage {
     
     @Override
     public String toString() {
-        return from + " moved in direction " + direction;
+        return from + " moved in direction " + direction + ".";
     }
 }

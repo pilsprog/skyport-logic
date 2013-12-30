@@ -67,7 +67,7 @@ public class Player {
     }
 
     void givePoints(int points) {
-        logger.info("Got awarded " + points + " points");
+        logger.info("Got awarded " + points + " points.");
         this.score += points;
     }
 
@@ -83,7 +83,7 @@ public class Player {
             // self, award points
         }
         if (this.health <= 0) {
-            logger.info("==> " + this.name + " got killed by " + dealingPlayer.name);
+            logger.info("==> " + this.name + " got killed by " + dealingPlayer.name + ".");
             if (!(dealingPlayer.name.equals(this.name))) {
                 dealingPlayer.givePoints(20); // 20 bonus points for killing
                 // someone
@@ -113,6 +113,14 @@ public class Player {
 
     @Override
     public String toString() {
-        return name;
+       String player = this.name 
+        + ": HP: " + this.health
+        + ", score: " + this.score 
+        + ", RUB:" + this.rubidiumResources 
+        + ", EXP:" + this.explosiumResources 
+        + ", SCR:" + this.scrapResources
+        + ", prim. lvl:" + this.primaryWeapon.getLevel() 
+        + ", sec. lvl.:" + this.secondaryWeapon.getLevel();
+        return player;
     }
 }

@@ -28,7 +28,7 @@ public class UpgradeActionMessage extends ActionMessage {
                 player.rubidiumResources -= resourcesToSubtract;
                 return true;
             } else {
-                logger.warn("Tried to upgrade the laser, but not enough rubidium");
+                logger.warn("Tried to upgrade the laser, but not enough rubidium.");
                 return false;
             }
         }
@@ -37,7 +37,7 @@ public class UpgradeActionMessage extends ActionMessage {
                 player.explosiumResources -= resourcesToSubtract;
                 return true;
             } else {
-                logger.warn("Tried to upgrade the mortar, but not enough explosium");
+                logger.warn("Tried to upgrade the mortar, but not enough explosium.");
                 return false;
             }
         }
@@ -46,7 +46,7 @@ public class UpgradeActionMessage extends ActionMessage {
                 player.scrapResources -= resourcesToSubtract;
                 return true;
             } else {
-                logger.warn("Tried to upgrade the droid, but not enough scrap");
+                logger.warn("Tried to upgrade the droid, but not enough scrap.");
                 return false;
             }
         }
@@ -55,9 +55,9 @@ public class UpgradeActionMessage extends ActionMessage {
 
     @Override
     public boolean performAction(Player player) {
-        logger.debug(player + " upgrading his " + weapon);
+        logger.debug(player + " upgrading his " + weapon + ".");
         if (player.primaryWeapon.getName().equals(weapon)) {
-            logger.debug("Upgrading primary weapon (" + weapon + ")");
+            logger.debug("Upgrading primary weapon (" + weapon + ").");
             boolean success = subtractResourcesForWeaponUpgrade(player, weapon, player.primaryWeapon.getLevel());
             if (success) {
                 player.primaryWeapon.upgrade();
@@ -81,6 +81,6 @@ public class UpgradeActionMessage extends ActionMessage {
     
     @Override
     public String toString() {
-        return from + " upgraded " + weapon;
+        return from + " upgraded " + weapon + ".";
     }
 }

@@ -64,11 +64,11 @@ public abstract class Connection implements Runnable {
             try {
                 String json = this.readLine();
                 if (json == null) {
-                    throw new IOException("Client disconnected");
+                    throw new IOException("Client disconnected.");
                 }
                 this.input(json);
             } catch (IOException e) {
-                logger.warn("Disconnect from " + this.getClass().getSimpleName() + ":" + this.getIP());
+                logger.warn("Disconnect from " + this.getClass().getSimpleName() + ":" + this.getIP() + ".");
                 this.close();
                 return;
             } catch (ProtocolException e) {
