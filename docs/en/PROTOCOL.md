@@ -320,20 +320,25 @@ the server in a one-on-one match on a very simple map.
     >  "turn": 0,
     >  "map": {"j-length": 5,
     >          "k-length": 5,
-    >          "data": [
-    >                  ["R", "G", "V", "G", "V"],
-    >                  ["G", "E", "G", "G", "S"],
-    > 		       ["G", "G", "O", "G", "G"],
-    >		       ["S", "G", "G", "C", "G"]
-    >                  ["V", "G", "V", "G", "G"]]
+    >          "data": [["R", "G", "V", "G", "V"],
+    >                   ["G", "E", "G", "G", "S"],
+    >                   ["G", "G", "O", "G", "G"],
+    >                   ["S", "G", "G", "C", "G"],
+    >                   ["V", "G", "V", "G", "G"]]
     >         },
     >  "players":[
-    >             {"name":"playerA", "primary-weapon":{"name":"laser", "level":1},
-    >               "secondary-weapon":{"name":"laser", "level":1}, "health":100,
-    >               "score":0, "position":"4,0"},
-    >		  {"name":"you", "primary-weapon":{"name":"laser", "level":1},
-    >              "secondary-weapon":{"name":"droid", "level":1}, "health":100,
-    >		   "score":0, "position":"0,4"},
+    >             {"name":"playerA", 
+    >              "primary-weapon":{"name":"laser", "level":1},
+    >              "secondary-weapon":{"name":"mortar", "level":1}, 
+    >              "health":100,
+    >              "score":0,
+    >              "position":"4,0"},
+    >             {"name":"you", 
+    >              "primary-weapon":{"name":"laser", "level":1},
+    >              "secondary-weapon":{"name":"droid", "level":1}, 
+    >              "health":100,
+    >              "score":0,
+    >              "position":"0,4"},
     >		 ]
     > }
 
