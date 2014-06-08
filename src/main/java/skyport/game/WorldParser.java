@@ -89,19 +89,19 @@ public class WorldParser {
                 continue;
             }
             if (currentLength == 1) {
-                rootTile = new Tile(lines[0]);
+                rootTile = new Tile(TileType.tileType(lines[0]));
                 tiles[a][0] = rootTile;
             } else {
                 Tile currentTile = rootTile;
                 while (currentTile.leftDown != null) {
                     currentTile = currentTile.leftDown;
                 }
-                currentTile.leftDown = new Tile(lines[0]);
+                currentTile.leftDown = new Tile(TileType.tileType(lines[0]));
                 currentTile.leftDown.rightUp = currentTile;
                 tiles[a][0] = currentTile.leftDown;
 
                 for (int b = 1; b < lines.length; b++) {
-                    Tile newTile = new Tile(lines[b]);
+                    Tile newTile = new Tile(TileType.tileType(lines[b]));
                     tiles[a - b][b] = newTile;
                     currentTile.rightDown = newTile;
                     newTile.leftUp = currentTile;
@@ -146,7 +146,7 @@ public class WorldParser {
 
             Tile currentTile = lowerCornerTile;
             for (int i = 0; i < lines.length; i++) {
-                String tileType = lines[i];
+                TileType tileType = TileType.tileType(lines[i]);
                 Tile newTile = new Tile(tileType);
                 tiles[a - i][i + k] = newTile;
                 currentTile.rightDown = newTile;

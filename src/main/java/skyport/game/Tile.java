@@ -22,8 +22,8 @@ public class Tile {
 
     private final Logger logger = LoggerFactory.getLogger(Tile.class);
 
-    public Tile(String type) {
-        tileType = TileType.tileType(type);
+    public Tile(TileType type) {
+        tileType = type;
         this.resources = tileType.resources;
     }
 
