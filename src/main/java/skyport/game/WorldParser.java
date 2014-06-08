@@ -166,16 +166,11 @@ public class WorldParser {
 
     private String[] getScannedLine(Scanner scanner) {
         String line = scanner.nextLine();
-        line = line.replaceAll("[ \t_/\\\\]", "");
+        line = line.replaceAll("[\\s_/\\\\]", "");
         if (line.equals("")) {
             ignoredLines++;
             return new String[0];
-        }
-        String array[] = line.split("");
-        String newArray[] = new String[array.length - 1];
-        System.arraycopy(array, 1, newArray, 0, array.length - 1); // oh java,
-        // you so
-        // silly
-        return newArray;
+        } 
+        return line.split("");
     }
 }
