@@ -18,9 +18,9 @@ public class ActionMessageDeserializer implements JsonDeserializer<ActionMessage
 
     @Override
     public ActionMessage deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        JsonObject jobj = json.getAsJsonObject();
+        JsonObject obj = json.getAsJsonObject();
 
-        String type = jobj.get("type").getAsString().toLowerCase();
+        String type = obj.get("type").getAsString().toLowerCase();
         try {
             Class<?> c = Class.forName("skyport.message.action." 
                     + Character.toTitleCase(type.charAt(0)) + type.substring(1)
