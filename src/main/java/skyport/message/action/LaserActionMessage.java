@@ -1,8 +1,5 @@
 package skyport.message.action;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import skyport.exception.ProtocolException;
 import skyport.game.Direction;
 import skyport.game.Player;
@@ -17,8 +14,6 @@ public class LaserActionMessage extends ActionMessage implements OffensiveAction
     @SuppressWarnings("unused")
     private Point stop;
 
-    private transient final Logger logger = LoggerFactory.getLogger(LaserActionMessage.class);
-
     public void setInterval(Point startHack, Point stopHack) {
         this.start = startHack;
         this.stop = stopHack;
@@ -31,8 +26,7 @@ public class LaserActionMessage extends ActionMessage implements OffensiveAction
     @Override
     public boolean performAction(Player player) throws ProtocolException {
         if (player.position.tileType == TileType.SPAWN) {
-            logger.info("==> Player attempted to shoot laser from spawn.");
-            return false;
+            throw new ProtocolException("Attempted to shoot laser from spawn.");
         }
         Laser laser;
         if (player.primaryWeapon.getName().equals("laser")) {
@@ -40,7 +34,7 @@ public class LaserActionMessage extends ActionMessage implements OffensiveAction
         } else if (player.secondaryWeapon.getName().equals("laser")) {
             laser = (Laser) player.secondaryWeapon;
         } else {
-            return false;
+            throw new ProtocolException("Attemted to use laser, but doesn't have it.");
         }
 
         if (direction != null) {

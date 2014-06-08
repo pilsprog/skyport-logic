@@ -60,9 +60,9 @@ public class Player {
             this.position.playerOnTile = this;
             return true;
         } else if (next == null) {
-            throw new InaccessibleTileException(next);
-        } else {
             throw new InaccessibleTileException(direction);
+        } else {
+            throw new InaccessibleTileException(next);
         }
     }
 

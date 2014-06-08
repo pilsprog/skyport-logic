@@ -21,29 +21,26 @@ public class MineActionMessage extends ActionMessage {
 
         TileType tileType = player.position.tileType;
         logger.info("==> Player " + player + " mining " + tileType);
-        boolean minedResource = player.position.mineTile();
-        if (minedResource) {
-            switch (tileType) {
-            case RUBIDIUM:
-                player.rubidiumResources++;
-                break;
-            case EXPLOSIUM:
-                player.explosiumResources++;
-                break;
-            case SCRAP:
-                player.scrapResources++;
-                break;
-            default:
-            }
-            logger.debug("Resources of player " + player 
-                    + " are now: Rubidium: " + player.rubidiumResources
-                           + ", Explosium: " + player.explosiumResources 
-                               + ", Scrap: " + player.scrapResources);
-            return true;
+        player.position.mineTile();
+        switch (tileType) {
+        case RUBIDIUM:
+            player.rubidiumResources++;
+            break;
+        case EXPLOSIUM:
+            player.explosiumResources++;
+            break;
+        case SCRAP:
+            player.scrapResources++;
+            break;
+        default:
         }
-        return false;
+        logger.debug("Resources of player " + player 
+                + " are now: Rubidium: " + player.rubidiumResources 
+                       + ", Explosium: " + player.explosiumResources
+                           + ", Scrap: " + player.scrapResources);
+        return true;
     }
-    
+
     @Override
     public String toString() {
         return from + " mined.";

@@ -3,6 +3,7 @@ package skyport.message.action;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import skyport.exception.ProtocolException;
 import skyport.game.Player;
 
 public class UpgradeActionMessage extends ActionMessage {
@@ -14,22 +15,20 @@ public class UpgradeActionMessage extends ActionMessage {
         return weapon;
     }
 
-    private boolean subtractResourcesForWeaponUpgrade(Player player, String weapon, int currentLevel) {
+    private boolean subtractResourcesForWeaponUpgrade(Player player, String weapon, int currentLevel) throws ProtocolException {
         int resourcesToSubtract = 4;
         if (currentLevel == 2) {
             resourcesToSubtract = 5;
         }
         if (currentLevel == 3) {
-            logger.warn(player + " tried to upgrade his " + weapon + ", but it is already level 3.");
-            return false;
+            throw new ProtocolException("Tried to upgrade " + weapon + ", but it is already level 3.");
         }
         if (weapon.equals("laser")) {
             if (player.rubidiumResources >= resourcesToSubtract) {
                 player.rubidiumResources -= resourcesToSubtract;
                 return true;
             } else {
-                logger.warn("Tried to upgrade the laser, but not enough rubidium.");
-                return false;
+                throw new ProtocolException("Tried to upgrade the laser, but not enough rubidium.");
             }
         }
         if (weapon.equals("mortar")) {
@@ -37,8 +36,7 @@ public class UpgradeActionMessage extends ActionMessage {
                 player.explosiumResources -= resourcesToSubtract;
                 return true;
             } else {
-                logger.warn("Tried to upgrade the mortar, but not enough explosium.");
-                return false;
+                throw new ProtocolException("Tried to upgrade the mortar, but not enough explosium.");
             }
         }
         if (weapon.equals("droid")) {
@@ -46,15 +44,14 @@ public class UpgradeActionMessage extends ActionMessage {
                 player.scrapResources -= resourcesToSubtract;
                 return true;
             } else {
-                logger.warn("Tried to upgrade the droid, but not enough scrap.");
-                return false;
+                throw new ProtocolException("Tried to upgrade the droid, but not enough scrap.");
             }
         }
         return false;
     }
 
     @Override
-    public boolean performAction(Player player) {
+    public boolean performAction(Player player) throws ProtocolException {
         logger.debug(player + " upgrading his " + weapon + ".");
         if (player.primaryWeapon.getName().equals(weapon)) {
             logger.debug("Upgrading primary weapon (" + weapon + ").");
@@ -74,8 +71,7 @@ public class UpgradeActionMessage extends ActionMessage {
                 return false;
             }
         } else {
-            logger.warn(player + " tried to upgrade weapon '" + weapon + "', but doesn't have it.");
-            return false;
+            throw new ProtocolException("Tried to upgrade weapon '" + weapon + "', but doesn't have it.");
         }
     }
     

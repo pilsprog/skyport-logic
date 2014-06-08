@@ -3,6 +3,8 @@ package skyport.game;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import skyport.exception.ProtocolException;
+
 public class Tile {
 
     public Tile up = null;
@@ -49,7 +51,7 @@ public class Tile {
         return !(tileType == TileType.ROCK || tileType == TileType.SPAWN || tileType == TileType.VOID);
     }
 
-    public boolean mineTile() {
+    public boolean mineTile() throws ProtocolException {
         if (resources > 0) {
             resources--;
             if (resources == 0) {
@@ -58,7 +60,7 @@ public class Tile {
             }
             return true;
         }
-        return false;
+        throw new ProtocolException("Tile does not contain a resource.");
     }
 
     public void damageTile(int hitpoints, Player dealingPlayer) {

@@ -28,8 +28,7 @@ public class DroidActionMessage extends ActionMessage implements OffensiveAction
     @Override
     public boolean performAction(Player player) throws ProtocolException {
         if (player.position.tileType == TileType.SPAWN) {
-            logger.info("==> Player attempted to shoot droid from spawn.");
-            return false;
+            throw new ProtocolException("Attempted to shoot droid from spawn.");
         }
         Droid droid;
         if (player.primaryWeapon.getName().equals("droid")) {
@@ -37,8 +36,7 @@ public class DroidActionMessage extends ActionMessage implements OffensiveAction
         } else if (player.secondaryWeapon.getName().equals("droid")) {
             droid = (Droid) player.secondaryWeapon;
         } else {
-            logger.warn("User '" + player + "' attempted to shoot the droid, but doesn't have it.");
-            return false;
+            throw new ProtocolException("Attempted to shoot the droid, but doesn't have it.");
         }
         int range = 3;
         int droidLevel = droid.getLevel();
