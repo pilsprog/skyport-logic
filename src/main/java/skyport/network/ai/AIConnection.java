@@ -21,6 +21,7 @@ public class AIConnection extends Connection {
     private boolean gotLoadout = false;
     public boolean hasToPass = false;
     public boolean needsRespawn = false;
+    private volatile boolean selected = false;
 
     private final Logger logger = LoggerFactory.getLogger(AIConnection.class);
 
@@ -47,6 +48,14 @@ public class AIConnection extends Connection {
         }
         this.parseActions();
     }
+    
+    public void select() {
+        this.selected = true;
+    }
+    
+    public void unselect() {
+        this.selected = false;
+    }
 
     public boolean gotLoadout() {
         return this.gotLoadout;
@@ -59,6 +68,10 @@ public class AIConnection extends Connection {
         if (message == null) {
             throw new ProtocolException("Unexpected packet: '" + json + "'.");
         }
+        if (!selected) {
+            throw new ProtocolException("Message sent out of turn.");
+        }
+        
         if (message.equals("action")) {
             synchronized (messages) {
                 messages.add(actionMessage);
