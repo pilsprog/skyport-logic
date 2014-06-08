@@ -3,6 +3,7 @@ package skyport.game.weapon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import skyport.exception.ProtocolException;
 import skyport.game.Player;
 import skyport.game.Point;
 import skyport.game.Tile;
@@ -27,7 +28,7 @@ public class Mortar extends Weapon {
         relativeTargetVector = relativeTargetVectorArg;
     }
 
-    public boolean performShot(Player dealingPlayer, int turnsLeft) {
+    public boolean performShot(Player dealingPlayer, int turnsLeft) throws ProtocolException {
         logger.info("==> '" + dealingPlayer.getName() + "' performing mortar shot at '" + relativeTargetVector.getString() + "'.");
         int range = 2;
         int baseDamage = 20;
@@ -42,8 +43,7 @@ public class Mortar extends Weapon {
         int damage = (int) Math.round(baseDamage + 0.2 * turnsLeft * baseDamage);
         // TODO: move this down to explode() function
         if (!isTileInRange(range)) {
-            logger.warn("Mortar shot out of range!");
-            return false;
+            throw new ProtocolException("Mortar shot out of range!");
         }
         setNewPositionBasedOnRelativeVector();
         explode(damage, dealingPlayer, turnsLeft);
