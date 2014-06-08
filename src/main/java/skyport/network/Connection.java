@@ -7,9 +7,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,13 +38,17 @@ public abstract class Connection implements Runnable {
     protected String identifier;
     protected BufferedReader input;
     protected BufferedWriter output;
-    protected Queue<ActionMessage> messages = new LinkedList<>();
+    protected BlockingQueue<ActionMessage> messages = new LinkedBlockingQueue<>(5);
     protected boolean isAlive = true;
     protected boolean gotHandshake = false;
 
     private final Logger logger = LoggerFactory.getLogger(Connection.class);
 
-    protected Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).registerTypeAdapter(Point.class, new PointAdapter()).registerTypeAdapter(ActionMessage.class, new ActionMessageDeserializer()).create();
+    protected Gson gson = new GsonBuilder()
+        .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES)
+        .registerTypeAdapter(Point.class, new PointAdapter())
+        .registerTypeAdapter(ActionMessage.class, new ActionMessageDeserializer())
+        .create();
 
     public Connection(Socket socket) {
         this.socket = socket;
@@ -140,8 +145,14 @@ public abstract class Connection implements Runnable {
         this.sendMessage(endTurn);
     }
 
-    public ActionMessage getNextMessage() {
-        return messages.poll();
+    public ActionMessage getNextMessage(long timeout, TimeUnit time) {
+        ActionMessage message = null;
+        try {
+            message = messages.poll(timeout, time);
+        } catch (InterruptedException e) {
+           logger.error("The wait was interrupted somehow!");
+        }
+        return message;
     }
 
     public void sendGamestate(int turn, GameMap map, List<AIConnection> playerlist) {

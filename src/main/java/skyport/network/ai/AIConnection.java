@@ -60,9 +60,7 @@ public class AIConnection extends Connection {
             throw new ProtocolException("Unexpected packet: '" + json + "'.");
         }
         if (message.equals("action")) {
-            synchronized (messages) {
-                messages.add(actionMessage);
-            }
+            messages.add(actionMessage);
         } else {
             throw new ProtocolException("Unexpected message, got '" + message + "' but expected 'action'.");
         }

@@ -1,9 +1,9 @@
 package skyport.game;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,19 +131,17 @@ public class Game implements Runnable {
             }
             AIConnection currentPlayer = sendGamestate(roundNumber);
             logger.info("############### START TURN " + roundNumber + " PLAYER: '" + currentPlayer.getPlayer().getName() + "' ###############");
-            if (currentPlayer.isAlive() || !accelerateDeadPlayers) {
-                letClientsThink();
-            } else {
+            if (!currentPlayer.isAlive() && accelerateDeadPlayers) {
                 logger.debug("Player '" + currentPlayer.getPlayer().getName() + "' is dead and accelerateDeadPlayers flag is set, sending" + " deadline immediately...");
+            } else {
+                processThreePlayerActions(currentPlayer);
+                givePenalityForLingeringOnSpawntile(currentPlayer);
+                graphics.sendEndActions();
+                graphics.waitForGraphics();
+                syncWithGraphics();
+                roundNumber++;
             }
-            sendDeadline();
-            logger.debug("Deadline! Processing actions...");
-            processThreePlayerActions(currentPlayer);
-            givePenalityForLingeringOnSpawntile(currentPlayer);
-            graphics.sendEndActions();
-            graphics.waitForGraphics();
-            syncWithGraphics();
-            roundNumber++;
+            this.sendDeadline();
         }
     }
 
@@ -154,21 +152,40 @@ public class Game implements Runnable {
         }
     }
 
-    private void processThreePlayerActions(AIConnection currentPlayer) {
-        List<ActionMessage> actions = Arrays.asList(currentPlayer.getNextMessage(), currentPlayer.getNextMessage(), currentPlayer.getNextMessage());
+    private void processThreePlayerActions(final AIConnection currentPlayer) {
         int validActions = 0;
-        int a = 3;
-        for (ActionMessage action : actions) {
-            if (letPlayerPerformAction(action, currentPlayer, a--)) {
-                broadcastAction(action, currentPlayer);
-                validActions++;
-                if (action instanceof OffensiveAction) {
-                    return;
-                }
-            } else {
-                logger.debug("Action " + a + " was invalid.");
+        long timeout = this.roundTimeMilliseconds;
+        long current = System.currentTimeMillis();
+        for (int turn = 0; turn < 3; turn++) {
+            ActionMessage action = currentPlayer.getNextMessage(timeout, TimeUnit.MILLISECONDS);
+
+            if (action == null) {
+                continue;
             }
+
+            try {
+                currentPlayer.getPlayer().setTurnsLeft(2-turn);
+                if (action.performAction(currentPlayer.getPlayer())) {
+                    broadcastAction(action, currentPlayer);
+                    validActions++;
+                    if (action instanceof OffensiveAction) {
+                        return;
+                    }
+                }
+            } catch (ProtocolException e) {
+                currentPlayer.sendError(e.getMessage());
+            }
+
+            timeout = Math.max(0, timeout - (System.currentTimeMillis() - current));
+            current = System.currentTimeMillis();
+        }     
+        timeout = Math.max(0, timeout - (System.currentTimeMillis() - current));
+        try {
+            Thread.sleep(timeout);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+        
         logger.info("==> Player " + currentPlayer.getPlayer() + " performed " + validActions + " valid actions.");
         if (validActions == 0) {
             currentPlayer.givePenality(10);
