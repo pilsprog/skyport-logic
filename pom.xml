@@ -4,10 +4,16 @@
 
 	<groupId>no.kompiler</groupId>
 	<artifactId>skyport</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>Skyport-logic</name>
+	<name>skyport-logic</name>
+
+	<scm>
+        <connection>scm:git:https://github.com/pilsprog/skyport-logic</connection>
+        <developerConnection>scm:git:git@github.com:pilsprog/skyport-logic.git</developerConnection>
+        <url>https://github.com/pilsprog/skyport-logic</url>
+    </scm>
 
 	<build>
 		<plugins>
