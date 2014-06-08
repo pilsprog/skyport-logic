@@ -129,7 +129,7 @@ public class Game implements Runnable {
                     letClientsThink();
                 }
             }
-            AIConnection currentPlayer = this.sendGamestate(roundNumber);
+            AIConnection currentPlayer = sendGamestate(roundNumber);
             logger.info("############### START TURN " + roundNumber + " PLAYER: '" + currentPlayer.getPlayer().getName() + "' ###############");
             if (currentPlayer.isAlive() || !accelerateDeadPlayers) {
                 letClientsThink();
@@ -220,20 +220,16 @@ public class Game implements Runnable {
         TileType matrix[][] = world.returnAsRowMajorMatrix();
 
         GameMap map = new GameMap(world.getJLength(), world.getKLength(), matrix);
-        AIConnection ai = clients.get(0);
 
         if (round != 0) {
-            ai.unselect();
-            ai.clearAllMessages();
+            clients.get(0).clearAllMessages();
         }
         graphics.sendGamestate(round, map, clients);
         for (AIConnection client : clients) {
             client.sendGamestate(round, map, clients);
         }
         Collections.rotate(clients, 1);
-        ai = clients.get(0);
-        ai.select();
-        return ai;
+        return clients.get(0);
     }
 
     private void sendDeadline() {
