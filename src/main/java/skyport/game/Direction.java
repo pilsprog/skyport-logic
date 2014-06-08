@@ -5,8 +5,8 @@ import com.google.gson.annotations.SerializedName;
 public enum Direction {
     @SerializedName("up")         UP,
     @SerializedName("down")       DOWN,
-    @SerializedName("right-up")   RIGHT_UP,
-    @SerializedName("right-down") RIGHT_DOWN,
-    @SerializedName("left-up")    LEFT_UP,
-    @SerializedName("left-down")  LEFT_DOWN
+    @SerializedName("rightUp")   RIGHT_UP,
+    @SerializedName("rightDown") RIGHT_DOWN,
+    @SerializedName("leftUp")    LEFT_UP,
+    @SerializedName("leftDown")  LEFT_DOWN
 }
