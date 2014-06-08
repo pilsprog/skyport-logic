@@ -34,7 +34,7 @@ public class ActionMessageDeserializerTest {
     
     @Test
     public void deserializesDroidActionMessage() {
-        String json = "{'message':'action', 'type':'droid', 'sequence':['up', 'rightUp', 'rightDown', 'down']}";
+        String json = "{'message':'action', 'type':'droid', 'sequence':['up', 'right-up', 'right-down', 'down']}";
         ActionMessage message = gson.fromJson(json, ActionMessage.class);
         assertTrue(message instanceof DroidActionMessage);
        
