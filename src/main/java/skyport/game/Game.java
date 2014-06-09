@@ -203,19 +203,6 @@ public class Game implements Runnable {
         }
     }
 
-    private boolean letPlayerPerformAction(ActionMessage action, AIConnection currentPlayer, int turnsLeft) {
-        if (action == null) {
-            return false;
-        }
-        currentPlayer.getPlayer().setTurnsLeft(turnsLeft);
-        try {
-            return action.performAction(currentPlayer.getPlayer());
-        } catch (ProtocolException e) {
-            currentPlayer.sendError(e.getMessage());
-            return false;
-        }
-    }
-
     private void syncWithGraphics() {
         int newRoundTime = graphics.thinktime;
         if (newRoundTime != roundTimeMilliseconds) {
