@@ -59,6 +59,7 @@ public class Game implements Runnable {
                 }
             }
             if (allAreReady) {
+                logger.info("All clients are ready.");
                 break;
             }
 
