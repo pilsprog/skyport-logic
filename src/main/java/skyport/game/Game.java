@@ -156,7 +156,7 @@ public class Game implements Runnable {
     private void processThreePlayerActions(final AIConnection currentPlayer) {
         int validActions = 0;
         long timeout = this.roundTimeMilliseconds;
-        long current = System.currentTimeMillis();
+        long time = System.currentTimeMillis();
         for (int turn = 0; turn < 3; turn++) {
             ActionMessage action = currentPlayer.getNextMessage(timeout, TimeUnit.MILLISECONDS);
 
@@ -177,10 +177,10 @@ public class Game implements Runnable {
                 currentPlayer.sendError(e.getMessage());
             }
 
-            timeout = Math.max(0, timeout - (System.currentTimeMillis() - current));
-            current = System.currentTimeMillis();
+            timeout = Math.max(0, timeout - (System.currentTimeMillis() - time));
+            time = System.currentTimeMillis();
         }     
-        timeout = Math.max(0, timeout - (System.currentTimeMillis() - current));
+        timeout = Math.max(0, timeout - (System.currentTimeMillis() - time));
         try {
             Thread.sleep(timeout);
         } catch (InterruptedException e) {
