@@ -21,6 +21,7 @@ public class AIConnection extends Connection {
     private boolean gotLoadout = false;
     public boolean hasToPass = false;
     public boolean needsRespawn = false;
+    private boolean active = false;
 
     private final Logger logger = LoggerFactory.getLogger(AIConnection.class);
 
@@ -54,6 +55,11 @@ public class AIConnection extends Connection {
 
     @Override
     protected void input(String json) throws IOException, ProtocolException {
+        if(!active) {
+            this.sendError("Message sent out of turn.");
+            return;
+        }
+        
         ActionMessage actionMessage = gson.fromJson(json, ActionMessage.class);
         String message = actionMessage.getMessage();
         if (message == null) {
@@ -145,5 +151,13 @@ public class AIConnection extends Connection {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public synchronized void deactivate() {
+        this.active = false;
+    }
+
+    public synchronized void activate() {
+       this.active = true;
     }
 }

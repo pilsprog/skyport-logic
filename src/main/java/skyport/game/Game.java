@@ -227,14 +227,19 @@ public class Game implements Runnable {
         GameMap map = new GameMap(world.getJLength(), world.getKLength(), matrix);
 
         if (round != 0) {
+            clients.get(0).deactivate();
             clients.get(0).clearAllMessages();
         }
+        AIConnection ai = clients.get(1);
+        ai.activate();
+        
         graphics.sendGamestate(round, map, clients);
         for (AIConnection client : clients) {
             client.sendGamestate(round, map, clients);
         }
+        
         Collections.rotate(clients, 1);
-        return clients.get(0);
+        return ai;
     }
 
     private void sendDeadline() {
