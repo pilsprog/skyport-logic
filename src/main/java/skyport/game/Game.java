@@ -18,8 +18,6 @@ public class Game implements Runnable {
     private List<AIConnection> clients;
     private int gameTimeoutSeconds;
     private int roundTimeMilliseconds;
-    // TODO: set this to 'false' to be more compliant with spec
-    private boolean accelerateDeadPlayers = true;
     private World world;
     private GraphicsConnection graphics;
 
@@ -132,16 +130,14 @@ public class Game implements Runnable {
             }
             AIConnection currentPlayer = sendGamestate(roundNumber);
             logger.info("############### START TURN " + roundNumber + " PLAYER: '" + currentPlayer.getPlayer().getName() + "' ###############");
-            if (!currentPlayer.isAlive() && accelerateDeadPlayers) {
-                logger.debug("Player '" + currentPlayer.getPlayer().getName() + "' is dead and accelerateDeadPlayers flag is set, sending" + " deadline immediately...");
-            } else {
-                processThreePlayerActions(currentPlayer);
-                givePenalityForLingeringOnSpawntile(currentPlayer);
-                graphics.sendEndActions();
-                graphics.waitForGraphics();
-                syncWithGraphics();
-                roundNumber++;
-            }
+
+            processThreePlayerActions(currentPlayer);
+            givePenalityForLingeringOnSpawntile(currentPlayer);
+            graphics.sendEndActions();
+            graphics.waitForGraphics();
+            syncWithGraphics();
+            roundNumber++;
+
             this.sendDeadline();
         }
     }
@@ -165,7 +161,7 @@ public class Game implements Runnable {
             }
 
             try {
-                currentPlayer.getPlayer().setTurnsLeft(2-turn);
+                currentPlayer.getPlayer().setTurnsLeft(2 - turn);
                 if (action.performAction(currentPlayer.getPlayer())) {
                     broadcastAction(action, currentPlayer);
                     validActions++;
@@ -179,14 +175,14 @@ public class Game implements Runnable {
 
             timeout = Math.max(0, timeout - (System.currentTimeMillis() - time));
             time = System.currentTimeMillis();
-        }     
+        }
         timeout = Math.max(0, timeout - (System.currentTimeMillis() - time));
         try {
             Thread.sleep(timeout);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        
+
         logger.info("==> Player " + currentPlayer.getPlayer() + " performed " + validActions + " valid actions.");
         if (validActions == 0) {
             currentPlayer.givePenality(10);
@@ -232,12 +228,12 @@ public class Game implements Runnable {
         }
         AIConnection ai = clients.get(1);
         ai.activate();
-        
+
         graphics.sendGamestate(round, map, clients);
         for (AIConnection client : clients) {
             client.sendGamestate(round, map, clients);
         }
-        
+
         Collections.rotate(clients, 1);
         return ai;
     }
