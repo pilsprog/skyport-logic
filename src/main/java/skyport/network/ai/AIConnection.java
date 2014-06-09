@@ -120,9 +120,8 @@ public class AIConnection extends Connection {
 
     public void setSpawnpoint(Tile spawnpoint) {
         logger.info("Player '" + player.getName() + "' spawns at " + spawnpoint.coords.getString() + ".");
-        player.position = spawnpoint;
+        player.setPosition(spawnpoint);
         player.setSpawn(spawnpoint);
-        player.position.playerOnTile = this.player;
     }
 
     public void clearAllMessages() {
@@ -137,10 +136,7 @@ public class AIConnection extends Connection {
     }
 
     public void respawn() {
-        player.position.playerOnTile = null;
-        player.position = player.getSpawn();
-        player.position.playerOnTile = this.player;
-        player.health = 100;
+        player.respawn();
         needsRespawn = false;
     }
 

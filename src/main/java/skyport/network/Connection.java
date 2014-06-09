@@ -17,10 +17,12 @@ import org.slf4j.LoggerFactory;
 
 import skyport.adapter.ActionMessageDeserializer;
 import skyport.adapter.PointAdapter;
+import skyport.adapter.TileSerializer;
 import skyport.exception.ProtocolException;
-import skyport.game.GameMap;
 import skyport.game.Player;
 import skyport.game.Point;
+import skyport.game.Tile;
+import skyport.game.World;
 import skyport.message.EndTurnMessage;
 import skyport.message.ErrorMessage;
 import skyport.message.GameStateMessage;
@@ -48,6 +50,7 @@ public abstract class Connection implements Runnable {
         .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES)
         .registerTypeAdapter(Point.class, new PointAdapter())
         .registerTypeAdapter(ActionMessage.class, new ActionMessageDeserializer())
+        .registerTypeAdapter(Tile.class, new TileSerializer())
         .create();
 
     public Connection(Socket socket) {
@@ -155,7 +158,7 @@ public abstract class Connection implements Runnable {
         return message;
     }
 
-    public void sendGamestate(int turn, GameMap map, List<AIConnection> playerlist) {
+    public void sendGamestate(int turn, World map, List<AIConnection> playerlist) {
         List<Player> players = new ArrayList<>();
         for (AIConnection ai : playerlist) {
             players.add(ai.getPlayer());

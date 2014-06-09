@@ -143,7 +143,7 @@ public class Game implements Runnable {
     }
 
     private void givePenalityForLingeringOnSpawntile(AIConnection currentPlayer) {
-        if (currentPlayer.getPlayer().position == currentPlayer.getPlayer().getSpawn()) {
+        if (currentPlayer.getPlayer().getPosition() == currentPlayer.getPlayer().getSpawn()) {
             logger.warn("Player " + currentPlayer.getPlayer() + " stayed on spawn too long.");
             currentPlayer.givePenality(10);
         }
@@ -218,10 +218,6 @@ public class Game implements Runnable {
     }
 
     private AIConnection sendGamestate(int round) {
-        TileType matrix[][] = world.returnAsRowMajorMatrix();
-
-        GameMap map = new GameMap(world.getJLength(), world.getKLength(), matrix);
-
         if (round != 0) {
             clients.get(0).deactivate();
             clients.get(0).clearAllMessages();
@@ -229,9 +225,9 @@ public class Game implements Runnable {
         AIConnection ai = clients.get(1);
         ai.activate();
 
-        graphics.sendGamestate(round, map, clients);
+        graphics.sendGamestate(round, world, clients);
         for (AIConnection client : clients) {
-            client.sendGamestate(round, map, clients);
+            client.sendGamestate(round, world, clients);
         }
 
         Collections.rotate(clients, 1);

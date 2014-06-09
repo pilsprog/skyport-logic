@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import skyport.exception.ProtocolException;
-import skyport.game.GameMap;
+import skyport.game.World;
 import skyport.message.EndActionsMessage;
 import skyport.message.GraphicsHandshakeMessage;
 import skyport.message.HighlightMessage;
@@ -93,7 +93,7 @@ public class GraphicsConnection extends Connection {
     }
 
     @Override
-    public void sendGamestate(int turn, GameMap map, List<AIConnection> playerlist) {
+    public void sendGamestate(int turn, World map, List<AIConnection> playerlist) {
         super.sendGamestate(turn, map, playerlist);
         isDoneProcessing = false;
     }

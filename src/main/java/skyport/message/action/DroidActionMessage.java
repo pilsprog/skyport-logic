@@ -27,7 +27,7 @@ public class DroidActionMessage extends ActionMessage implements OffensiveAction
 
     @Override
     public boolean performAction(Player player) throws ProtocolException {
-        if (player.position.tileType == TileType.SPAWN) {
+        if (player.getPosition().tileType == TileType.SPAWN) {
             throw new ProtocolException("Attempted to shoot droid from spawn.");
         }
         Droid droid;
@@ -52,7 +52,7 @@ public class DroidActionMessage extends ActionMessage implements OffensiveAction
             throw new ProtocolException("Got " + sequence.size() + " commands for the droid, but your droids level (" + droidLevel + ") only supports " + range + " steps.");
         }
         if (droid.setDirections(sequence, droidLevel)) {
-            droid.setPosition(player.position);
+            droid.setPosition(player.getPosition());
             int stepsTaken = droid.performShot(player, player.getTurnsLeft());
 
             this.sequence = sequence.subList(0, stepsTaken);

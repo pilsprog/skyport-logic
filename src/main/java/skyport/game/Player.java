@@ -9,13 +9,18 @@ import skyport.game.weapon.Weapon;
 
 public class Player {
     private String name;
-    public Tile position;
     public int health = 100;
     public int score = 0;
 
     public Weapon primaryWeapon;
     public Weapon secondaryWeapon;
 
+    @SuppressWarnings("unused")
+    private Point position;
+    
+    
+    private transient Tile pos;
+    
     public transient int rubidiumResources = 0;
     public transient int explosiumResources = 0;
     public transient int scrapResources = 0;
@@ -50,14 +55,15 @@ public class Player {
     }
 
     public boolean move(Direction direction) throws ProtocolException {
-        Tile next = this.position.getTileInDirection(direction);
+        Tile next = this.pos.getTileInDirection(direction);
         if (next != null && next.isAccessible()) {
             if (next.playerOnTile != null) {
                 throw new ProtocolException("Player " + next.playerOnTile.getName() + " is already on this tile.");
             }
-            this.position.playerOnTile = null;
-            this.position = next;
-            this.position.playerOnTile = this;
+            this.pos.playerOnTile = null;
+            this.pos = next;
+            this.pos.playerOnTile = this;
+            this.position = this.pos.coords;
             return true;
         } else if (next == null) {
             throw new InaccessibleTileException(direction);
@@ -122,5 +128,22 @@ public class Player {
         + ", prim. lvl:" + this.primaryWeapon.getLevel() 
         + ", sec. lvl.:" + this.secondaryWeapon.getLevel();
         return player;
+    }
+
+    public Tile getPosition() {
+        return pos;
+    }
+
+    public void setPosition(Tile spawnpoint) {
+        this.pos = spawnpoint;
+        this.pos.playerOnTile = this;
+        this.position = this.pos.coords;
+    }
+
+    public void respawn() {
+        this.pos = this.spawn;
+        this.health = 100;
+        this.position = this.pos.coords;
+        this.pos.playerOnTile = this;
     }
 }

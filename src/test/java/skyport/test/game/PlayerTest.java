@@ -19,8 +19,8 @@ public class PlayerTest {
     @Before
     public void initialize() {
        player = new Player();
-       player.position = new Tile(TileType.GRASS);
-       player.position.up = new Tile(TileType.VOID);
+       player.setPosition(new Tile(TileType.GRASS));
+       player.getPosition().up = new Tile(TileType.VOID);
     }
     
     @Test(expected=InaccessibleTileException.class)

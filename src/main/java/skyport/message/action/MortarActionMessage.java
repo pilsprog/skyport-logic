@@ -15,7 +15,7 @@ public class MortarActionMessage extends ActionMessage implements OffensiveActio
 
     @Override
     public boolean performAction(Player player) throws ProtocolException {
-        if (player.position.tileType == TileType.SPAWN) {
+        if (player.getPosition().tileType == TileType.SPAWN) {
             throw new ProtocolException("Attempted to shoot mortar from spawn.");
         }
         Mortar mortar;
@@ -26,7 +26,7 @@ public class MortarActionMessage extends ActionMessage implements OffensiveActio
         } else {
             throw new ProtocolException("Attempted to shoot the mortar, but doesn't have it.");
         }
-        mortar.setPosition(player.position);
+        mortar.setPosition(player.getPosition());
         mortar.setTarget(coordinates);
         return mortar.performShot(player, player.getTurnsLeft());
     }

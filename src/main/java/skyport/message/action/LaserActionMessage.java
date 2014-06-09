@@ -25,7 +25,7 @@ public class LaserActionMessage extends ActionMessage implements OffensiveAction
 
     @Override
     public boolean performAction(Player player) throws ProtocolException {
-        if (player.position.tileType == TileType.SPAWN) {
+        if (player.getPosition().tileType == TileType.SPAWN) {
             throw new ProtocolException("Attempted to shoot laser from spawn.");
         }
         Laser laser;
@@ -39,8 +39,8 @@ public class LaserActionMessage extends ActionMessage implements OffensiveAction
 
         if (direction != null) {
             laser.setDirection(direction);
-            laser.setPosition(player.position);
-            this.start = player.position.coords;
+            laser.setPosition(player.getPosition());
+            this.start = player.getPosition().coords;
             this.stop = laser.performShot(player, player.getTurnsLeft());
             return true;
         } else {

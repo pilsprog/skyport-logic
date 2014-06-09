@@ -2,19 +2,19 @@ package skyport.game;
 
 import java.util.Queue;
 
-public class World {
-    private Tile topTile;
-    private Tile[][] tiles;
-
+public class World {  
+    @SuppressWarnings("unused")
+    private Tile[][] data;
     private int jLength;
     private int kLength;
-
-    private Queue<Tile> spawnpoints;
+    
+    private transient Tile topTile;
+    private transient Queue<Tile> spawnpoints;
 
     public World(Tile[][] tiles, String filename, int dimension, Queue<Tile> spawnpoints) {
         this.jLength = dimension;
         this.kLength = dimension;
-        this.tiles = tiles;
+        this.data = tiles;
         this.topTile = tiles[0][0];
         this.spawnpoints = spawnpoints;
 
@@ -24,7 +24,6 @@ public class World {
         }
 
         enumerateCoordinates(topTile);
-        this.returnAsRowMajorMatrix();
     }
 
     public int getJLength() {
@@ -35,23 +34,7 @@ public class World {
         return this.kLength;
     }
 
-    public TileType[][] returnAsRowMajorMatrix() {
-        Tile currentJTile = topTile;
-        TileType matrix[][] = new TileType[jLength][kLength];
-        for (int j = 0; j < jLength; j++) {
-            Tile currentKTile = currentJTile;
-            for (int k = 0; k < kLength; k++) {
-                matrix[j][k] = currentKTile.tileType;
-                currentKTile = currentKTile.rightDown;
-                assert (matrix[j][k] == tiles[j][k].tileType);
-            }
-            currentJTile = currentJTile.leftDown;
-        }
-
-        return matrix;
-    }
-
-    public void enumerateCoordinates(Tile topTile) {
+    private void enumerateCoordinates(Tile topTile) {
         Tile currentJTile = topTile;
         for (int j = 0; j < jLength; j++) {
             Tile currentKTile = currentJTile;
@@ -97,24 +80,5 @@ public class World {
             currentJTile = currentJTile.leftDown;
         }
         return spawnpoints;
-    }
-
-    @Override
-    public String toString() {
-        String s = new String();
-        Tile currentJTile = topTile;
-        s += "[";
-        for (int j = 0; j < jLength; j++) {
-            Tile currentKTile = currentJTile;
-            s += "[";
-            for (int k = 0; k < kLength; k++) {
-                s += currentKTile.tileType.name().substring(0, 1) + ", ";
-                currentKTile = currentKTile.rightDown;
-            }
-            s += "],\n";
-            currentJTile = currentJTile.leftDown;
-        }
-        s += "]";
-        return s;
     }
 }

@@ -13,15 +13,15 @@ public class MineActionMessage extends ActionMessage {
 
     @Override
     public boolean performAction(Player player) throws ProtocolException {
-        TileType currentTileType = player.position.tileType;
+        TileType currentTileType = player.getPosition().tileType;
         if (!(currentTileType == TileType.RUBIDIUM || currentTileType == TileType.EXPLOSIUM || currentTileType == TileType.SCRAP)) {
             logger.info("==> Player " + player + " attempted to mine while not on a resource.");
             throw new ProtocolException("Tried to mine while not on a resource tile!");
         }
 
-        TileType tileType = player.position.tileType;
+        TileType tileType = player.getPosition().tileType;
         logger.info("==> Player " + player + " mining " + tileType);
-        player.position.mineTile();
+        player.getPosition().mineTile();
         switch (tileType) {
         case RUBIDIUM:
             player.rubidiumResources++;
