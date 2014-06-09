@@ -50,22 +50,6 @@ public class World {
         return spawnpoints;
     }
 
-    public int verifyNumberOfPlayersOnBoard() {
-        int players = 0;
-        Tile currentJTile = topTile;
-        for (int j = 0; j < jLength; j++) {
-            Tile currentKTile = currentJTile;
-            for (int k = 0; k < kLength; k++) {
-                if (currentKTile.playerOnTile != null) {
-                    players++;
-                }
-                currentKTile = currentKTile.rightDown;
-            }
-            currentJTile = currentJTile.leftDown;
-        }
-        return players;
-    }
-
     public int getNumberOfSpawnpoints() {
         int spawnpoints = 0;
         Tile currentJTile = topTile;

@@ -82,10 +82,6 @@ public class Game implements Runnable {
                 logger.info(client.getPlayer().toString());
             }
             logger.debug("###########################################################");
-            int playerNum = world.verifyNumberOfPlayersOnBoard();
-            if (playerNum != clients.size()) {
-                logger.warn(clients.size() + " players are supposed to be" + " on the field, but found " + playerNum + ". Possible inconsistency during movement?");
-            }
 
             long roundStartTime = System.nanoTime();
             double timeLeft = (gtsAsLong - ((roundStartTime - startTime) / 1000000000.0));
