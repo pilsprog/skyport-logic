@@ -188,7 +188,7 @@ public class Game implements Runnable {
     private void broadcastAction(ActionMessage action, AIConnection playerWhoPerformedTheAction) {
         logger.debug("Action was valid, re-broadcasting (FIXME).");
         action.setFrom(playerWhoPerformedTheAction.getPlayer().getName());
-        System.out.println("ACTION: " + action.toString());
+        logger.info("ACTION: " + action.toString());
 
         graphics.sendMessage(action);
         for (AIConnection player : clients) {
