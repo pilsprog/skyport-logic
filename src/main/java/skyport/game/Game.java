@@ -16,19 +16,19 @@ import skyport.network.graphics.GraphicsConnection;
 
 public class Game implements Runnable {
     private List<AIConnection> clients;
-    private int gameTimeoutSeconds;
+    private int gameTimeoutMillis;
     private int roundTimeMilliseconds;
     private World world;
     private GraphicsConnection graphics;
 
     private final Logger logger = LoggerFactory.getLogger(Game.class);
 
-    public Game(GraphicsConnection graphics, List<AIConnection> clients, int gameTimeoutSeconds, int roundTimeMilliseconds, World world) {
+    public Game(GraphicsConnection graphics, List<AIConnection> clients, int gameTimeoutMillis, int roundTimeMilliseconds, World world) {
         this.graphics = graphics;
         this.world = world;
         this.clients = clients;
         Collections.shuffle(this.clients);
-        this.gameTimeoutSeconds = gameTimeoutSeconds;
+        this.gameTimeoutMillis = gameTimeoutMillis;
         this.roundTimeMilliseconds = roundTimeMilliseconds;
     }
 
@@ -67,8 +67,7 @@ public class Game implements Runnable {
         graphics.sendEndActions();
         graphics.waitForGraphics();
         logger.debug("All clients have sent a loadout.");
-        long startTime = System.nanoTime();
-        long gtsAsLong = gameTimeoutSeconds;
+        long startTime = System.currentTimeMillis();
         int roundNumber = 1;
 
         boolean sixtyMarker = false;
@@ -83,25 +82,25 @@ public class Game implements Runnable {
             }
             logger.debug("###########################################################");
 
-            long roundStartTime = System.nanoTime();
-            double timeLeft = (gtsAsLong - ((roundStartTime - startTime) / 1000000000.0));
-            if (timeLeft < 60 && !sixtyMarker) {
+            long roundStartTime = System.currentTimeMillis();
+            double timeLeft = (gameTimeoutMillis - (roundStartTime - startTime));
+            if (timeLeft < 6000 && !sixtyMarker) {
                 graphics.sendMessage("60 seconds left!");
                 sixtyMarker = true;
             }
-            if (timeLeft < 30 && !thirtyMarker) {
+            if (timeLeft < 3000 && !thirtyMarker) {
                 graphics.sendMessage("30 seconds left!");
                 thirtyMarker = true;
             }
-            if (timeLeft < 20 && !twentyMarker) {
+            if (timeLeft < 2000 && !twentyMarker) {
                 graphics.sendMessage("20 seconds left!");
                 twentyMarker = true;
             }
-            if (timeLeft < 10 && !tenMarker) {
+            if (timeLeft < 1000 && !tenMarker) {
                 graphics.sendMessage("10 seconds left!");
                 tenMarker = true;
             }
-            if ((roundStartTime - startTime) > gtsAsLong * 1000000000) {
+            if ((roundStartTime - startTime) > gameTimeoutMillis) {
                 logger.info("Time over!");
                 int highestScore = -1000000000;
                 Player winningPlayer = clients.get(0).getPlayer();
