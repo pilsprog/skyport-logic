@@ -39,8 +39,8 @@ public class GraphicsConnection extends Connection {
     }
 
     @Override
-    protected void input(String json) throws ProtocolException, IOException {
-        Message message = gson.fromJson(json, Message.class);
+    protected void input(Message message) throws ProtocolException, IOException {
+
         String text = message.getMessage();
         if (text == null) {
             logger.warn("Unexpected packet: " + text);
@@ -66,30 +66,30 @@ public class GraphicsConnection extends Connection {
         }
     }
 
-    protected boolean parseHandshake(String json) throws ProtocolException {
-        GraphicsHandshakeMessage handshake = gson.fromJson(json, GraphicsHandshakeMessage.class);
-        String message = handshake.getMessage();
-        if (!message.equals("connect")) {
-            throw new ProtocolException("Expected 'connect' handshake, but got '" + message + "' key.");
-        }
+    protected boolean parseHandshake(Message message) throws ProtocolException {
+        if(message instanceof GraphicsHandshakeMessage) {
+            GraphicsHandshakeMessage handshake = (GraphicsHandshakeMessage)message;
+        
+            int revision = handshake.getRevision();
+            if (revision != 1) {
+                throw new ProtocolException("Wrong protocol revision: supporting 1, but got " + revision + ".");
+            }
+            if (!handshake.validatePassword(this.password)) {
+                logger.warn("GUI sent wrong password.");
+                throw new ProtocolException("Wrong password!");
+            }
+            logger.debug("Correct password.");
+            gotHandshake = true;
 
-        int revision = handshake.getRevision();
-        if (revision != 1) {
-            throw new ProtocolException("Wrong protocol revision: supporting 1, but got " + revision + ".");
-        }
-        if (!handshake.validatePassword(this.password)) {
-            logger.warn("GUI sent wrong password.");
-            throw new ProtocolException("Wrong password!");
-        }
-        logger.debug("Correct password.");
-        gotHandshake = true;
+            String laserStyle = handshake.getLaserStyle();
+            if (laserStyle.equals("start-stop")) {
+                alternativeLaserStyle = true;
+            }
+            return true;
 
-        String laserStyle = handshake.getLaserStyle();
-        if (laserStyle.equals("start-stop")) {
-            alternativeLaserStyle = true;
+        } else {
+            throw new ProtocolException("Expected 'connect' handshake, but got '" + message.getMessage() + "' key.");
         }
-
-        return true;
     }
 
     @Override

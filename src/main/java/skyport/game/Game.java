@@ -215,12 +215,10 @@ public class Game implements Runnable {
 
     private AIConnection sendGamestate(int round) {
         if (round != 0) {
-            clients.get(0).deactivate();
             clients.get(0).clearAllMessages();
         }
-        AIConnection ai = clients.get(1);
-        ai.activate();
-
+        AIConnection ai = clients.get(0);
+        
         graphics.sendGamestate(round, world, clients);
         for (AIConnection client : clients) {
             client.sendGamestate(round, world, clients);

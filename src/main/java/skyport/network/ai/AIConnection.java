@@ -13,6 +13,7 @@ import skyport.game.Util;
 import skyport.game.weapon.Weapon;
 import skyport.message.HandshakeMessage;
 import skyport.message.LoadoutMessage;
+import skyport.message.Message;
 import skyport.message.action.ActionMessage;
 import skyport.network.Connection;
 
@@ -21,7 +22,6 @@ public class AIConnection extends Connection {
     private boolean gotLoadout = false;
     public boolean hasToPass = false;
     public boolean needsRespawn = false;
-    private boolean active = false;
 
     private final Logger logger = LoggerFactory.getLogger(AIConnection.class);
 
@@ -36,8 +36,8 @@ public class AIConnection extends Connection {
         super.run();
         while (!gotLoadout) {
             try {
-                String json = this.readLine();
-                parseLoadout(json);
+                Message message = gson.fromJson(this.readLine(), Message.class);
+                parseLoadout(message);
             } catch (ProtocolException e) {
                 this.sendError(e.getMessage());
             } catch (IOException e) {
@@ -54,30 +54,20 @@ public class AIConnection extends Connection {
     }
 
     @Override
-    protected void input(String json) throws IOException, ProtocolException {
-        if(!active) {
-            this.sendError("Message sent out of turn.");
-            return;
-        }
-        
-        ActionMessage actionMessage = gson.fromJson(json, ActionMessage.class);
-        String message = actionMessage.getMessage();
-        if (message == null) {
-            throw new ProtocolException("Unexpected packet: '" + json + "'.");
-        }
-        if (message.equals("action")) {
-            messages.add(actionMessage);
+    protected void input(Message message) throws IOException, ProtocolException {
+        if (message instanceof ActionMessage) {
+            messages.add((ActionMessage)message);
         } else {
-            throw new ProtocolException("Unexpected message, got '" + message + "' but expected 'action'.");
+            throw new ProtocolException("Unexpected message, got '" + message.getMessage() + "' but expected 'action'.");
         }
     }
 
-    private void parseLoadout(String json) throws ProtocolException {
-        LoadoutMessage loadout = gson.fromJson(json, LoadoutMessage.class);
-        String message = loadout.getMessage();
-        if (!message.equals("loadout")) {
-            throw new ProtocolException("Expected 'loadout', but got '" + message + "' key.");
+    private void parseLoadout(Message message) throws ProtocolException {
+        if (!(message instanceof LoadoutMessage)) {
+            throw new ProtocolException("Expected 'loadout', but got '" + message.getMessage() + "'.");
         }
+        
+        LoadoutMessage loadout = (LoadoutMessage)message;
         Weapon primary = loadout.getPrimaryWeapon();
         Weapon secondary = loadout.getSecondaryWeapon();
 
@@ -100,12 +90,12 @@ public class AIConnection extends Connection {
         }
     }
 
-    protected boolean parseHandshake(String json) throws ProtocolException {
-        HandshakeMessage message = gson.fromJson(json, HandshakeMessage.class);
-        String m = message.getMessage();
-        if (!m.equals("connect")) {
-            throw new ProtocolException("Expected 'connect' handshake, but got '" + m + "' key.");
+    protected boolean parseHandshake(Message m) throws ProtocolException {
+        if (!(m instanceof HandshakeMessage)) {
+            throw new ProtocolException("Expected 'connect' handshake, but got '" + m.getMessage());
         }
+        
+        HandshakeMessage message = (HandshakeMessage)m;
         int revision = message.getRevision();
         if (revision != 1) {
             throw new ProtocolException("Wrong protocol revision: supporting 1, but got " + revision + ".");
@@ -147,13 +137,5 @@ public class AIConnection extends Connection {
 
     public Player getPlayer() {
         return player;
-    }
-
-    public synchronized void deactivate() {
-        this.active = false;
-    }
-
-    public synchronized void activate() {
-       this.active = true;
     }
 }

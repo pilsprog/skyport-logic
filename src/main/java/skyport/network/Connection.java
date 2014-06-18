@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import skyport.adapter.ActionMessageDeserializer;
+import skyport.adapter.MessageDeserializer;
 import skyport.adapter.PointAdapter;
 import skyport.adapter.TileSerializer;
 import skyport.exception.ProtocolException;
@@ -49,6 +50,7 @@ public abstract class Connection implements Runnable {
     protected Gson gson = new GsonBuilder()
         .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES)
         .registerTypeAdapter(Point.class, new PointAdapter())
+        .registerTypeAdapter(Message.class, new MessageDeserializer())
         .registerTypeAdapter(ActionMessage.class, new ActionMessageDeserializer())
         .registerTypeAdapter(Tile.class, new TileSerializer())
         .create();
@@ -71,9 +73,9 @@ public abstract class Connection implements Runnable {
         return line;
     }
 
-    protected abstract boolean parseHandshake(String json) throws ProtocolException;
+    protected abstract boolean parseHandshake(Message json) throws ProtocolException;
 
-    protected abstract void input(String json) throws IOException, ProtocolException;
+    protected abstract void input(Message json) throws IOException, ProtocolException;
 
     private void sendMessage(String json) {
         try {
@@ -108,8 +110,8 @@ public abstract class Connection implements Runnable {
     public void run() {
         while (!gotHandshake) {
             try {
-                String json = this.readLine();
-                if (parseHandshake(json)) {
+                Message message = gson.fromJson(this.readLine(), Message.class);
+                if (parseHandshake(message)) {
                     Message success = new StatusMessage(true);
                     this.sendMessage(success);
                 } else {
@@ -127,7 +129,7 @@ public abstract class Connection implements Runnable {
     protected void parseActions() {
         for (;;) {
             try {
-                String json = this.readLine();
+                Message json = gson.fromJson(this.readLine(), Message.class);
                 this.input(json);
             } catch (ProtocolException e) {
                 this.sendError(e.getMessage());
