@@ -24,7 +24,11 @@ import skyport.network.graphics.GraphicsConnection;
 public class Skyport {
     final static Logger logger = LoggerFactory.getLogger(Skyport.class);
 
-    final static Options options = new Options().addOption("port", "p", false, "The port to run the server on.").addOption("turn", "s", false, "How long a turn should last in seconds.").addOption("game", "t", false, "How long a game should last in seconds.").addOption("map", "f", true, "The file that contains the map.");
+    final static Options options = new Options()
+        .addOption("port", "p", false, "The port to run the server on.")
+        .addOption("turn", "s", false, "How long a turn should last in seconds.")
+        .addOption("game", "t", false, "How long a game should last in seconds.")
+        .addOption("map", "f", true, "The file that contains the map.");
 
     public static void main(String args[]) throws InterruptedException, ParseException {
         PropertyConfigurator.configure("log4j.properties");
