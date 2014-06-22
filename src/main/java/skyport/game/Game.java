@@ -4,11 +4,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import skyport.exception.ProtocolException;
+import skyport.message.GameStateMessage;
+import skyport.message.Message;
 import skyport.message.action.ActionMessage;
 import skyport.message.action.OffensiveAction;
 import skyport.network.ai.AIConnection;
@@ -20,6 +23,8 @@ public class Game implements Runnable {
     private int roundTimeMilliseconds;
     private World world;
     private GraphicsConnection graphics;
+    
+    private int round = 0;
 
     private final Logger logger = LoggerFactory.getLogger(Game.class);
 
@@ -46,7 +51,8 @@ public class Game implements Runnable {
         }
 
         logger.info("Sending initial gamestart packet.");
-        sendGamestate(0);
+        sendGamestate();
+        round++;
         // we just loop until everyone has selected a loadout.
         boolean allAreReady = true;
         while (true) {
@@ -68,7 +74,6 @@ public class Game implements Runnable {
         graphics.waitForGraphics();
         logger.debug("All clients have sent a loadout.");
         long startTime = System.currentTimeMillis();
-        int roundNumber = 1;
 
         boolean sixtyMarker = false;
         boolean thirtyMarker = false;
@@ -123,17 +128,20 @@ public class Game implements Runnable {
                     letClientsThink();
                 }
             }
-            AIConnection currentPlayer = sendGamestate(roundNumber);
-            logger.info("############### START TURN " + roundNumber + " PLAYER: '" + currentPlayer.getPlayer().getName() + "' ###############");
+            AIConnection current = clients.get(0);
+            current.clearAllMessages();
+            sendGamestate();
+            logger.info("############### START TURN " + round + " PLAYER: '" + current.getPlayer().getName() + "' ###############");
 
-            processThreePlayerActions(currentPlayer);
-            givePenalityForLingeringOnSpawntile(currentPlayer);
+            processThreePlayerActions(current);
+            givePenalityForLingeringOnSpawntile(current);
             graphics.sendEndActions();
             graphics.waitForGraphics();
             syncWithGraphics();
-            roundNumber++;
 
             this.sendDeadline();
+            round++;
+            Collections.rotate(clients, 1);
         }
     }
 
@@ -149,7 +157,7 @@ public class Game implements Runnable {
         long timeout = this.roundTimeMilliseconds;
         long time = System.currentTimeMillis();
         for (int turn = 0; turn < 3; turn++) {
-            ActionMessage action = currentPlayer.getNextMessage(timeout, TimeUnit.MILLISECONDS);
+            ActionMessage action = currentPlayer.next(timeout, TimeUnit.MILLISECONDS);
 
             if (action == null) {
                 break;
@@ -205,19 +213,13 @@ public class Game implements Runnable {
         }
     }
 
-    private AIConnection sendGamestate(int round) {
-        if (round != 0) {
-            clients.get(0).clearAllMessages();
-        }
-        AIConnection ai = clients.get(0);
+    private void sendGamestate() {
+        List<Player> players = clients.stream()
+                .map(AIConnection::getPlayer)
+                .collect(Collectors.toList());
         
-        graphics.sendGamestate(round, world, clients);
-        for (AIConnection client : clients) {
-            client.sendGamestate(round, world, clients);
-        }
-
-        Collections.rotate(clients, 1);
-        return ai;
+        Message message = new GameStateMessage(round, world, players);
+        clients.stream().forEach(c -> c.sendMessage(message));
     }
 
     private void sendDeadline() {
