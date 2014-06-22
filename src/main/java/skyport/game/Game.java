@@ -152,7 +152,7 @@ public class Game implements Runnable {
             ActionMessage action = currentPlayer.getNextMessage(timeout, TimeUnit.MILLISECONDS);
 
             if (action == null) {
-                continue;
+                break;
             }
 
             try {
@@ -169,12 +169,6 @@ public class Game implements Runnable {
 
             timeout = Math.max(0, timeout - (System.currentTimeMillis() - time));
             time = System.currentTimeMillis();
-        }
-        timeout = Math.max(0, timeout - (System.currentTimeMillis() - time));
-        try {
-            Thread.sleep(timeout);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
 
         logger.info("==> Player " + currentPlayer.getPlayer() + " performed " + validActions + " valid actions.");
