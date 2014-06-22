@@ -20,7 +20,7 @@ public abstract class ActionMessage extends Message {
         this.from = name;
     }
 
-    public boolean performAction(Player player) throws ProtocolException {
+    public void performAction(Player player) throws ProtocolException {
         throw new ProtocolException("Invalid action: '" + type + "'.");
     }
 }

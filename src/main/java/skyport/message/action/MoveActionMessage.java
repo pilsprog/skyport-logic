@@ -12,8 +12,8 @@ public class MoveActionMessage extends ActionMessage {
     }
 
     @Override
-    public boolean performAction(Player player) throws ProtocolException {
-        return player.move(direction);
+    public void performAction(Player player) throws ProtocolException {
+        player.move(direction);
     }
     
     @Override

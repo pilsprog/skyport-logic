@@ -157,12 +157,11 @@ public class Game implements Runnable {
 
             try {
                 currentPlayer.getPlayer().setTurnsLeft(2 - turn);
-                if (action.performAction(currentPlayer.getPlayer())) {
-                    broadcastAction(action, currentPlayer);
-                    validActions++;
-                    if (action instanceof OffensiveAction) {
-                        return;
-                    }
+                action.performAction(currentPlayer.getPlayer());
+                broadcastAction(action, currentPlayer);
+                validActions++;
+                if (action instanceof OffensiveAction) {
+                    return;
                 }
             } catch (ProtocolException e) {
                 currentPlayer.sendError(e.getMessage());

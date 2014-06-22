@@ -51,25 +51,16 @@ public class UpgradeActionMessage extends ActionMessage {
     }
 
     @Override
-    public boolean performAction(Player player) throws ProtocolException {
+    public void performAction(Player player) throws ProtocolException {
         logger.debug(player + " upgrading his " + weapon + ".");
         if (player.primaryWeapon.getName().equals(weapon)) {
             logger.debug("Upgrading primary weapon (" + weapon + ").");
-            boolean success = subtractResourcesForWeaponUpgrade(player, weapon, player.primaryWeapon.getLevel());
-            if (success) {
-                player.primaryWeapon.upgrade();
-                return true;
-            } else {
-                return false;
-            }
+            subtractResourcesForWeaponUpgrade(player, weapon, player.primaryWeapon.getLevel());
+            player.primaryWeapon.upgrade();
+           
         } else if (player.secondaryWeapon.getName().equals(weapon)) {
-            boolean success = subtractResourcesForWeaponUpgrade(player, weapon, player.secondaryWeapon.getLevel());
-            if (success) {
-                player.secondaryWeapon.upgrade();
-                return true;
-            } else {
-                return false;
-            }
+            subtractResourcesForWeaponUpgrade(player, weapon, player.secondaryWeapon.getLevel());
+            player.secondaryWeapon.upgrade();    
         } else {
             throw new ProtocolException("Tried to upgrade weapon '" + weapon + "', but doesn't have it.");
         }

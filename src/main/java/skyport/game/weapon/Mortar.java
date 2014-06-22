@@ -19,6 +19,14 @@ public class Mortar extends Weapon {
     public Mortar() {
         super("mortar");
     }
+    
+    public int range() {
+        return 1 + level;
+    }
+
+    public int damage() {
+        return level == 3 ? 25 : 20;
+    }
 
     public void setPosition(Tile positionArg) {
         position = positionArg;
@@ -30,16 +38,9 @@ public class Mortar extends Weapon {
 
     public boolean performShot(Player dealingPlayer, int turnsLeft) throws ProtocolException {
         logger.info("==> '" + dealingPlayer.getName() + "' performing mortar shot at '" + relativeTargetVector.getString() + "'.");
-        int range = 2;
-        int baseDamage = 20;
-        if (level == 2) {
-            baseDamage = 20;
-            range = 3;
-        }
-        if (level == 3) {
-            baseDamage = 25;
-            range = 4;
-        }
+        int range = this.range();
+        int baseDamage = this.damage();
+        
         int damage = (int) Math.round(baseDamage + 0.2 * turnsLeft * baseDamage);
         // TODO: move this down to explode() function
         if (!isTileInRange(range)) {

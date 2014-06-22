@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import skyport.exception.ProtocolException;
 import skyport.game.Direction;
 import skyport.game.Player;
 import skyport.game.Tile;
@@ -24,26 +25,28 @@ public class Droid extends Weapon {
         this.position = position;
         return true;
     }
-
-    public boolean setDirections(List<Direction> directionSequence, int level) {
-        directions = directionSequence;
-        this.level = level;
-        return true;
+    
+    public int range() {
+        return 2 + level;
+    }
+    
+    public int damage() {
+        return 20 + 2 * level;
     }
 
-    public int performShot(Player dealingPlayer, int turnsLeft) {
+    public void setDirections(List<Direction> sequence) throws ProtocolException {
+        if (sequence.size() > this.range()) {
+            logger.warn("Got " + sequence.size() + " commands for the droid, but your droids level (" + level + ") only supports " + range() + " steps.");
+            throw new ProtocolException("Got " + sequence.size() + " commands for the droid, but your droids level (" + level + ") only supports " + range() + " steps.");
+        }
+        this.directions = sequence;
+    }
+
+    public void performShot(Player dealingPlayer, int turnsLeft) {
         logger.info("==> '" + dealingPlayer.getName() + "' performing droid shot with " + directions.size() + " steps.");
-        int range = 3;
-        int damage = 22;
-        int validStepsTaken = 0;
-        if (level == 2) {
-            damage = 24;
-            range = 4;
-        }
-        if (level == 3) {
-            damage = 26;
-            range = 5;
-        }
+        int range = range();
+        int damage = damage();
+        int validSteps = 0;
 
         for (int i = 0; i < range; i++) {
             if (i > directions.size() - 1) {
@@ -54,12 +57,13 @@ public class Droid extends Weapon {
                 logger.warn("Droid hit inaccessible tile, detonating...");
                 break;
             } else {
-                validStepsTaken++;
+                validSteps++;
                 logger.debug("droid executed command successfully, reading next instruction...");
             }
         }
         explode(dealingPlayer, turnsLeft, damage);
-        return validStepsTaken;
+        
+        logger.debug("droid steps taken: " + validSteps);
     }
 
     private void explode(Player dealingPlayer, int turnsLeft, int damage) {

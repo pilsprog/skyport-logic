@@ -1,5 +1,8 @@
 package skyport.message.action;
 
+import java.util.Optional;
+import java.util.stream.Stream;
+
 import skyport.exception.ProtocolException;
 import skyport.game.Direction;
 import skyport.game.Player;
@@ -24,28 +27,23 @@ public class LaserActionMessage extends ActionMessage implements OffensiveAction
     }
 
     @Override
-    public boolean performAction(Player player) throws ProtocolException {
+    public void performAction(Player player) throws ProtocolException {
         if (player.getPosition().tileType == TileType.SPAWN) {
             throw new ProtocolException("Attempted to shoot laser from spawn.");
         }
-        Laser laser;
-        if (player.primaryWeapon.getName().equals("laser")) {
-            laser = (Laser) player.primaryWeapon;
-        } else if (player.secondaryWeapon.getName().equals("laser")) {
-            laser = (Laser) player.secondaryWeapon;
-        } else {
-            throw new ProtocolException("Attemted to use laser, but doesn't have it.");
-        }
+        Laser laser = Stream.of(player.primaryWeapon, player.secondaryWeapon)
+                .filter(w -> w instanceof Laser)
+                .map(w -> (Laser)w)
+                .findFirst()
+                .orElseThrow(() -> new ProtocolException("Attempted to use laser, but doesn't have it."));
 
-        if (direction != null) {
-            laser.setDirection(direction);
-            laser.setPosition(player.getPosition());
-            this.start = player.getPosition().coords;
-            this.stop = laser.performShot(player, player.getTurnsLeft());
-            return true;
-        } else {
-            throw new ProtocolException("Invalid shot: unknown direction '" + direction + "'.");
-        }
+        Direction dir = Optional.ofNullable(direction)
+            .orElseThrow(() -> new ProtocolException("Invalid shot: unknown direction '" + direction + "'."));
+           
+        laser.setDirection(dir);
+        laser.setPosition(player.getPosition());
+        this.start = player.getPosition().coords;
+        this.stop = laser.performShot(player, player.getTurnsLeft());     
     }
     
     @Override

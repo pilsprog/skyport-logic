@@ -54,7 +54,7 @@ public class Player {
         return spawn;
     }
 
-    public boolean move(Direction direction) throws ProtocolException {
+    public void move(Direction direction) throws ProtocolException {
         Tile next = this.pos.getTileInDirection(direction);
         if (next != null && next.isAccessible()) {
             if (next.playerOnTile != null) {
@@ -64,7 +64,6 @@ public class Player {
             this.pos = next;
             this.pos.playerOnTile = this;
             this.position = this.pos.coords;
-            return true;
         } else if (next == null) {
             throw new InaccessibleTileException(direction);
         } else {

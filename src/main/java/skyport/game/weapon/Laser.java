@@ -18,6 +18,14 @@ public class Laser extends Weapon {
     public Laser() {
         super("laser");
     }
+    
+    public int range() {
+        return 4 + level;
+    }
+
+    public int damage() {
+        return 16 + 2 * (level - 1);
+    }
 
     public void setPosition(Tile position) {
         this.position = position;
@@ -29,16 +37,9 @@ public class Laser extends Weapon {
 
     public Point performShot(Player dealingPlayer, int turnsLeft) {
         logger.info("==> '" + dealingPlayer.getName() + "' performing laser shot in direction " + direction + "!");
-        int range = 5;
-        int baseDamage = 16;
-        if (this.getLevel() == 2) {
-            baseDamage = 18;
-            range = 6;
-        }
-        if (this.getLevel() == 3) {
-            baseDamage = 22;
-            range = 7;
-        }
+        int range = range();
+        int baseDamage = damage();
+       
         int damage = (int) Math.round(baseDamage + 0.2 * turnsLeft * baseDamage);
         // damage adjusted for unused turns
         Tile currentTile = position;
