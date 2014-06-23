@@ -165,7 +165,7 @@ public class Game implements Runnable {
 
             try {
                 currentPlayer.getPlayer().setTurnsLeft(2 - turn);
-                action.performAction(currentPlayer.getPlayer());
+                action.performAction(currentPlayer.getPlayer(), world);
                 broadcastAction(action, currentPlayer);
                 validActions++;
                 if (action instanceof OffensiveAction) {

@@ -2,6 +2,7 @@ package skyport.message.action;
 
 import skyport.exception.ProtocolException;
 import skyport.game.Player;
+import skyport.game.World;
 import skyport.message.Message;
 
 public abstract class ActionMessage extends Message {
@@ -20,7 +21,7 @@ public abstract class ActionMessage extends Message {
         this.from = name;
     }
 
-    public void performAction(Player player) throws ProtocolException {
+    public void performAction(Player player, World map) throws ProtocolException {
         throw new ProtocolException("Invalid action: '" + type + "'.");
     }
 }

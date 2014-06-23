@@ -1,6 +1,6 @@
 package skyport.game.weapon;
 
-public class Weapon {
+public abstract class Weapon {
     private String name;
     protected int level = 1;
 
@@ -24,6 +24,9 @@ public class Weapon {
     public void upgrade() {
         this.level++;
     }
+    
+    public abstract int damage();
+    public abstract int aoe();
 
     @Override
     public boolean equals(Object o) {

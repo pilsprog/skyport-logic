@@ -42,7 +42,7 @@ public class WorldParser {
             }
         }
 
-        return new World(tiles, file, jLength, spawnpoints);
+        return new World(tiles, jLength, spawnpoints);
     }
 
     private void parseHeader(Scanner scanner) {

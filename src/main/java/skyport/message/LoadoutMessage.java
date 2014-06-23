@@ -1,5 +1,6 @@
 package skyport.message;
 
+import skyport.exception.ProtocolException;
 import skyport.game.weapon.Droid;
 import skyport.game.weapon.Laser;
 import skyport.game.weapon.Mortar;
@@ -9,7 +10,7 @@ public class LoadoutMessage extends Message {
     private String primaryWeapon;
     private String secondaryWeapon;
     
-    private Weapon weapon(String weapon) {
+    private Weapon weapon(String weapon) throws ProtocolException {
         switch(weapon.toLowerCase()) {
         case "droid":
             return new Droid();
@@ -18,15 +19,15 @@ public class LoadoutMessage extends Message {
         case "mortar":
             return new Mortar();
         default:
-            return new Weapon(weapon);
+            throw new ProtocolException("No such weapon: " + weapon);
         }
     }
 
-    public Weapon getPrimaryWeapon() {
+    public Weapon getPrimaryWeapon() throws ProtocolException {
         return weapon(primaryWeapon);
     }
 
-    public Weapon getSecondaryWeapon() {
+    public Weapon getSecondaryWeapon() throws ProtocolException {
         return weapon(secondaryWeapon);
     }
 }

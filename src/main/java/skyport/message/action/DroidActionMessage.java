@@ -2,15 +2,25 @@ package skyport.message.action;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import skyport.exception.ProtocolException;
 import skyport.game.Direction;
 import skyport.game.Player;
+import skyport.game.Point;
+import skyport.game.Tile;
 import skyport.game.TileType;
+import skyport.game.World;
 import skyport.game.weapon.Droid;
 
 public class DroidActionMessage extends ActionMessage implements OffensiveAction {
     private List<Direction> sequence;
+    
+    private transient final Logger logger = LoggerFactory.getLogger(Droid.class);
 
     public List<Direction> getPath() {
         return sequence;
@@ -21,22 +31,51 @@ public class DroidActionMessage extends ActionMessage implements OffensiveAction
     }
 
     @Override
-    public void performAction(Player player) throws ProtocolException {
+    public void performAction(Player player, World map) throws ProtocolException {
         if (player.getPosition().tileType == TileType.SPAWN) {
             throw new ProtocolException("Attempted to shoot droid from spawn.");
         }
-        Droid droid;
-        if (player.primaryWeapon.getName().equals("droid")) {
-            droid = (Droid) player.primaryWeapon;
-        } else if (player.secondaryWeapon.getName().equals("droid")) {
-            droid = (Droid) player.secondaryWeapon;
-        } else {
-            throw new ProtocolException("Attempted to shoot the droid, but doesn't have it.");
+        Droid droid = Stream
+                .of(player.primaryWeapon, player.secondaryWeapon)
+                .filter(w -> w instanceof Droid)
+                .map(w -> (Droid)w)
+                .findFirst()
+                .orElseThrow(() ->
+                    new ProtocolException("Attempted to shoot the droid, but doesn't have it."));
+        
+        List<Point> path = sequence.stream()
+            .limit(droid.radius())
+            .map(d -> d.point)
+            .collect(Collectors.toList());
+        
+        logger.info("==> '" + player.getName() + "' performing droid shot with " + path.size() + " steps.");
+        
+        Point point = player.getPosition().coords;
+        for (Point p : path) {
+            point = point.pluss(p);
+            if(!map.tileAt(p)
+                   .map(Tile::isAccessible)
+                   .orElse(false)) {
+                logger.info("Droid hit inaccessible tile.");
+               break;
+            }
         }
-
-        droid.setDirections(this.sequence);
-        droid.setPosition(player.getPosition());
-        droid.performShot(player, player.getTurnsLeft());    
+        
+        logger.info("Droid detonating.");
+        final Point stop = point;
+        
+        int damage = droid.damage();
+        int aoe = droid.aoe();
+        map.tileAt(stop).ifPresent(tile -> {
+            tile.damageTile(damage, player); 
+            Stream.of(Direction.values())
+                .map(d -> d.point)
+                .map(v -> stop.pluss(v))
+                .forEach(p -> 
+                    map.tileAt(p)
+                       .ifPresent(t -> 
+                           t.damageTile(aoe, player)));
+        });    
     }
     
     @Override

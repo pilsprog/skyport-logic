@@ -6,13 +6,14 @@ import org.slf4j.LoggerFactory;
 import skyport.exception.ProtocolException;
 import skyport.game.Player;
 import skyport.game.TileType;
+import skyport.game.World;
 
 public class MineActionMessage extends ActionMessage {
 
     private transient final Logger logger = LoggerFactory.getLogger(MineActionMessage.class);
 
     @Override
-    public void performAction(Player player) throws ProtocolException {
+    public void performAction(Player player, World map) throws ProtocolException {
         TileType currentTileType = player.getPosition().tileType;
         if (!(currentTileType == TileType.RUBIDIUM || currentTileType == TileType.EXPLOSIUM || currentTileType == TileType.SCRAP)) {
             logger.info("==> Player " + player + " attempted to mine while not on a resource.");

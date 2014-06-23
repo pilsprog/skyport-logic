@@ -82,7 +82,7 @@ public class Player {
             return;
         }
         logger.debug("'" + this.name + "' received " + hitpoints + " damage from '" + dealingPlayer.getName() + "'!");
-        this.health -= hitpoints;
+        this.health -= (int) Math.round(hitpoints + 0.2 * dealingPlayer.getTurnsLeft() * hitpoints);
         if (!(dealingPlayer.name.equals(this.name))) {
             dealingPlayer.givePoints(hitpoints); // damaged user other than
             // self, award points
