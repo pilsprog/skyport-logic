@@ -26,6 +26,7 @@ import skyport.game.weapon.Mortar;
 import skyport.message.action.ActionMessage;
 import skyport.message.action.DroidActionMessage;
 import skyport.message.action.LaserActionMessage;
+import skyport.message.action.MineActionMessage;
 import skyport.message.action.MortarActionMessage;
 import skyport.message.action.MoveActionMessage;
 import skyport.message.action.UpgradeActionMessage;
@@ -101,6 +102,20 @@ public class ActionMessageTest {
     }
     
     @Test
+    public void mineActionMessageTest() throws ProtocolException {
+        player1.getPosition().tileType = TileType.RUBIDIUM;
+        player1.getPosition().resources = 1;
+        player1.setLoadout(new Droid(), new Laser());
+        
+        ActionMessage message = new MineActionMessage();
+        message.performAction(player1, world);
+        
+        assertThat(player1.rubidiumResources, equalTo(1));
+        assertThat(player1.explosiumResources, equalTo(0));
+        assertThat(player1.scrapResources, equalTo(0));
+        assertThat(player1.getPosition().tileType, equalTo(TileType.GRASS));
+    }
+    
     @Test
     public void moveActionMessageTest() throws ProtocolException {
         player1.setLoadout(new Droid(), new Laser());
