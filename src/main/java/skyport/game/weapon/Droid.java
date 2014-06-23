@@ -92,29 +92,29 @@ public class Droid extends Weapon {
 
     boolean performOneStep(Direction direction) {
         logger.debug("Droid moving '" + direction + "'");
-        if (position.up == null || position.up.tileType == TileType.SPAWN || position.up.tileType == TileType.ROCK || position.up.tileType == TileType.VOID) {
-            return false;
-        }
         switch (direction) {
         case UP:
             position = position.up;
-            return true;
+            break;
         case DOWN:
             position = position.down;
-            return true;
+            break;
         case LEFT_UP:
             position = position.leftUp;
-            return true;
+            break;
         case LEFT_DOWN:
             position = position.leftDown;
-            return true;
+            break;
         case RIGHT_UP:
             position = position.rightUp;
-            return true;
+            break;
         case RIGHT_DOWN:
             position = position.rightDown;
-            return true;
+            break;
         }
-        return true;
+        return (position == null 
+                || position.tileType == TileType.SPAWN 
+                || position.tileType == TileType.ROCK 
+                || position.tileType == TileType.VOID);      
     }
 }
