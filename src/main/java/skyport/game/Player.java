@@ -145,4 +145,26 @@ public class Player {
         this.position = this.pos.coords;
         this.pos.playerOnTile = this;
     }
+
+    public void useResources(TileType resource, int resources) throws ProtocolException {
+        switch(resource) {
+        case RUBIDIUM:
+            if (resources <= this.rubidiumResources) {
+                this.rubidiumResources -= resources;
+            } 
+            return;
+        case EXPLOSIUM:
+            if (resources <= this.explosiumResources) {
+                this.explosiumResources -= resources;
+            }           
+            return;
+        case SCRAP:
+            if (resources <= this.scrapResources) {
+                this.scrapResources -= resources;
+            } 
+           return;
+        default:
+        }
+        throw new ProtocolException("Tried to upgrade the but not enough " + resource.toString());
+    }
 }

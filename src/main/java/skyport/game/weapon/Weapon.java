@@ -1,5 +1,8 @@
 package skyport.game.weapon;
 
+import skyport.exception.ProtocolException;
+import skyport.game.TileType;
+
 public abstract class Weapon {
     private String name;
     protected int level = 1;
@@ -21,12 +24,20 @@ public abstract class Weapon {
         return this.level;
     }
 
-    public void upgrade() {
+    public void upgrade() throws ProtocolException {
+        if (this.level >= 3) {
+            throw new ProtocolException("Tried to upgrade " + this.name + ", but it is already level 3.");
+        }
         this.level++;
     }
     
     public abstract int damage();
     public abstract int aoe();
+    public abstract TileType resource();
+    
+    public int resources() {
+        return level == 1 ? 4 : 5;
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -1,5 +1,7 @@
 package skyport.game.weapon;
 
+import skyport.game.TileType;
+
 
 public class Droid extends Weapon {
 
@@ -21,5 +23,10 @@ public class Droid extends Weapon {
     
     public int aoe() {
         return 10;
+    }
+
+    @Override
+    public TileType resource() {
+        return TileType.SCRAP;
     }
 }

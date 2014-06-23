@@ -162,6 +162,8 @@ public class ActionMessageTest {
         
         int level = player1.primaryWeapon.getLevel();
         assertEquals(level, 2);
+        int resources = player1.scrapResources;
+        assertEquals(resources, 0);
     }
     
 }

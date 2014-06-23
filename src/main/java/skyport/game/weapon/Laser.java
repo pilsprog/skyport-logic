@@ -1,5 +1,7 @@
 package skyport.game.weapon;
 
+import skyport.game.TileType;
+
 
 public class Laser extends Weapon {
     
@@ -18,5 +20,10 @@ public class Laser extends Weapon {
     
     public int aoe() {
         return 0;
+    }
+
+    @Override
+    public TileType resource() {
+        return TileType.RUBIDIUM;
     }
 }

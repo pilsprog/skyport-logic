@@ -1,5 +1,7 @@
 package skyport.game.weapon;
 
+import skyport.game.TileType;
+
 public class Mortar extends Weapon {
 
     public Mortar() {
@@ -17,4 +19,10 @@ public class Mortar extends Weapon {
     public int aoe() {
         return 18;
     }
+
+    @Override
+    public TileType resource() {
+        return TileType.EXPLOSIUM;
+    }
+    
 }
