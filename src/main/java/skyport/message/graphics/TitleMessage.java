@@ -1,4 +1,6 @@
-package skyport.message;
+package skyport.message.graphics;
+
+import skyport.message.Message;
 
 public class TitleMessage extends Message {
     @SuppressWarnings("unused")

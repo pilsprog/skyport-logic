@@ -1,7 +1,9 @@
-package skyport.message;
+package skyport.message.graphics;
 
 import java.util.Arrays;
 import java.util.List;
+
+import skyport.message.Message;
 
 public class HighlightMessage extends Message {
     @SuppressWarnings("unused")
