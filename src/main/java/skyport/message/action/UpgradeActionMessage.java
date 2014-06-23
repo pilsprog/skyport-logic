@@ -1,11 +1,14 @@
 package skyport.message.action;
 
+import java.util.stream.Stream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import skyport.exception.ProtocolException;
 import skyport.game.Player;
 import skyport.game.World;
+import skyport.game.weapon.Weapon;
 
 public class UpgradeActionMessage extends ActionMessage {
     private String weapon;
@@ -14,6 +17,10 @@ public class UpgradeActionMessage extends ActionMessage {
 
     public String getWeaponName() {
         return weapon;
+    }
+    
+    public void setWeaponName(String name) {
+        this.weapon = name;
     }
 
     private boolean subtractResourcesForWeaponUpgrade(Player player, String weapon, int currentLevel) throws ProtocolException {
@@ -54,17 +61,17 @@ public class UpgradeActionMessage extends ActionMessage {
     @Override
     public void performAction(Player player, World map) throws ProtocolException {
         logger.debug(player + " upgrading his " + weapon + ".");
-        if (player.primaryWeapon.getName().equals(weapon)) {
-            logger.debug("Upgrading primary weapon (" + weapon + ").");
-            subtractResourcesForWeaponUpgrade(player, weapon, player.primaryWeapon.getLevel());
-            player.primaryWeapon.upgrade();
-           
-        } else if (player.secondaryWeapon.getName().equals(weapon)) {
-            subtractResourcesForWeaponUpgrade(player, weapon, player.secondaryWeapon.getLevel());
-            player.secondaryWeapon.upgrade();    
-        } else {
-            throw new ProtocolException("Tried to upgrade weapon '" + weapon + "', but doesn't have it.");
-        }
+        
+        Weapon weapon = Stream.of(player.primaryWeapon, player.secondaryWeapon)
+                .filter(w -> w.getName().equals(this.weapon))
+                .findFirst()
+                .orElseThrow(() 
+                        -> new ProtocolException("Tried to upgrade weapon '" + this.weapon + "', but doesn't have it."));
+        logger.debug("Upgrading primary weapon (" + this.weapon + ").");
+  
+        subtractResourcesForWeaponUpgrade(player, this.weapon, player.primaryWeapon.getLevel());
+        player.primaryWeapon.upgrade();
+        weapon.upgrade();
     }
     
     @Override

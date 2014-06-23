@@ -28,6 +28,7 @@ import skyport.message.action.DroidActionMessage;
 import skyport.message.action.LaserActionMessage;
 import skyport.message.action.MortarActionMessage;
 import skyport.message.action.MoveActionMessage;
+import skyport.message.action.UpgradeActionMessage;
 
 @RunWith(JUnit4.class)
 public class ActionMessageTest {
@@ -114,6 +115,38 @@ public class ActionMessageTest {
         
         assertNull(start.playerOnTile);
         assertEquals(player1, end.playerOnTile);
+    }
+    
+    @Test(expected=ProtocolException.class)
+    public void upgradeActionMessageWithoutWeaponTest() throws ProtocolException {
+        player1.setLoadout(new Droid(), new Laser());
+        UpgradeActionMessage message = new UpgradeActionMessage();
+        message.setWeaponName("Mortar");
+        
+        message.performAction(player1, world);
+    }
+    
+    @Test(expected=ProtocolException.class)
+    public void upgradeActionMessageWithoutResourceTest() throws ProtocolException {
+        player1.setLoadout(new Droid(), new Laser());
+        UpgradeActionMessage message = new UpgradeActionMessage();
+        message.setWeaponName("Droid");
+        
+        message.performAction(player1, world);
+    }
+    
+    @Test
+    public void upgradeActionMessageTest() throws ProtocolException {
+        player1.setLoadout(new Droid(), new Laser());
+        player1.scrapResources = 4;
+        
+        UpgradeActionMessage message = new UpgradeActionMessage();
+        message.setWeaponName("droid");
+        
+        message.performAction(player1, world);
+        
+        int level = player1.primaryWeapon.getLevel();
+        assertEquals(level, 2);
     }
     
 }
