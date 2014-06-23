@@ -150,7 +150,7 @@ public abstract class Connection implements Runnable {
         this.sendMessage(endTurn);
     }
 
-    public ActionMessage getNextMessage(long timeout, TimeUnit time) {
+    public ActionMessage next(long timeout, TimeUnit time) {
         ActionMessage message = null;
         try {
             message = messages.poll(timeout, time);
