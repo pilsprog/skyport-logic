@@ -1,6 +1,9 @@
 package skyport.test.message.action;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 
@@ -20,9 +23,11 @@ import skyport.game.World;
 import skyport.game.weapon.Droid;
 import skyport.game.weapon.Laser;
 import skyport.game.weapon.Mortar;
+import skyport.message.action.ActionMessage;
 import skyport.message.action.DroidActionMessage;
 import skyport.message.action.LaserActionMessage;
 import skyport.message.action.MortarActionMessage;
+import skyport.message.action.MoveActionMessage;
 
 @RunWith(JUnit4.class)
 public class ActionMessageTest {
@@ -43,12 +48,12 @@ public class ActionMessageTest {
         
         Tile tile1 = new Tile(TileType.GRASS);
         Tile tile2 = new Tile(TileType.GRASS);
-        tile1.leftDown = tile2;
+        tile1.rightDown = tile2;
         Tile tile3 = new Tile(TileType.GRASS);
-        tile1.rightDown = tile3;
+        tile1.leftDown = tile3;
         Tile tile4 = new Tile(TileType.GRASS);
-        tile2.rightDown = tile4;
-        tile3.leftDown = tile4;
+        tile2.leftDown = tile4;
+        tile3.rightDown = tile4;
         tile1.down = tile4;
         
         Tile[][] map = {{tile1, tile2},
@@ -93,4 +98,22 @@ public class ActionMessageTest {
         assertEquals(100 - player1.primaryWeapon.damage(), player2.health);
         assertEquals(100 - player1.primaryWeapon.aoe(), player1.health);
     }
+    
+    @Test
+    @Test
+    public void moveActionMessageTest() throws ProtocolException {
+        player1.setLoadout(new Droid(), new Laser());
+        MoveActionMessage message = new MoveActionMessage();
+        Tile start = player1.getPosition();
+        Point point = player1.getPosition().coords;
+        Tile end = world.tileAt(point.pluss(Direction.LEFT_DOWN.point)).get();
+        assertNull(end.playerOnTile);
+        
+        message.setDirection(Direction.LEFT_DOWN);
+        message.performAction(player1, world);
+        
+        assertNull(start.playerOnTile);
+        assertEquals(player1, end.playerOnTile);
+    }
+    
 }

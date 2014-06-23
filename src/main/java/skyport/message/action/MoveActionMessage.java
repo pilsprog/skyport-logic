@@ -11,6 +11,10 @@ public class MoveActionMessage extends ActionMessage {
     public Direction getDirection() {
         return direction;
     }
+    
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
 
     @Override
     public void performAction(Player player, World map) throws ProtocolException {
