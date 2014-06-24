@@ -220,6 +220,7 @@ public class Game implements Runnable {
         
         Message message = new GameStateMessage(round, world, players);
         clients.stream().forEach(c -> c.sendMessage(message));
+        graphics.isDoneProcessing = false;
     }
 
     private void sendDeadline() {

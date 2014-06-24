@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -20,17 +18,13 @@ import skyport.adapter.MessageDeserializer;
 import skyport.adapter.PointAdapter;
 import skyport.adapter.TileSerializer;
 import skyport.exception.ProtocolException;
-import skyport.game.Player;
 import skyport.game.Point;
 import skyport.game.Tile;
-import skyport.game.World;
 import skyport.message.EndTurnMessage;
 import skyport.message.ErrorMessage;
-import skyport.message.GameStateMessage;
 import skyport.message.Message;
 import skyport.message.StatusMessage;
 import skyport.message.action.ActionMessage;
-import skyport.network.ai.AIConnection;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -155,15 +149,5 @@ public abstract class Connection implements Runnable {
            logger.error("The wait was interrupted somehow!");
         }
         return message;
-    }
-
-    public void sendGamestate(int turn, World map, List<AIConnection> playerlist) {
-        List<Player> players = new ArrayList<>();
-        for (AIConnection ai : playerlist) {
-            players.add(ai.getPlayer());
-        }
-
-        Message message = new GameStateMessage(turn, map, players);
-        sendMessage(message);
     }
 }

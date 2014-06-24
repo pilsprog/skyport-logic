@@ -2,13 +2,11 @@ package skyport.network.graphics;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import skyport.exception.ProtocolException;
-import skyport.game.World;
 import skyport.message.EndActionsMessage;
 import skyport.message.Message;
 import skyport.message.graphics.GraphicsHandshakeMessage;
@@ -16,7 +14,6 @@ import skyport.message.graphics.HighlightMessage;
 import skyport.message.graphics.SubtitleMessage;
 import skyport.message.graphics.TitleMessage;
 import skyport.network.Connection;
-import skyport.network.ai.AIConnection;
 
 public class GraphicsConnection extends Connection {
     private String password = "supersecretpassword";
@@ -88,12 +85,6 @@ public class GraphicsConnection extends Connection {
         } else {
             throw new ProtocolException("Expected 'connect' handshake, but got '" + message.getMessage() + "' key.");
         }
-    }
-
-    @Override
-    public void sendGamestate(int turn, World map, List<AIConnection> playerlist) {
-        super.sendGamestate(turn, map, playerlist);
-        isDoneProcessing = false;
     }
 
     public void sendEndActions() {
