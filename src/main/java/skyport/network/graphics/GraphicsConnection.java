@@ -66,7 +66,7 @@ public class GraphicsConnection extends Connection {
         }
     }
 
-    protected boolean parseHandshake(Message message) throws ProtocolException {
+    protected void parseHandshake(Message message) throws ProtocolException {
         if(message instanceof GraphicsHandshakeMessage) {
             GraphicsHandshakeMessage handshake = (GraphicsHandshakeMessage)message;
         
@@ -79,14 +79,12 @@ public class GraphicsConnection extends Connection {
                 throw new ProtocolException("Wrong password!");
             }
             logger.debug("Correct password.");
-            gotHandshake = true;
+
 
             String laserStyle = handshake.getLaserStyle();
             if (laserStyle.equals("start-stop")) {
                 alternativeLaserStyle = true;
             }
-            return true;
-
         } else {
             throw new ProtocolException("Expected 'connect' handshake, but got '" + message.getMessage() + "' key.");
         }

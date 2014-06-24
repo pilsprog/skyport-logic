@@ -43,7 +43,6 @@ public abstract class Connection implements Runnable {
     protected BufferedWriter output;
     protected BlockingQueue<ActionMessage> messages = new LinkedBlockingQueue<>(5);
     protected boolean isAlive = true;
-    protected boolean gotHandshake = false;
 
     private final Logger logger = LoggerFactory.getLogger(Connection.class);
 
@@ -73,7 +72,7 @@ public abstract class Connection implements Runnable {
         return line;
     }
 
-    protected abstract boolean parseHandshake(Message json) throws ProtocolException;
+    protected abstract void parseHandshake(Message json) throws ProtocolException;
 
     protected abstract void input(Message json) throws IOException, ProtocolException;
 
@@ -108,15 +107,13 @@ public abstract class Connection implements Runnable {
 
     @Override
     public void run() {
-        while (!gotHandshake) {
+        for (;;) {
             try {
                 Message message = gson.fromJson(this.readLine(), Message.class);
-                if (parseHandshake(message)) {
-                    Message success = new StatusMessage(true);
-                    this.sendMessage(success);
-                } else {
-                    this.sendError("Handshake failed.");
-                }
+                this.parseHandshake(message);
+                Message success = new StatusMessage(true);
+                this.sendMessage(success);
+                break;
             } catch (ProtocolException e) {
                 this.sendError(e.getMessage());
             } catch (IOException e) {

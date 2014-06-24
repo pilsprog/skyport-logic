@@ -9,17 +9,16 @@ import org.slf4j.LoggerFactory;
 import skyport.exception.ProtocolException;
 import skyport.game.Player;
 import skyport.game.Tile;
-import skyport.game.Util;
-import skyport.message.HandshakeMessage;
 import skyport.message.Message;
 import skyport.message.action.ActionMessage;
+import skyport.message.action.HandshakeMessage;
 import skyport.message.action.LoadoutMessage;
 import skyport.network.Connection;
 
 public class AIConnection extends Connection {
     private volatile Player player;
-    private boolean gotLoadout = false;
     public boolean hasToPass = false;
+    public boolean loaded = false;
     public boolean needsRespawn = false;
 
     private final Logger logger = LoggerFactory.getLogger(AIConnection.class);
@@ -33,10 +32,12 @@ public class AIConnection extends Connection {
     @Override
     public void run() {
         super.run();
-        while (!gotLoadout) {
+        for (;;) {
             try {
                 Message message = gson.fromJson(this.readLine(), Message.class);
                 parseLoadout(message);
+                this.loaded = true;
+                break;
             } catch (ProtocolException e) {
                 this.sendError(e.getMessage());
             } catch (IOException e) {
@@ -49,7 +50,7 @@ public class AIConnection extends Connection {
     }
 
     public boolean gotLoadout() {
-        return this.gotLoadout;
+        return this.loaded;
     }
 
     @Override
@@ -68,28 +69,16 @@ public class AIConnection extends Connection {
         
         LoadoutMessage loadout = (LoadoutMessage)message;
         loadout.performAction(player, null);
-        
-        synchronized (this) {
-            gotLoadout = true;
-        }
     }
 
-    protected boolean parseHandshake(Message m) throws ProtocolException {
+    protected void parseHandshake(Message m) throws ProtocolException {
         if (!(m instanceof HandshakeMessage)) {
             throw new ProtocolException("Expected 'connect' handshake, but got '" + m.getMessage());
         }
         
         HandshakeMessage message = (HandshakeMessage)m;
-        int revision = message.getRevision();
-        if (revision != 1) {
-            throw new ProtocolException("Wrong protocol revision: supporting 1, but got " + revision + ".");
-        }
-        String name = message.getName();
-        Util.validateUsername(name);
-        this.player.setName(name);
+        message.performAction(player, null);
         this.identifier = player.getName();
-        gotHandshake = true;
-        return true;
     }
 
     public void setSpawnpoint(Tile spawnpoint) {
