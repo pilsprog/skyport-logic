@@ -3,9 +3,9 @@ package skyport.adapter;
 import java.lang.reflect.Type;
 
 import skyport.message.HandshakeMessage;
-import skyport.message.LoadoutMessage;
 import skyport.message.Message;
 import skyport.message.action.ActionMessage;
+import skyport.message.action.LoadoutMessage;
 import skyport.message.graphics.GraphicsHandshakeMessage;
 
 import com.google.gson.JsonDeserializationContext;

@@ -10,11 +10,10 @@ import skyport.exception.ProtocolException;
 import skyport.game.Player;
 import skyport.game.Tile;
 import skyport.game.Util;
-import skyport.game.weapon.Weapon;
 import skyport.message.HandshakeMessage;
-import skyport.message.LoadoutMessage;
 import skyport.message.Message;
 import skyport.message.action.ActionMessage;
+import skyport.message.action.LoadoutMessage;
 import skyport.network.Connection;
 
 public class AIConnection extends Connection {
@@ -68,23 +67,8 @@ public class AIConnection extends Connection {
         }
         
         LoadoutMessage loadout = (LoadoutMessage)message;
-        Weapon primary = loadout.getPrimaryWeapon();
-        Weapon secondary = loadout.getSecondaryWeapon();
-
-        if (!Util.validateWeapon(primary)) {
-            throw new ProtocolException("Invalid primary weapon: '" + primary.getName() + "'.");
-        }
-        if (!Util.validateWeapon(secondary)) {
-            throw new ProtocolException("Invalid secondary weapon: '" + secondary.getName() + "'.");
-        }
-        if (primary.equals(secondary)) {
-            throw new ProtocolException("Invalid loadout: Can't have the same weapon twice.");
-        }
-
-        player.setLoadout(primary, secondary);
-
-        logger.info(player.getName() + " selected loadout: " + player.primaryWeapon.getName() + " and " + player.secondaryWeapon.getName() + ".");
-
+        loadout.performAction(player, null);
+        
         synchronized (this) {
             gotLoadout = true;
         }

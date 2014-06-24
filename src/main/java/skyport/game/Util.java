@@ -3,15 +3,8 @@ package skyport.game;
 import java.util.regex.Pattern;
 
 import skyport.exception.ProtocolException;
-import skyport.game.weapon.Weapon;
 
 public class Util {
-    public static boolean validateWeapon(Weapon weapon) {
-        if (weapon.getName().equals("laser") || weapon.getName().equals("mortar") || weapon.getName().equals("droid")) {
-            return true;
-        }
-        return false;
-    }
 
     public static void validateUsername(String username) throws ProtocolException {
         if (username.length() < 3) {
