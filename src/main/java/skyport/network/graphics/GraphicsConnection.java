@@ -2,6 +2,7 @@ package skyport.network.graphics;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,26 +63,26 @@ public class GraphicsConnection extends Connection {
     }
 
     protected void parseHandshake(Message message) throws ProtocolException {
-        if(message instanceof GraphicsHandshakeMessage) {
-            GraphicsHandshakeMessage handshake = (GraphicsHandshakeMessage)message;
-        
-            int revision = handshake.getRevision();
-            if (revision != 1) {
-                throw new ProtocolException("Wrong protocol revision: supporting 1, but got " + revision + ".");
-            }
-            if (!handshake.validatePassword(this.password)) {
-                logger.warn("GUI sent wrong password.");
-                throw new ProtocolException("Wrong password!");
-            }
-            logger.debug("Correct password.");
+        GraphicsHandshakeMessage handshake = Optional.of(message)
+                .filter(m -> m instanceof GraphicsHandshakeMessage)
+                .map(m -> (GraphicsHandshakeMessage)m)
+                .orElseThrow(() -> 
+                    new ProtocolException("Expected 'connect' handshake, but got '" + message.getMessage() + "' key.")) ;
+
+        int revision = handshake.getRevision();
+        if (revision != 1) {
+            throw new ProtocolException("Wrong protocol revision: supporting 1, but got " + revision + ".");
+        }
+        if (!handshake.validatePassword(this.password)) {
+            logger.warn("GUI sent wrong password.");
+            throw new ProtocolException("Wrong password!");
+        }
+        logger.debug("Correct password.");
 
 
-            String laserStyle = handshake.getLaserStyle();
-            if (laserStyle.equals("start-stop")) {
-                alternativeLaserStyle = true;
-            }
-        } else {
-            throw new ProtocolException("Expected 'connect' handshake, but got '" + message.getMessage() + "' key.");
+        String laserStyle = handshake.getLaserStyle();
+        if (laserStyle.equals("start-stop")) {
+            alternativeLaserStyle = true;
         }
     }
 
@@ -102,7 +103,6 @@ public class GraphicsConnection extends Connection {
             }
         }
     }
-
 
     public void sendMessage(String message) {
         Message subtitle = new SubtitleMessage(message);
