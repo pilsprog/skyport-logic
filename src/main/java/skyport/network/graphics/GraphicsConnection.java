@@ -10,9 +10,7 @@ import skyport.exception.ProtocolException;
 import skyport.message.EndActionsMessage;
 import skyport.message.Message;
 import skyport.message.graphics.GraphicsHandshakeMessage;
-import skyport.message.graphics.HighlightMessage;
 import skyport.message.graphics.SubtitleMessage;
-import skyport.message.graphics.TitleMessage;
 import skyport.network.Connection;
 
 public class GraphicsConnection extends Connection {
@@ -105,20 +103,6 @@ public class GraphicsConnection extends Connection {
         }
     }
 
-    public void sendTitle(String title) {
-        Message message = new TitleMessage(title);
-        this.sendMessage(message);
-    }
-
-    public void sendSubtitle(String subtitle) {
-        Message message = new SubtitleMessage(subtitle);
-        this.sendMessage(message);
-    }
-
-    public void sendHighlight(String position, int r, int g, int b) {
-        Message message = new HighlightMessage(position, r, g, b);
-        this.sendMessage(message);
-    }
 
     public void sendMessage(String message) {
         Message subtitle = new SubtitleMessage(message);
