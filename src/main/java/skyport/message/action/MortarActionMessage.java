@@ -38,7 +38,7 @@ public class MortarActionMessage extends ActionMessage implements OffensiveActio
             throw new ProtocolException("Relative coordinates " + coordinates + " are out of range.");
         }
         
-        Vector target = player.getPosition().coords.pluss(coordinates);
+        Vector target = player.getPosition().coords.plus(coordinates);
         int damage = mortar.damage();
         int aoe = mortar.aoe();
         map.tileAt(target).ifPresent(tile -> {
@@ -46,7 +46,7 @@ public class MortarActionMessage extends ActionMessage implements OffensiveActio
             
             Stream.of(Direction.values())
                 .map(d -> d.vector)
-                .map(p -> target.pluss(p))
+                .map(p -> target.plus(p))
                 .forEach(p -> 
                     map.tileAt(p).ifPresent(t -> 
                         t.damageTile(aoe, player)));

@@ -52,7 +52,7 @@ public class DroidActionMessage extends ActionMessage implements OffensiveAction
         
         Vector vector = player.getPosition().coords;
         for (Vector p : path) {
-            vector = vector.pluss(p);
+            vector = vector.plus(p);
             if(!map.tileAt(p)
                    .map(Tile::isAccessible)
                    .orElse(false)) {
@@ -70,7 +70,7 @@ public class DroidActionMessage extends ActionMessage implements OffensiveAction
             tile.damageTile(damage, player); 
             Stream.of(Direction.values())
                 .map(d -> d.vector)
-                .map(v -> stop.pluss(v))
+                .map(v -> stop.plus(v))
                 .forEach(p -> 
                     map.tileAt(p)
                        .ifPresent(t -> 

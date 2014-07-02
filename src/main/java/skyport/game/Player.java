@@ -54,7 +54,7 @@ public class Player {
     }
 
     public void move(Direction direction, World world) throws ProtocolException {
-        Tile next = world.tileAt(this.position.pluss(direction.vector))
+        Tile next = world.tileAt(this.position.plus(direction.vector))
                 .orElseThrow(() -> new InaccessibleTileException(direction));
                 
                 

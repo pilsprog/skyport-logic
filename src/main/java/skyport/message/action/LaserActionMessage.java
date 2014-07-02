@@ -55,7 +55,7 @@ public class LaserActionMessage extends ActionMessage implements OffensiveAction
         Vector vector = player.getPosition().coords;
         int damage = laser.damage();
         for(Vector p : path) {
-            vector = vector.pluss(p);
+            vector = vector.plus(p);
             Optional<Tile> tile = map.tileAt(vector);
             if (tile.map(t -> t.tileType == TileType.ROCK)
                     .orElse(true)) {

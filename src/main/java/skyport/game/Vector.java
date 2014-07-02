@@ -13,7 +13,7 @@ public class Vector {
         return "[" + j + ", " + k + "]";
     }
 
-    public Vector pluss(Vector v) {
+    public Vector plus(Vector v) {
         return new Vector(this.j+v.j, this.k+v.k);
     }
     

@@ -122,7 +122,7 @@ public class ActionMessageTest {
         MoveActionMessage message = new MoveActionMessage();
         Tile start = player1.getPosition();
         Vector vector = player1.getPosition().coords;
-        Tile end = world.tileAt(vector.pluss(Direction.LEFT_DOWN.vector)).get();
+        Tile end = world.tileAt(vector.plus(Direction.LEFT_DOWN.vector)).get();
         assertNull(end.playerOnTile);
         
         message.setDirection(Direction.LEFT_DOWN);
