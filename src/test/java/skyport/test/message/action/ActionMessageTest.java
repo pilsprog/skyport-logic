@@ -50,13 +50,13 @@ public class ActionMessageTest {
         
         Tile tile1 = new Tile(TileType.GRASS);
         Tile tile2 = new Tile(TileType.GRASS);
-        tile1.rightDown = tile2;
         Tile tile3 = new Tile(TileType.GRASS);
-        tile1.leftDown = tile3;
         Tile tile4 = new Tile(TileType.GRASS);
-        tile2.leftDown = tile4;
-        tile3.rightDown = tile4;
-        tile1.down = tile4;
+
+        tile1.coords = new Vector(0, 0);
+        tile2.coords = new Vector(0, 1);
+        tile3.coords = new Vector(1, 0);
+        tile4.coords = new Vector(1, 1);
         
         Tile[][] map = {{tile1, tile2},
                         {tile3, tile4}};

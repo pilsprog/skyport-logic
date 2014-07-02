@@ -18,7 +18,7 @@ public class MoveActionMessage extends ActionMessage {
 
     @Override
     public void performAction(Player player, World map) throws ProtocolException {
-        player.move(direction);
+        player.move(direction, map);
     }
     
     @Override

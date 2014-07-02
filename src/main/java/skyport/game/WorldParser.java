@@ -2,6 +2,7 @@ package skyport.game;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
@@ -10,27 +11,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class WorldParser {
-    private String file;
     private int jLength;
     private int kLength;
     private String description;
     private int players;
     private int ignoredLines = 0;
+    private Scanner scanner;
 
     private final Logger logger = LoggerFactory.getLogger(WorldParser.class);
 
-    public WorldParser(String filename) {
-        file = filename;
-    }
-
-    public World parseFile() throws FileNotFoundException {
+    public World parse(String file) throws FileNotFoundException {
         logger.info("Parsing map '" + file + "'");
-        Scanner scanner = new Scanner(new File(file));
-        parseHeader(scanner);
+        this.scanner = new Scanner(new File(file));
+        parseHeader();
         logger.info("Players: " + players);
         logger.info("size: " + jLength);
         logger.info("description: '" + description + "'");
-        Tile[][] tiles = parseBody(scanner);
+        Tile[][] tiles = parseBody();
         logger.debug("Done parsing. Ignored " + ignoredLines + " empty lines.");
 
         Queue<Tile> spawnpoints = new LinkedList<>();
@@ -45,10 +42,10 @@ public class WorldParser {
         return new World(tiles, jLength, spawnpoints);
     }
 
-    private void parseHeader(Scanner scanner) {
+    private void parseHeader() {
         String playersArray[] = scanner.nextLine().split("\\s");
         String sizeArray[] = scanner.nextLine().split("\\s");
-        String descriptionArray[] = scanner.nextLine().split("\\s");
+        String desc[] = scanner.nextLine().split("\\s");
 
         int numPlayers = Integer.parseInt(playersArray[1]);
         assert (numPlayers <= 8);
@@ -57,19 +54,13 @@ public class WorldParser {
         assert (dimensionsInteger >= 2);
         assert (dimensionsInteger < 100);
 
-        StringBuilder descriptionBuilder = new StringBuilder(descriptionArray[1]);
-        for (int i = 2; i < descriptionArray.length; i++) {
-            descriptionBuilder.append(" " + descriptionArray[i]);
-        }
-        String finalDescription = descriptionBuilder.toString().substring(1, descriptionBuilder.length() - 1);
         players = numPlayers;
-        description = finalDescription;
+        description = String.join(" ", Arrays.copyOfRange(desc, 1, desc.length));
         jLength = dimensionsInteger;
         kLength = dimensionsInteger;
     }
 
-    private Tile[][] parseBody(Scanner scanner) {
-        Tile rootTile = null;
+    private Tile[][] parseBody() {
         int currentLength = 1;
         int a = 0;
 
@@ -80,41 +71,19 @@ public class WorldParser {
 
         // increasing part of the algorithm
         while (a < jLength) {
-            String lines[] = getScannedLine(scanner);
+            String lines[] = nextLine();
             if (lines.length == 0) {
                 continue;
             }
             if (lines.length != currentLength) {
                 logger.warn("Error: expected this line to have length " + currentLength + ", but got " + lines.length);
                 continue;
-            }
-            if (currentLength == 1) {
-                rootTile = new Tile(TileType.tileType(lines[0]));
-                tiles[a][0] = rootTile;
-            } else {
-                Tile currentTile = rootTile;
-                while (currentTile.leftDown != null) {
-                    currentTile = currentTile.leftDown;
-                }
-                currentTile.leftDown = new Tile(TileType.tileType(lines[0]));
-                currentTile.leftDown.rightUp = currentTile;
-                tiles[a][0] = currentTile.leftDown;
+            }          
 
-                for (int b = 1; b < lines.length; b++) {
-                    Tile newTile = new Tile(TileType.tileType(lines[b]));
-                    tiles[a - b][b] = newTile;
-                    currentTile.rightDown = newTile;
-                    newTile.leftUp = currentTile;
-                    if (currentTile.rightUp != null) {
-                        newTile.up = currentTile.rightUp;
-                        currentTile.rightUp.down = newTile;
-                    }
-                    if ((currentTile != rootTile) && (b != lines.length - 1)) {
-                        currentTile = currentTile.rightUp.rightDown;
-                        currentTile.leftDown = newTile;
-                        newTile.rightUp = currentTile;
-                    }
-                }
+            tiles[a][0] = new Tile(TileType.tileType(lines[0]));
+
+            for (int b = 1; b < lines.length; b++) {
+                tiles[a - b][b] = new Tile(TileType.tileType(lines[b]));;
             }
 
             currentLength++;
@@ -123,19 +92,10 @@ public class WorldParser {
         currentLength -= 2;
         a--;
         // decreasing part of the algorithm
-        Tile cornerTile = rootTile;
-        cornerTile = rootTile;
-        while (cornerTile.leftDown != null) {
-            cornerTile = cornerTile.leftDown;
-        }
-        Tile lowerCornerTile = cornerTile;
         int k = 1;
         while (currentLength > 0) {
-            lowerCornerTile = cornerTile;
-            while (lowerCornerTile.rightDown != null) {
-                lowerCornerTile = lowerCornerTile.rightDown;
-            }
-            String lines[] = getScannedLine(scanner);
+ 
+            String lines[] = nextLine();
             if (lines.length == 0) {
                 continue;
             }
@@ -144,28 +104,25 @@ public class WorldParser {
                 continue;
             }
 
-            Tile currentTile = lowerCornerTile;
             for (int i = 0; i < lines.length; i++) {
-                TileType tileType = TileType.tileType(lines[i]);
-                Tile newTile = new Tile(tileType);
-                tiles[a - i][i + k] = newTile;
-                currentTile.rightDown = newTile;
-                currentTile.rightDown.leftUp = currentTile;
-                newTile.up = currentTile.rightUp;
-                currentTile.rightUp.down = newTile;
-
-                currentTile = currentTile.rightUp.rightDown;
-                newTile.rightUp = currentTile;
-                currentTile.leftDown = newTile;
+                tiles[a - i][i + k] = new Tile(TileType.tileType(lines[i]));
             }
             k++;
             currentLength--;
         }
+        
+        for(int i = 0; i < tiles.length; i++) {
+            for(int j = 0; j < tiles.length; j++) {
+                tiles[i][j].coords = new Vector(i, j);
+            }
+        }
+        
+        
         return tiles;
     }
 
-    private String[] getScannedLine(Scanner scanner) {
-        String line = scanner.nextLine();
+    private String[] nextLine() {
+        String line = this.scanner.nextLine();
         line = line.replaceAll("[\\s_/\\\\]", "");
         if (line.equals("")) {
             ignoredLines++;

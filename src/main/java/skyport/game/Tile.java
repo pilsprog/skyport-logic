@@ -7,13 +7,6 @@ import skyport.exception.ProtocolException;
 
 public class Tile {
 
-    public Tile up = null;
-    public Tile down = null;
-    public Tile rightUp = null;
-    public Tile rightDown = null;
-    public Tile leftUp = null;
-    public Tile leftDown = null;
-
     public TileType tileType;
     public int resources;
 
@@ -25,24 +18,6 @@ public class Tile {
     public Tile(TileType type) {
         tileType = type;
         this.resources = tileType.resources;
-    }
-
-    public Tile getTileInDirection(Direction dir) {
-        switch (dir) {
-        case UP:
-            return this.up;
-        case DOWN:
-            return this.down;
-        case RIGHT_UP:
-            return this.rightUp;
-        case RIGHT_DOWN:
-            return this.rightDown;
-        case LEFT_UP:
-            return this.leftUp;
-        case LEFT_DOWN:
-            return this.leftDown;
-        }
-        return null;
     }
 
     public boolean isAccessible() {

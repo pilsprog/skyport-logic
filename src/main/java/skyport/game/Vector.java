@@ -21,4 +21,13 @@ public class Vector {
     public String toString() {
         return "[" + j + "," + k +"]";
     }
+    
+    @Override
+    public boolean equals(Object o) {
+        if(o instanceof Vector) {
+            Vector v = (Vector)o;
+            return this.j == v.j && this.k == v.k;
+        }
+        return false;
+    }
 }

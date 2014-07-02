@@ -15,7 +15,6 @@ public class Player {
     public Weapon primaryWeapon;
     public Weapon secondaryWeapon;
 
-    @SuppressWarnings("unused")
     private Vector position;
     
     
@@ -54,9 +53,12 @@ public class Player {
         return spawn;
     }
 
-    public void move(Direction direction) throws ProtocolException {
-        Tile next = this.pos.getTileInDirection(direction);
-        if (next != null && next.isAccessible()) {
+    public void move(Direction direction, World world) throws ProtocolException {
+        Tile next = world.tileAt(this.position.pluss(direction.vector))
+                .orElseThrow(() -> new InaccessibleTileException(direction));
+                
+                
+        if (next.isAccessible()) {
             if (next.playerOnTile != null) {
                 throw new ProtocolException("Player " + next.playerOnTile.getName() + " is already on this tile.");
             }
@@ -64,8 +66,6 @@ public class Player {
             this.pos = next;
             this.pos.playerOnTile = this;
             this.position = this.pos.coords;
-        } else if (next == null) {
-            throw new InaccessibleTileException(direction);
         } else {
             throw new InaccessibleTileException(next);
         }

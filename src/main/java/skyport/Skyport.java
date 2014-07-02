@@ -46,8 +46,8 @@ public class Skyport {
         World world = null;
         int users = 0;
         try {
-            WorldParser wp = new WorldParser(mapfile);
-            world = wp.parseFile();
+            WorldParser wp = new WorldParser();
+            world = wp.parse(mapfile);
             users = world.getNumberOfSpawnpoints();
         } catch (FileNotFoundException e) {
             logger.error("Map file not found: '" + mapfile + "'.");
