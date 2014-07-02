@@ -40,4 +40,12 @@ public class World {
     public int getNumberOfSpawnpoints() {
         return spawnpoints.size();
     }
+
+    public void respawn(Player player) {
+        Vector p = player.getPosition();
+        data[p.j][p.k].playerOnTile = null;
+        player.respawn();
+        p = player.getPosition();
+        data[p.j][p.k].playerOnTile = player; 
+    }
 }

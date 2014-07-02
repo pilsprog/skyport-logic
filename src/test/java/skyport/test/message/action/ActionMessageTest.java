@@ -1,9 +1,7 @@
 package skyport.test.message.action;
 
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 
@@ -16,9 +14,9 @@ import org.junit.runners.JUnit4;
 import skyport.exception.ProtocolException;
 import skyport.game.Direction;
 import skyport.game.Player;
-import skyport.game.Vector;
 import skyport.game.Tile;
 import skyport.game.TileType;
+import skyport.game.Vector;
 import skyport.game.World;
 import skyport.game.weapon.Droid;
 import skyport.game.weapon.Laser;
@@ -62,9 +60,9 @@ public class ActionMessageTest {
                         {tile3, tile4}};
         
         map[0][0].playerOnTile = player1;
-        player1.setPosition(map[0][0]);
+        player1.setPosition(map[0][0].coords);
         map[1][1].playerOnTile = player2;
-        player2.setPosition(map[1][1]);
+        player2.setPosition(map[1][1].coords);
         world = new World(map, 2, null);
     }
     
@@ -103,25 +101,29 @@ public class ActionMessageTest {
     
     @Test
     public void mineActionMessageTest() throws ProtocolException {
-        player1.getPosition().tileType = TileType.RUBIDIUM;
-        player1.getPosition().resources = 1;
+        world.tileAt(player1.getPosition())
+            .ifPresent(t -> {
+                t.tileType = TileType.RUBIDIUM;
+                t.resources = 1;
+            });
         player1.setLoadout(new Droid(), new Laser());
         
         ActionMessage message = new MineActionMessage();
         message.performAction(player1, world);
         
-        assertThat(player1.rubidiumResources, equalTo(1));
-        assertThat(player1.explosiumResources, equalTo(0));
-        assertThat(player1.scrapResources, equalTo(0));
-        assertThat(player1.getPosition().tileType, equalTo(TileType.GRASS));
+        assertEquals(player1.rubidiumResources, 1);
+        assertEquals(player1.explosiumResources, 0);
+        assertEquals(player1.scrapResources, 0);
+        assertEquals(world.tileAt(player1.getPosition()).get().tileType,
+                     TileType.GRASS);
     }
     
     @Test
     public void moveActionMessageTest() throws ProtocolException {
         player1.setLoadout(new Droid(), new Laser());
         MoveActionMessage message = new MoveActionMessage();
-        Tile start = player1.getPosition();
-        Vector vector = player1.getPosition().coords;
+        Tile start = world.tileAt(player1.getPosition()).get();
+        Vector vector = player1.getPosition();
         Tile end = world.tileAt(vector.plus(Direction.LEFT_DOWN.vector)).get();
         assertNull(end.playerOnTile);
         

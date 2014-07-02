@@ -24,9 +24,11 @@ public class MortarActionMessage extends ActionMessage implements OffensiveActio
 
     @Override
     public void performAction(Player player, World map) throws ProtocolException {
-        if (player.getPosition().tileType == TileType.SPAWN) {
-            throw new ProtocolException("Attempted to shoot mortar from spawn.");
-        }
+        if (map.tileAt(player.getPosition())
+                .filter(t -> t.tileType == TileType.SPAWN)
+                .isPresent()) {
+             throw new ProtocolException("Attempted to shoot mortar from spawn.");
+         }
         
         Mortar mortar = Stream.of(player.primaryWeapon, player.secondaryWeapon)
                 .filter(w -> w instanceof Mortar)
@@ -38,7 +40,7 @@ public class MortarActionMessage extends ActionMessage implements OffensiveActio
             throw new ProtocolException("Relative coordinates " + coordinates + " are out of range.");
         }
         
-        Vector target = player.getPosition().coords.plus(coordinates);
+        Vector target = player.getPosition().plus(coordinates);
         int damage = mortar.damage();
         int aoe = mortar.aoe();
         map.tileAt(target).ifPresent(tile -> {

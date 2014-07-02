@@ -41,7 +41,7 @@ public class PlayerTest {
                        {tile3, tile4}};
        
        map[0][0].playerOnTile = player;
-       player.setPosition(map[0][0]);
+       player.setPosition(map[0][0].coords);
        world = new World(map, 2, null);
     }
     

@@ -47,7 +47,7 @@ public class Game implements Runnable {
             if (spawn == null) {
                 throw new RuntimeException("Fewer spawnpoints then clients.");
             }
-            client.setSpawnpoint(spawn);
+            client.setSpawnpoint(spawn.coords);
         }
 
         logger.info("Sending initial gamestart packet.");
@@ -132,7 +132,13 @@ public class Game implements Runnable {
             current.clearAllMessages();
             sendGamestate();
             logger.info("############### START TURN " + round + " PLAYER: '" + current.getPlayer().getName() + "' ###############");
-
+            Player player = current.getPlayer();
+            if(player.health < 1) {
+                logger.info("=> Player '" + player.getName() + "' is dead. Respawning...");
+                world.respawn(player);
+                continue;
+            }
+            
             processThreePlayerActions(current);
             givePenalityForLingeringOnSpawntile(current);
             graphics.sendEndActions();
@@ -145,11 +151,13 @@ public class Game implements Runnable {
         }
     }
 
-    private void givePenalityForLingeringOnSpawntile(AIConnection currentPlayer) {
-        if (currentPlayer.getPlayer().getPosition() == currentPlayer.getPlayer().getSpawn()) {
-            logger.warn("Player " + currentPlayer.getPlayer() + " stayed on spawn too long.");
-            currentPlayer.givePenality(10);
-        }
+    private void givePenalityForLingeringOnSpawntile(AIConnection player) {
+        world.tileAt(player.getPlayer().getPosition())
+            .filter(t -> t.tileType == TileType.SPAWN)
+            .ifPresent(t -> {
+               logger.warn("Player " + player.getPlayer() + "stayed on spawn too long.");
+               player.givePenality(10);
+            });
     }
 
     private void processThreePlayerActions(final AIConnection currentPlayer) {

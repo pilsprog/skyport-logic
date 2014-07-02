@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import skyport.exception.ProtocolException;
 import skyport.game.Player;
-import skyport.game.Tile;
+import skyport.game.Vector;
 import skyport.message.Message;
 import skyport.message.action.ActionMessage;
 import skyport.message.action.HandshakeMessage;
@@ -19,7 +19,6 @@ public class AIConnection extends Connection {
     private volatile Player player;
     public boolean hasToPass = false;
     public boolean loaded = false;
-    public boolean needsRespawn = false;
 
     private final Logger logger = LoggerFactory.getLogger(AIConnection.class);
 
@@ -81,8 +80,8 @@ public class AIConnection extends Connection {
         this.identifier = player.getName();
     }
 
-    public void setSpawnpoint(Tile spawnpoint) {
-        logger.info("Player '" + player.getName() + "' spawns at " + spawnpoint.coords.getString() + ".");
+    public void setSpawnpoint(Vector spawnpoint) {
+        logger.info("Player '" + player.getName() + "' spawns at " + spawnpoint.getString() + ".");
         player.setPosition(spawnpoint);
         player.setSpawn(spawnpoint);
     }
@@ -96,11 +95,6 @@ public class AIConnection extends Connection {
 
     public void invalidAction(String type) {
         this.sendError("Invalid action: " + type + ".");
-    }
-
-    public void respawn() {
-        player.respawn();
-        needsRespawn = false;
     }
 
     public void givePenality(int points) {

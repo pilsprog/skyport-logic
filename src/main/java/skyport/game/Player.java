@@ -17,16 +17,13 @@ public class Player {
 
     private Vector position;
     
-    
-    private transient Tile pos;
-    
     public transient int rubidiumResources = 0;
     public transient int explosiumResources = 0;
     public transient int scrapResources = 0;
 
     public transient boolean dead = false;
 
-    private transient Tile spawn;
+    private transient Vector spawn;
 
     private transient int turns;
 
@@ -45,15 +42,16 @@ public class Player {
         return name;
     }
     
-    public void setSpawn(Tile spawn) {
+    public void setSpawn(Vector spawn) {
         this.spawn = spawn;
     }
     
-    public Tile getSpawn() {
+    public Vector getSpawn() {
         return spawn;
     }
 
     public void move(Direction direction, World world) throws ProtocolException {
+        Tile current = world.tileAt(position).get();
         Tile next = world.tileAt(this.position.plus(direction.vector))
                 .orElseThrow(() -> new InaccessibleTileException(direction));
                 
@@ -62,10 +60,9 @@ public class Player {
             if (next.playerOnTile != null) {
                 throw new ProtocolException("Player " + next.playerOnTile.getName() + " is already on this tile.");
             }
-            this.pos.playerOnTile = null;
-            this.pos = next;
-            this.pos.playerOnTile = this;
-            this.position = this.pos.coords;
+            current.playerOnTile = null; 
+            next.playerOnTile = this;
+            this.position = next.coords;
         } else {
             throw new InaccessibleTileException(next);
         }
@@ -129,21 +126,13 @@ public class Player {
         return player;
     }
 
-    public Tile getPosition() {
-        return pos;
-    }
-
-    public void setPosition(Tile spawnpoint) {
-        this.pos = spawnpoint;
-        this.pos.playerOnTile = this;
-        this.position = this.pos.coords;
+    public Vector getPosition() {
+        return position;
     }
 
     public void respawn() {
-        this.pos = this.spawn;
+        this.position = this.spawn;
         this.health = 100;
-        this.position = this.pos.coords;
-        this.pos.playerOnTile = this;
     }
 
     public void useResources(TileType resource, int resources) throws ProtocolException {
@@ -166,5 +155,9 @@ public class Player {
         default:
         }
         throw new ProtocolException("Tried to upgrade the but not enough " + resource.toString());
+    }
+
+    public void setPosition(Vector position) {
+        this.position = position;
     }
 }

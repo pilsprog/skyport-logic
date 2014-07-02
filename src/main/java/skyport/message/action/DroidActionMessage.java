@@ -32,9 +32,12 @@ public class DroidActionMessage extends ActionMessage implements OffensiveAction
 
     @Override
     public void performAction(Player player, World map) throws ProtocolException {
-        if (player.getPosition().tileType == TileType.SPAWN) {
-            throw new ProtocolException("Attempted to shoot droid from spawn.");
-        }
+        if (map.tileAt(player.getPosition())
+                .filter(t -> t.tileType == TileType.SPAWN)
+                .isPresent()) {
+             throw new ProtocolException("Attempted to shoot droid from spawn.");
+         }
+        
         Droid droid = Stream
                 .of(player.primaryWeapon, player.secondaryWeapon)
                 .filter(w -> w instanceof Droid)
@@ -50,7 +53,7 @@ public class DroidActionMessage extends ActionMessage implements OffensiveAction
         
         logger.info("==> '" + player.getName() + "' performing droid shot with " + path.size() + " steps.");
         
-        Vector vector = player.getPosition().coords;
+        Vector vector = player.getPosition();
         for (Vector p : path) {
             vector = vector.plus(p);
             if(!map.tileAt(p)

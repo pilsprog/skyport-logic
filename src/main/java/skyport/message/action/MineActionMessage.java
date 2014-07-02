@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import skyport.exception.ProtocolException;
 import skyport.game.Player;
+import skyport.game.Tile;
 import skyport.game.TileType;
 import skyport.game.World;
 
@@ -14,15 +15,16 @@ public class MineActionMessage extends ActionMessage {
 
     @Override
     public void performAction(Player player, World map) throws ProtocolException {
-        TileType currentTileType = player.getPosition().tileType;
-        if (!(currentTileType == TileType.RUBIDIUM || currentTileType == TileType.EXPLOSIUM || currentTileType == TileType.SCRAP)) {
-            logger.info("==> Player " + player + " attempted to mine while not on a resource.");
-            throw new ProtocolException("Tried to mine while not on a resource tile!");
-        }
+        Tile tile = map.tileAt(player.getPosition())
+                .filter(t -> t.tileType == TileType.RUBIDIUM  || t.tileType == TileType.EXPLOSIUM || t.tileType == TileType.SCRAP)
+                .orElseThrow(() -> {
+                    logger.info("==> Player " + player + " attempted to mine while not on a resource.");  
+                    return new ProtocolException("Tried to mine while not on a resource tile!");
+                });
 
-        TileType tileType = player.getPosition().tileType;
-        logger.info("==> Player " + player + " mining " + tileType);
-        player.getPosition().mineTile();
+        logger.info("==> Player " + player.getName() + " mining " + tile.tileType);
+        TileType tileType = tile.tileType;
+        tile.mineTile();       
         switch (tileType) {
         case RUBIDIUM:
             player.rubidiumResources++;

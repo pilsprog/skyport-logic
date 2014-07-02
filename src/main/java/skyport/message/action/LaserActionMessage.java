@@ -36,9 +36,12 @@ public class LaserActionMessage extends ActionMessage implements OffensiveAction
 
     @Override
     public void performAction(Player player, World map) throws ProtocolException {
-        if (player.getPosition().tileType == TileType.SPAWN) {
+        if (map.tileAt(player.getPosition())
+               .filter(t -> t.tileType == TileType.SPAWN)
+               .isPresent()) {
             throw new ProtocolException("Attempted to shoot laser from spawn.");
         }
+  
         Laser laser = Stream.of(player.primaryWeapon, player.secondaryWeapon)
                 .filter(w -> w instanceof Laser)
                 .map(w -> (Laser)w)
@@ -52,7 +55,7 @@ public class LaserActionMessage extends ActionMessage implements OffensiveAction
             .limit(laser.range())
             .collect(Collectors.toList());
         
-        Vector vector = player.getPosition().coords;
+        Vector vector = player.getPosition();
         int damage = laser.damage();
         for(Vector p : path) {
             vector = vector.plus(p);
