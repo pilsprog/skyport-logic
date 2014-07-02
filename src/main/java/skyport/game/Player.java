@@ -16,7 +16,7 @@ public class Player {
     public Weapon secondaryWeapon;
 
     @SuppressWarnings("unused")
-    private Point position;
+    private Vector position;
     
     
     private transient Tile pos;

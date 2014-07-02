@@ -8,15 +8,15 @@ import org.slf4j.LoggerFactory;
 import skyport.exception.ProtocolException;
 import skyport.game.Direction;
 import skyport.game.Player;
-import skyport.game.Point;
+import skyport.game.Vector;
 import skyport.game.TileType;
 import skyport.game.World;
 import skyport.game.weapon.Mortar;
 
 public class MortarActionMessage extends ActionMessage implements OffensiveAction {
-    private Point coordinates;
+    private Vector coordinates;
     
-    public void setCoordinates(Point coords) {
+    public void setCoordinates(Vector coords) {
         this.coordinates = coords;
     }
     
@@ -38,14 +38,14 @@ public class MortarActionMessage extends ActionMessage implements OffensiveActio
             throw new ProtocolException("Relative coordinates " + coordinates + " are out of range.");
         }
         
-        Point target = player.getPosition().coords.pluss(coordinates);
+        Vector target = player.getPosition().coords.pluss(coordinates);
         int damage = mortar.damage();
         int aoe = mortar.aoe();
         map.tileAt(target).ifPresent(tile -> {
             tile.damageTile(damage, player);
             
             Stream.of(Direction.values())
-                .map(d -> d.point)
+                .map(d -> d.vector)
                 .map(p -> target.pluss(p))
                 .forEach(p -> 
                     map.tileAt(p).ifPresent(t -> 

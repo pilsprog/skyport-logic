@@ -16,7 +16,7 @@ import org.junit.runners.JUnit4;
 import skyport.exception.ProtocolException;
 import skyport.game.Direction;
 import skyport.game.Player;
-import skyport.game.Point;
+import skyport.game.Vector;
 import skyport.game.Tile;
 import skyport.game.TileType;
 import skyport.game.World;
@@ -94,7 +94,7 @@ public class ActionMessageTest {
     public void mortarActionMessageTest() throws ProtocolException {
         player1.primaryWeapon = new Mortar();
         MortarActionMessage message = new MortarActionMessage();
-        message.setCoordinates(new Point(1, 1));
+        message.setCoordinates(new Vector(1, 1));
         message.performAction(player1, world);
         
         assertEquals(100 - player1.primaryWeapon.damage(), player2.health);
@@ -121,8 +121,8 @@ public class ActionMessageTest {
         player1.setLoadout(new Droid(), new Laser());
         MoveActionMessage message = new MoveActionMessage();
         Tile start = player1.getPosition();
-        Point point = player1.getPosition().coords;
-        Tile end = world.tileAt(point.pluss(Direction.LEFT_DOWN.point)).get();
+        Vector vector = player1.getPosition().coords;
+        Tile end = world.tileAt(vector.pluss(Direction.LEFT_DOWN.vector)).get();
         assertNull(end.playerOnTile);
         
         message.setDirection(Direction.LEFT_DOWN);

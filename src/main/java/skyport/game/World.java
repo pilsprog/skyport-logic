@@ -35,7 +35,7 @@ public class World {
         return this.kLength;
     }
     
-    public Optional<Tile> tileAt(Point p) {
+    public Optional<Tile> tileAt(Vector p) {
         if (!(p.j >= 0 && p.j < this.jLength && p.k >= 0 && p.k < this.kLength)) {
             return Optional.empty();
         }
@@ -47,7 +47,7 @@ public class World {
         for (int j = 0; j < jLength; j++) {
             Tile currentKTile = currentJTile;
             for (int k = 0; k < kLength; k++) {
-                currentKTile.coords = new Point(j, k);
+                currentKTile.coords = new Vector(j, k);
                 currentKTile = currentKTile.rightDown;
             }
             currentJTile = currentJTile.leftDown;

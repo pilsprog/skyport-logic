@@ -16,7 +16,7 @@ import skyport.adapter.MessageDeserializer;
 import skyport.adapter.PointAdapter;
 import skyport.adapter.TileSerializer;
 import skyport.game.Direction;
-import skyport.game.Point;
+import skyport.game.Vector;
 import skyport.game.Tile;
 import skyport.message.Message;
 import skyport.message.action.ActionMessage;
@@ -37,7 +37,7 @@ public class GsonTest {
         
         gson = new GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES)
-            .registerTypeAdapter(Point.class, new PointAdapter())
+            .registerTypeAdapter(Vector.class, new PointAdapter())
             .registerTypeAdapter(Message.class, new MessageDeserializer())
             .registerTypeAdapter(ActionMessage.class, new ActionMessageDeserializer())
             .registerTypeAdapter(Tile.class, new TileSerializer())

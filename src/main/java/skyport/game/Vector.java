@@ -1,10 +1,10 @@
 package skyport.game;
 
-public class Point {
+public class Vector {
     public final int j;
     public final int k;
 
-    public Point(int j, int k) {
+    public Vector(int j, int k) {
         this.j = j;
         this.k = k;
     }
@@ -13,8 +13,8 @@ public class Point {
         return "[" + j + ", " + k + "]";
     }
 
-    public Point pluss(Point v) {
-        return new Point(this.j+v.j, this.k+v.k);
+    public Vector pluss(Vector v) {
+        return new Vector(this.j+v.j, this.k+v.k);
     }
     
     @Override

@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 import skyport.exception.ProtocolException;
 import skyport.game.Direction;
 import skyport.game.Player;
-import skyport.game.Point;
+import skyport.game.Vector;
 import skyport.game.Tile;
 import skyport.game.TileType;
 import skyport.game.World;
@@ -17,11 +17,11 @@ import skyport.game.weapon.Laser;
 public class LaserActionMessage extends ActionMessage implements OffensiveAction {
     private Direction direction;
     @SuppressWarnings("unused")
-    private Point start;
+    private Vector start;
     @SuppressWarnings("unused")
-    private Point stop;
+    private Vector stop;
 
-    public void setInterval(Point startHack, Point stopHack) {
+    public void setInterval(Vector startHack, Vector stopHack) {
         this.start = startHack;
         this.stop = stopHack;
     }
@@ -48,15 +48,15 @@ public class LaserActionMessage extends ActionMessage implements OffensiveAction
         Direction dir = Optional.ofNullable(direction)
             .orElseThrow(() -> new ProtocolException("Invalid shot: unknown direction '" + direction + "'."));
            
-        List<Point> path = Stream.generate(() -> dir.point)
+        List<Vector> path = Stream.generate(() -> dir.vector)
             .limit(laser.range())
             .collect(Collectors.toList());
         
-        Point point = player.getPosition().coords;
+        Vector vector = player.getPosition().coords;
         int damage = laser.damage();
-        for(Point p : path) {
-            point = point.pluss(p);
-            Optional<Tile> tile = map.tileAt(point);
+        for(Vector p : path) {
+            vector = vector.pluss(p);
+            Optional<Tile> tile = map.tileAt(vector);
             if (tile.map(t -> t.tileType == TileType.ROCK)
                     .orElse(true)) {
                 break;
@@ -64,7 +64,7 @@ public class LaserActionMessage extends ActionMessage implements OffensiveAction
             tile.ifPresent(t -> t.damageTile(damage, player));
         }
 
-        this.stop = point;
+        this.stop = vector;
     }
     
     @Override

@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import skyport.exception.ProtocolException;
 import skyport.game.Direction;
 import skyport.game.Player;
-import skyport.game.Point;
+import skyport.game.Vector;
 import skyport.game.Tile;
 import skyport.game.TileType;
 import skyport.game.World;
@@ -43,16 +43,16 @@ public class DroidActionMessage extends ActionMessage implements OffensiveAction
                 .orElseThrow(() ->
                     new ProtocolException("Attempted to shoot the droid, but doesn't have it."));
         
-        List<Point> path = sequence.stream()
+        List<Vector> path = sequence.stream()
             .limit(droid.radius())
-            .map(d -> d.point)
+            .map(d -> d.vector)
             .collect(Collectors.toList());
         
         logger.info("==> '" + player.getName() + "' performing droid shot with " + path.size() + " steps.");
         
-        Point point = player.getPosition().coords;
-        for (Point p : path) {
-            point = point.pluss(p);
+        Vector vector = player.getPosition().coords;
+        for (Vector p : path) {
+            vector = vector.pluss(p);
             if(!map.tileAt(p)
                    .map(Tile::isAccessible)
                    .orElse(false)) {
@@ -62,14 +62,14 @@ public class DroidActionMessage extends ActionMessage implements OffensiveAction
         }
         
         logger.info("Droid detonating.");
-        final Point stop = point;
+        final Vector stop = vector;
         
         int damage = droid.damage();
         int aoe = droid.aoe();
         map.tileAt(stop).ifPresent(tile -> {
             tile.damageTile(damage, player); 
             Stream.of(Direction.values())
-                .map(d -> d.point)
+                .map(d -> d.vector)
                 .map(v -> stop.pluss(v))
                 .forEach(p -> 
                     map.tileAt(p)

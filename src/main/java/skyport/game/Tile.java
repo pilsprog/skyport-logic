@@ -17,7 +17,7 @@ public class Tile {
     public TileType tileType;
     public int resources;
 
-    public Point coords;
+    public Vector coords;
     public Player playerOnTile = null;
 
     private final Logger logger = LoggerFactory.getLogger(Tile.class);
