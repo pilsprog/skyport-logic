@@ -8,13 +8,13 @@ import java.util.stream.Stream;
 import skyport.exception.ProtocolException;
 import skyport.game.Direction;
 import skyport.game.Player;
-import skyport.game.Vector2d;
 import skyport.game.Tile;
 import skyport.game.TileType;
+import skyport.game.Vector2d;
 import skyport.game.World;
 import skyport.game.weapon.Laser;
 
-public class LaserActionMessage extends ActionMessage implements OffensiveAction {
+public class LaserActionMessage extends  OffensiveActionMessage {
     private Direction direction;
     @SuppressWarnings("unused")
     private Vector2d start;
@@ -64,7 +64,7 @@ public class LaserActionMessage extends ActionMessage implements OffensiveAction
                     .orElse(true)) {
                 break;
             }
-            tile.ifPresent(t -> t.damageTile(damage, player));
+            tile.ifPresent(t -> this.damage(player, t, damage));
         }
 
         this.stop = vector;

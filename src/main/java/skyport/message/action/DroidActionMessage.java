@@ -5,22 +5,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import skyport.exception.ProtocolException;
 import skyport.game.Direction;
 import skyport.game.Player;
-import skyport.game.Vector2d;
 import skyport.game.Tile;
 import skyport.game.TileType;
+import skyport.game.Vector2d;
 import skyport.game.World;
 import skyport.game.weapon.Droid;
 
-public class DroidActionMessage extends ActionMessage implements OffensiveAction {
+public class DroidActionMessage extends OffensiveActionMessage {
     private List<Direction> sequence;
     
-    private transient final Logger logger = LoggerFactory.getLogger(Droid.class);
 
     public List<Direction> getPath() {
         return sequence;
@@ -70,14 +66,14 @@ public class DroidActionMessage extends ActionMessage implements OffensiveAction
         int damage = droid.damage();
         int aoe = droid.aoe();
         map.tileAt(stop).ifPresent(tile -> {
-            tile.damageTile(damage, player); 
+            this.damage(player, tile, damage);
             Stream.of(Direction.values())
                 .map(d -> d.vec)
                 .map(v -> stop.plus(v))
                 .forEach(p -> 
                     map.tileAt(p)
                        .ifPresent(t -> 
-                           t.damageTile(aoe, player)));
+                           this.damage(player, t, aoe)));
         });    
     }
     

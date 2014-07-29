@@ -1,5 +1,8 @@
 package skyport.message.action;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import skyport.exception.ProtocolException;
 import skyport.game.Player;
 import skyport.game.World;
@@ -8,7 +11,9 @@ import skyport.message.Message;
 public abstract class ActionMessage extends Message {
     protected String type;  
     protected String from;
-
+    
+    protected transient final Logger logger = LoggerFactory.getLogger(this.getClass());
+    
     public ActionMessage() {
         super("action");
     }

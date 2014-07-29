@@ -2,25 +2,20 @@ package skyport.message.action;
 
 import java.util.stream.Stream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import skyport.exception.ProtocolException;
 import skyport.game.Direction;
 import skyport.game.Player;
-import skyport.game.Vector2d;
 import skyport.game.TileType;
+import skyport.game.Vector2d;
 import skyport.game.World;
 import skyport.game.weapon.Mortar;
 
-public class MortarActionMessage extends ActionMessage implements OffensiveAction {
+public class MortarActionMessage extends OffensiveActionMessage {
     private Vector2d coordinates;
     
     public void setCoordinates(Vector2d coords) {
         this.coordinates = coords;
     }
-    
-    private transient final Logger logger = LoggerFactory.getLogger(MortarActionMessage.class);
 
     @Override
     public void performAction(Player player, World map) throws ProtocolException {
@@ -44,14 +39,14 @@ public class MortarActionMessage extends ActionMessage implements OffensiveActio
         int damage = mortar.damage();
         int aoe = mortar.aoe();
         map.tileAt(target).ifPresent(tile -> {
-            tile.damageTile(damage, player);
+            this.damage(player, tile, damage);
             
             Stream.of(Direction.values())
                 .map(d -> d.vec)
                 .map(p -> target.plus(p))
                 .forEach(p -> 
                     map.tileAt(p).ifPresent(t -> 
-                        t.damageTile(aoe, player)));
+                        this.damage(player, t, aoe)));
         });
     }
     

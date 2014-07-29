@@ -95,36 +95,13 @@ public class Player {
         return spawn;
     }
 
-    void givePoints(int points) {
+    public void givePoints(int points) {
         logger.info("Got awarded " + points + " points.");
         this.score += points;
     }
     
     public int score() {
         return score;
-    }
-
-    public void damagePlayer(int hitpoints, Player dealingPlayer) {
-        if (this.getHealth() <= 0) {
-            logger.warn("Player is already dead.");
-            return;
-        }
-        logger.debug("'" + this.name + "' received " + hitpoints + " damage from '" + dealingPlayer.getName() + "'!");
-        this.setHealth(this.getHealth() - (int) Math.round(hitpoints + 0.2 * dealingPlayer.getTurnsLeft() * hitpoints));
-        if (!(dealingPlayer.name.equals(this.name))) {
-            dealingPlayer.givePoints(hitpoints); // damaged user other than
-            // self, award points
-        }
-        if (this.getHealth() <= 0) {
-            logger.info("==> " + this.name + " got killed by " + dealingPlayer.name + ".");
-            if (!(dealingPlayer.name.equals(this.name))) {
-                dealingPlayer.givePoints(20); // 20 bonus points for killing
-                // someone
-            }
-            this.score -= 40;
-            this.setHealth(0);
-            this.dead = true;
-        }
     }
 
     public void setTurnsLeft(int turns) {
@@ -163,7 +140,7 @@ public class Player {
 
     public void respawn() {
         this.position = this.spawn;
-        this.setHealth(100);
+        this.health = 100;
     }
 
     public void useResources(TileType resource, int resources) throws ProtocolException {
@@ -252,7 +229,12 @@ public class Player {
         return health;
     }
 
-    private void setHealth(int health) {
-        this.health = health;
+    public void damage(int hp) {
+        this.health -= hp;
+        if (this.health <= 0) {
+            this.dead = true;
+            this.health = 0;
+        }
+        
     }
 }

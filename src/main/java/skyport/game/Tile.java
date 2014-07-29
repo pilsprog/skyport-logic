@@ -37,16 +37,4 @@ public class Tile {
         }
         throw new ProtocolException("Tile does not contain a resource.");
     }
-
-    public void damageTile(int hitpoints, Player dealingPlayer) {
-        if (playerOnTile == null) {
-            return;
-        } else {
-            if (tileType == TileType.SPAWN) {
-                logger.info("Hit spawn tile, no damage received.");
-            } else {
-                playerOnTile.damagePlayer(hitpoints, dealingPlayer);
-            }
-        }
-    }
 }
