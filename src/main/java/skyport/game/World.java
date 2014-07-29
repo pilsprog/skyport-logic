@@ -9,9 +9,9 @@ public class World {
     private int jLength;
     private int kLength;
     
-    private transient Queue<Tile> spawnpoints;
+    private transient Queue<Vector2d> spawnpoints;
 
-    public World(Tile[][] tiles, int dimension, Queue<Tile> spawnpoints) {
+    public World(Tile[][] tiles, int dimension, Queue<Vector2d> spawnpoints) {
         this.jLength = dimension;
         this.kLength = dimension;
         this.data = tiles;
@@ -26,14 +26,14 @@ public class World {
         return this.kLength;
     }
     
-    public Optional<Tile> tileAt(Vector p) {
+    public Optional<Tile> tileAt(Vector2d p) {
         if (!(p.j >= 0 && p.j < this.jLength && p.k >= 0 && p.k < this.kLength)) {
             return Optional.empty();
         }
         return Optional.of(data[p.j][p.k]);
     }
 
-    public Queue<Tile> getSpawnpoints() {
+    public Queue<Vector2d> getSpawnpoints() {
         return spawnpoints;
     }
 
@@ -42,7 +42,7 @@ public class World {
     }
 
     public void respawn(Player player) {
-        Vector p = player.getPosition();
+        Vector2d p = player.getPosition();
         data[p.j][p.k].playerOnTile = null;
         player.respawn();
         p = player.getPosition();

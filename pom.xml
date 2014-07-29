@@ -10,10 +10,10 @@
 	<name>skyport-logic</name>
 
 	<scm>
-        <connection>scm:git:https://github.com/pilsprog/skyport-logic</connection>
-        <developerConnection>scm:git:git@github.com:pilsprog/skyport-logic.git</developerConnection>
-        <url>https://github.com/pilsprog/skyport-logic</url>
-    </scm>
+		<connection>scm:git:https://github.com/pilsprog/skyport-logic</connection>
+		<developerConnection>scm:git:git@github.com:pilsprog/skyport-logic.git</developerConnection>
+		<url>https://github.com/pilsprog/skyport-logic</url>
+	</scm>
 
 	<build>
 		<plugins>
@@ -41,6 +41,12 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.9.5</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.7.5</version>
@@ -49,6 +55,11 @@
 			<groupId>commons-cli</groupId>
 			<artifactId>commons-cli</artifactId>
 			<version>1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.java-websocket</groupId>
+			<artifactId>Java-WebSocket</artifactId>
+			<version>1.3.0</version>
 		</dependency>
 	</dependencies>
 </project>

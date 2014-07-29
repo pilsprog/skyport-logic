@@ -1,9 +1,7 @@
 package skyport.message;
 
 public class Message {
-    protected String message;
-
-    public Message() {};
+    private final String message;
 
     public Message(String message) {
         this.message = message;

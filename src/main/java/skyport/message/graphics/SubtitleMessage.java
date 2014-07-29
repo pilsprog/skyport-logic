@@ -7,7 +7,7 @@ public class SubtitleMessage extends Message {
     private String text;
 
     public SubtitleMessage(String text) {
-        this.message = "subtitle";
+        super("subtitle");
         this.text = text;
     }
 }

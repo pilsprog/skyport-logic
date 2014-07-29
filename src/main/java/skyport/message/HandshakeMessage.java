@@ -1,25 +1,23 @@
-package skyport.message.action;
+package skyport.message;
 
 import java.util.regex.Pattern;
 
 import skyport.exception.ProtocolException;
-import skyport.game.Player;
-import skyport.game.World;
 
 
-public class HandshakeMessage extends ActionMessage {
+public class HandshakeMessage extends Message {
     private int revision;
     private String name;
-
-    public int getRevision() {
-        return revision;
+    
+    public HandshakeMessage() {
+        super("connect");
     }
 
     public String getName() {
         return name;
     }
     
-    public void performAction(Player player, World map) throws ProtocolException {
+    public void validate() throws ProtocolException {
         if (this.revision != 1) {
             throw new ProtocolException("Wrong protocol revision: supporting 1, but got " + revision + ".");
         }
@@ -35,7 +33,5 @@ public class HandshakeMessage extends ActionMessage {
         if (!Pattern.matches("[a-zA-Z0-9-_+]+", name)) {
             throw new ProtocolException("Username contains invalid characters. May only contain " + "a-z, A-Z, 0-9, -, _, +.");
         }
-        
-        player.setName(name);
     }
 }

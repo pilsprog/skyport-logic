@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import skyport.exception.ProtocolException;
 import skyport.game.Direction;
 import skyport.game.Player;
-import skyport.game.Vector;
+import skyport.game.Vector2d;
 import skyport.game.Tile;
 import skyport.game.TileType;
 import skyport.game.World;
@@ -39,22 +39,22 @@ public class DroidActionMessage extends ActionMessage implements OffensiveAction
          }
         
         Droid droid = Stream
-                .of(player.primaryWeapon, player.secondaryWeapon)
+                .of(player.getPrimaryWeapon(), player.getSecondaryWeapon())
                 .filter(w -> w instanceof Droid)
                 .map(w -> (Droid)w)
                 .findFirst()
                 .orElseThrow(() ->
                     new ProtocolException("Attempted to shoot the droid, but doesn't have it."));
         
-        List<Vector> path = sequence.stream()
+        List<Vector2d> path = sequence.stream()
             .limit(droid.radius())
-            .map(d -> d.vector)
+            .map(d -> d.vec)
             .collect(Collectors.toList());
         
         logger.info("==> '" + player.getName() + "' performing droid shot with " + path.size() + " steps.");
         
-        Vector vector = player.getPosition();
-        for (Vector p : path) {
+        Vector2d vector = player.getPosition();
+        for (Vector2d p : path) {
             vector = vector.plus(p);
             if(!map.tileAt(p)
                    .map(Tile::isAccessible)
@@ -65,14 +65,14 @@ public class DroidActionMessage extends ActionMessage implements OffensiveAction
         }
         
         logger.info("Droid detonating.");
-        final Vector stop = vector;
+        final Vector2d stop = vector;
         
         int damage = droid.damage();
         int aoe = droid.aoe();
         map.tileAt(stop).ifPresent(tile -> {
             tile.damageTile(damage, player); 
             Stream.of(Direction.values())
-                .map(d -> d.vector)
+                .map(d -> d.vec)
                 .map(v -> stop.plus(v))
                 .forEach(p -> 
                     map.tileAt(p)

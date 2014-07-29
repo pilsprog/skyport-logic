@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 import skyport.exception.ProtocolException;
 import skyport.game.Direction;
 import skyport.game.Player;
-import skyport.game.Vector;
+import skyport.game.Vector2d;
 import skyport.game.Tile;
 import skyport.game.TileType;
 import skyport.game.World;
@@ -17,11 +17,11 @@ import skyport.game.weapon.Laser;
 public class LaserActionMessage extends ActionMessage implements OffensiveAction {
     private Direction direction;
     @SuppressWarnings("unused")
-    private Vector start;
+    private Vector2d start;
     @SuppressWarnings("unused")
-    private Vector stop;
+    private Vector2d stop;
 
-    public void setInterval(Vector startHack, Vector stopHack) {
+    public void setInterval(Vector2d startHack, Vector2d stopHack) {
         this.start = startHack;
         this.stop = stopHack;
     }
@@ -42,7 +42,7 @@ public class LaserActionMessage extends ActionMessage implements OffensiveAction
             throw new ProtocolException("Attempted to shoot laser from spawn.");
         }
   
-        Laser laser = Stream.of(player.primaryWeapon, player.secondaryWeapon)
+        Laser laser = Stream.of(player.getPrimaryWeapon(), player.getSecondaryWeapon())
                 .filter(w -> w instanceof Laser)
                 .map(w -> (Laser)w)
                 .findFirst()
@@ -51,13 +51,13 @@ public class LaserActionMessage extends ActionMessage implements OffensiveAction
         Direction dir = Optional.ofNullable(direction)
             .orElseThrow(() -> new ProtocolException("Invalid shot: unknown direction '" + direction + "'."));
            
-        List<Vector> path = Stream.generate(() -> dir.vector)
+        List<Vector2d> path = Stream.generate(() -> dir.vec)
             .limit(laser.range())
             .collect(Collectors.toList());
         
-        Vector vector = player.getPosition();
+        Vector2d vector = player.getPosition();
         int damage = laser.damage();
-        for(Vector p : path) {
+        for(Vector2d p : path) {
             vector = vector.plus(p);
             Optional<Tile> tile = map.tileAt(vector);
             if (tile.map(t -> t.tileType == TileType.ROCK)

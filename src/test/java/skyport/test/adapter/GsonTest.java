@@ -13,11 +13,11 @@ import org.junit.runners.JUnit4;
 
 import skyport.adapter.ActionMessageDeserializer;
 import skyport.adapter.MessageDeserializer;
-import skyport.adapter.PointAdapter;
 import skyport.adapter.TileSerializer;
+import skyport.adapter.Vector2dAdapter;
 import skyport.game.Direction;
-import skyport.game.Vector;
 import skyport.game.Tile;
+import skyport.game.Vector2d;
 import skyport.message.Message;
 import skyport.message.action.ActionMessage;
 import skyport.message.action.DroidActionMessage;
@@ -37,7 +37,7 @@ public class GsonTest {
         
         gson = new GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES)
-            .registerTypeAdapter(Vector.class, new PointAdapter())
+            .registerTypeAdapter(Vector2d.class, new Vector2dAdapter())
             .registerTypeAdapter(Message.class, new MessageDeserializer())
             .registerTypeAdapter(ActionMessage.class, new ActionMessageDeserializer())
             .registerTypeAdapter(Tile.class, new TileSerializer())

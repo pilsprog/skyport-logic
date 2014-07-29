@@ -10,7 +10,7 @@ public abstract class ActionMessage extends Message {
     protected String from;
 
     public ActionMessage() {
-        this.message = "action";
+        super("action");
     }
 
     public String getType() {

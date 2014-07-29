@@ -16,7 +16,7 @@ import org.junit.runners.JUnit4;
 
 import skyport.game.Tile;
 import skyport.game.TileType;
-import skyport.game.Vector;
+import skyport.game.Vector2d;
 import skyport.game.World;
 import skyport.game.WorldParser;
 
@@ -50,47 +50,47 @@ public class WorldParserTest {
     
     @Test
     public void parseWorldTileExistsTest() {
-        assertTrue(world.tileAt(new Vector(0,0)).isPresent());
-        assertTrue(world.tileAt(new Vector(0,1)).isPresent());
-        assertTrue(world.tileAt(new Vector(1,0)).isPresent());
-        assertTrue(world.tileAt(new Vector(1,1)).isPresent());
-        assertFalse(world.tileAt(new Vector(2,2)).isPresent());
+        assertTrue(world.tileAt(new Vector2d(0,0)).isPresent());
+        assertTrue(world.tileAt(new Vector2d(0,1)).isPresent());
+        assertTrue(world.tileAt(new Vector2d(1,0)).isPresent());
+        assertTrue(world.tileAt(new Vector2d(1,1)).isPresent());
+        assertFalse(world.tileAt(new Vector2d(2,2)).isPresent());
     }
     
     @Test
     public void parseWorldTileIsRightCoordTest() {
-        Vector point = new Vector(0,0);
+        Vector2d point = new Vector2d(0,0);
         Tile t = world.tileAt(point).get();
         assertEquals(t.coords, point);
         
-        point = new Vector(0,1);
+        point = new Vector2d(0,1);
         t = world.tileAt(point).get();
         assertEquals(t.coords, point);
         
-        point = new Vector(1,0);
+        point = new Vector2d(1,0);
         t = world.tileAt(point).get();
         assertEquals(t.coords, point);
         
-        point = new Vector(1,1);
+        point = new Vector2d(1,1);
         t = world.tileAt(point).get();   
         assertEquals(t.coords, point);
     }
     
     @Test
     public void parseWorldTileIsCorrectType() {
-        Vector point = new Vector(0,0);
+        Vector2d point = new Vector2d(0,0);
         Tile t = world.tileAt(point).get();
         assertEquals(t.tileType, TileType.SPAWN);
         
-        point = new Vector(0,1);
+        point = new Vector2d(0,1);
         t = world.tileAt(point).get();
         assertEquals(t.tileType, TileType.GRASS);
         
-        point = new Vector(1,0);
+        point = new Vector2d(1,0);
         t = world.tileAt(point).get();
         assertEquals(t.tileType, TileType.VOID);
         
-        point = new Vector(1,1);
+        point = new Vector2d(1,1);
         t = world.tileAt(point).get();   
         assertEquals(t.tileType, TileType.RUBIDIUM);
     }

@@ -30,11 +30,11 @@ public class WorldParser {
         Tile[][] tiles = parseBody();
         logger.debug("Done parsing. Ignored " + ignoredLines + " empty lines.");
 
-        Queue<Tile> spawnpoints = new LinkedList<>();
+        Queue<Vector2d> spawnpoints = new LinkedList<>();
         for (Tile[] ts : tiles) {
             for (Tile t : ts) {
                 if (t.tileType.equals(TileType.SPAWN)) {
-                    spawnpoints.add(t);
+                    spawnpoints.add(t.coords);
                 }
             }
         }
@@ -113,7 +113,7 @@ public class WorldParser {
         
         for(int i = 0; i < tiles.length; i++) {
             for(int j = 0; j < tiles.length; j++) {
-                tiles[i][j].coords = new Vector(i, j);
+                tiles[i][j].coords = new Vector2d(i, j);
             }
         }
         

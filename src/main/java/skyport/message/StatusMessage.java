@@ -5,7 +5,7 @@ public class StatusMessage extends Message {
     private boolean status;
 
     public StatusMessage(boolean status) {
-        this.message = "connect";
+        super("connect");
         this.status = status;
     }
 }

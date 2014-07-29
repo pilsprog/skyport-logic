@@ -10,7 +10,7 @@ public class Tile {
     public TileType tileType;
     public int resources;
 
-    public Vector coords;
+    public Vector2d coords;
     public Player playerOnTile = null;
 
     private final Logger logger = LoggerFactory.getLogger(Tile.class);

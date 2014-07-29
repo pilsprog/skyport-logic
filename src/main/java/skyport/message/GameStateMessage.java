@@ -14,7 +14,7 @@ public class GameStateMessage extends Message {
     private List<Player> players;
 
     public GameStateMessage(int turn, World map, List<Player> players) {
-        this.message = "gamestate";
+        super("gamestate");
         this.turn = turn;
         this.map = map;
         this.players = players;

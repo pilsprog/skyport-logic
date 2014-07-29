@@ -28,7 +28,7 @@ public class UpgradeActionMessage extends ActionMessage {
     public void performAction(Player player, World map) throws ProtocolException {
         logger.debug(player + " upgrading his " + weapon + ".");
         
-        Weapon weapon = Stream.of(player.primaryWeapon, player.secondaryWeapon)
+        Weapon weapon = Stream.of(player.getPrimaryWeapon(), player.getSecondaryWeapon())
                 .filter(w -> w.getName().equals(this.weapon))
                 .findFirst()
                 .orElseThrow(() 

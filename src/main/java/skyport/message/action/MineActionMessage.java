@@ -27,20 +27,20 @@ public class MineActionMessage extends ActionMessage {
         tile.mineTile();       
         switch (tileType) {
         case RUBIDIUM:
-            player.rubidiumResources++;
+            player.addRubidium();
             break;
         case EXPLOSIUM:
-            player.explosiumResources++;
+            player.addExplosium();
             break;
         case SCRAP:
-            player.scrapResources++;
+            player.addScrap();
             break;
         default:
         }
         logger.debug("Resources of player " + player 
-                + " are now: Rubidium: " + player.rubidiumResources 
-                       + ", Explosium: " + player.explosiumResources
-                           + ", Scrap: " + player.scrapResources);
+                + " are now: Rubidium: " + player.getRubidium()
+                       + ", Explosium: " + player.getExplosium()
+                           + ", Scrap: " + player.getScrap());
     }
 
     @Override

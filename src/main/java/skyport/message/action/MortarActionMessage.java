@@ -8,15 +8,15 @@ import org.slf4j.LoggerFactory;
 import skyport.exception.ProtocolException;
 import skyport.game.Direction;
 import skyport.game.Player;
-import skyport.game.Vector;
+import skyport.game.Vector2d;
 import skyport.game.TileType;
 import skyport.game.World;
 import skyport.game.weapon.Mortar;
 
 public class MortarActionMessage extends ActionMessage implements OffensiveAction {
-    private Vector coordinates;
+    private Vector2d coordinates;
     
-    public void setCoordinates(Vector coords) {
+    public void setCoordinates(Vector2d coords) {
         this.coordinates = coords;
     }
     
@@ -30,7 +30,7 @@ public class MortarActionMessage extends ActionMessage implements OffensiveActio
              throw new ProtocolException("Attempted to shoot mortar from spawn.");
          }
         
-        Mortar mortar = Stream.of(player.primaryWeapon, player.secondaryWeapon)
+        Mortar mortar = Stream.of(player.getPrimaryWeapon(), player.getSecondaryWeapon())
                 .filter(w -> w instanceof Mortar)
                 .map(w -> (Mortar)w)
                 .findFirst()
@@ -40,14 +40,14 @@ public class MortarActionMessage extends ActionMessage implements OffensiveActio
             throw new ProtocolException("Relative coordinates " + coordinates + " are out of range.");
         }
         
-        Vector target = player.getPosition().plus(coordinates);
+        Vector2d target = player.getPosition().plus(coordinates);
         int damage = mortar.damage();
         int aoe = mortar.aoe();
         map.tileAt(target).ifPresent(tile -> {
             tile.damageTile(damage, player);
             
             Stream.of(Direction.values())
-                .map(d -> d.vector)
+                .map(d -> d.vec)
                 .map(p -> target.plus(p))
                 .forEach(p -> 
                     map.tileAt(p).ifPresent(t -> 

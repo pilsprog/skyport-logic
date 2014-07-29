@@ -1,6 +1,7 @@
 package skyport.message.graphics;
 
-import skyport.message.action.HandshakeMessage;
+import skyport.message.HandshakeMessage;
+
 
 public class GraphicsHandshakeMessage extends HandshakeMessage {
     private String password;
