@@ -27,9 +27,7 @@ public class PlayerTest {
        
        Connection conn = Utils.getMockConnection("player1");
        
-       player = new Player(conn);  
-       player.handshake();
-       
+       player = new Player(conn);
     }
     
     @Test

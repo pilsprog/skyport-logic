@@ -51,11 +51,9 @@ public class ActionMessageTest {
         
         Connection conn1 = Utils.getMockConnection("player1");
         player1 = spy(new Player(conn1));
-        player1.handshake();
         
         Connection conn2 = Utils.getMockConnection("player1");
         player2 = spy(new Player(conn2));
-        player2.handshake();
         
         Tile tile1 = new Tile(TileType.GRASS);
         Tile tile2 = new Tile(TileType.GRASS);

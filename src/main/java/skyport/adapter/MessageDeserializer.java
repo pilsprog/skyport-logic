@@ -3,10 +3,9 @@ package skyport.adapter;
 import java.lang.reflect.Type;
 
 import skyport.message.HandshakeMessage;
+import skyport.message.LoadoutMessage;
 import skyport.message.Message;
 import skyport.message.action.ActionMessage;
-import skyport.message.action.LoadoutMessage;
-import skyport.message.graphics.GraphicsHandshakeMessage;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -24,11 +23,7 @@ public class MessageDeserializer implements JsonDeserializer<Message> {
         Message message;
         switch (type) {
         case "connect":
-            if(obj.get("password") != null) {
-                message = context.deserialize(json, GraphicsHandshakeMessage.class);
-            } else {
-                message = context.deserialize(json, HandshakeMessage.class);
-            }
+            message = context.deserialize(json, HandshakeMessage.class);
             break;
         case "loadout":
             message = context.deserialize(json, LoadoutMessage.class);

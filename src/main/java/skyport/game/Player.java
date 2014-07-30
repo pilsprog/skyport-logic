@@ -1,6 +1,7 @@
 package skyport.game;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -11,20 +12,18 @@ import skyport.exception.ProtocolException;
 import skyport.game.weapon.Weapon;
 import skyport.message.ErrorMessage;
 import skyport.message.HandshakeMessage;
+import skyport.message.LoadoutMessage;
 import skyport.message.Message;
 import skyport.message.StatusMessage;
 import skyport.message.action.ActionMessage;
-import skyport.message.action.LoadoutMessage;
 import skyport.network.Connection;
 
 public class Player {
-    private String name;
+    private Future<String> name;
     private int health = 100;
     private int score = 0;
-
-    private Weapon primaryWeapon;
-    private Weapon secondaryWeapon;
-
+    private Future<Weapon> primaryWeapon;
+    private Future<Weapon> secondaryWeapon;
     private Vector2d position;
     
     private transient int rubidium = 0;
@@ -34,55 +33,64 @@ public class Player {
     private transient boolean dead = false;
     private transient Vector2d spawn;
     private transient int turns; 
+    
     private final transient Connection conn;
 
     private transient final Logger logger = LoggerFactory.getLogger(Player.class);
     
     public Player(Connection conn) {
         this.conn = conn;
-    }
-    
-    public Future<Void> handshake() {
-        return CompletableFuture.runAsync(() -> {
+ 
+        CompletableFuture<HandshakeMessage> handshake = CompletableFuture.supplyAsync(() -> {
+           for (;;) {
+               Message message = this.conn.next();
+               if (message instanceof HandshakeMessage) {
+                   HandshakeMessage hs = (HandshakeMessage) message;
+                   try {
+                       hs.validate();
+                       this.conn.sendMessage(new StatusMessage(true));
+                       return hs;
+                   } catch (ProtocolException e) {
+                       this.conn.sendMessage(new ErrorMessage(e));
+                   }
+               }
+           }
+        });
+        
+        this.name = handshake.thenApply(HandshakeMessage::getName);
+        
+        CompletableFuture<LoadoutMessage> loadout = CompletableFuture.supplyAsync(() -> {
+            try {
+                handshake.get();
+            } catch (Exception e1) {
+                logger.info("Handshake failed. Aborting loadout..");
+                return null;
+            }
             for (;;) {
                 Message message = this.conn.next();
-                if (message instanceof HandshakeMessage) {
-                    HandshakeMessage handshake = (HandshakeMessage) message;
+                if (message instanceof LoadoutMessage) {
+                    LoadoutMessage lo = (LoadoutMessage) message;
                     try {
-                        handshake.validate();
-                        this.name = handshake.getName();
-                        this.conn.sendMessage(new StatusMessage(true));
-                        break;
+                        lo.validate();
+                        return lo;
                     } catch (ProtocolException e) {
                         this.conn.sendMessage(new ErrorMessage(e));
-                        continue;
                     }
                 }
             }
         });
-    }
-
-    public Future<Void> loadout() {
-        return CompletableFuture.runAsync(() -> {
-            for (;;) {
-                Message message = this.conn.next();
-                if (message instanceof LoadoutMessage) {
-                    LoadoutMessage loadout = (LoadoutMessage) message;
-                    try {
-                        loadout.validate();
-                        this.primaryWeapon = loadout.getPrimaryWeapon();
-                        this.secondaryWeapon = loadout.getSecondaryWeapon();
-                        break;
-                    } catch (ProtocolException e) {
-                        this.conn.sendMessage(new ErrorMessage(e));
-                        continue;
-                    }   
-                }
-            }  
-        });
+        
+        this.primaryWeapon = loadout.thenApply(LoadoutMessage::getPrimaryWeapon);
+        this.secondaryWeapon = loadout.thenApply(LoadoutMessage::getSecondaryWeapon);
     }
     
     public String getName() {
+        String name = "";
+        try {
+            name = this.name.get();
+        } catch (InterruptedException | ExecutionException e) {
+            logger.error("Getting name failed -> handshake didn't parse properly."); 
+        }
         return name;
     }
     
@@ -194,11 +202,23 @@ public class Player {
     }
 
     public Weapon getPrimaryWeapon() {
-        return primaryWeapon;
+        Weapon weapon = null;
+        try {
+            weapon = this.primaryWeapon.get();
+        } catch (InterruptedException | ExecutionException e) {
+            logger.error("Loadout failed; couldn't get primary weapon.");
+        }
+        return weapon;
     }
     
     public Weapon getSecondaryWeapon() {
-        return secondaryWeapon;
+        Weapon weapon = null;
+        try {
+            weapon = this.secondaryWeapon.get();
+        } catch (InterruptedException | ExecutionException e) {
+            logger.error("Loadout failed; couldn't get primary weapon.");
+        }
+        return weapon;
     }
 
     public int getRubidium() {

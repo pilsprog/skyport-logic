@@ -35,13 +35,18 @@ public class GraphicsServer extends WebSocketServer {
         .registerTypeAdapter(Tile.class, new TileSerializer())
         .create();
     
-    public GraphicsServer(int port) {
+    private final Message info;
+    
+    public GraphicsServer(Message info, int port) {
         super(new InetSocketAddress(port));
+        this.info = info;
     }
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
         logger.info("New graphics client connected: " + conn.getRemoteSocketAddress());
+        String json = gson.toJson(info);
+        conn.send(json);
     }
 
     @Override

@@ -14,8 +14,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.function.Consumer;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -35,6 +33,7 @@ import skyport.message.EndTurnMessage;
 import skyport.message.ErrorMessage;
 import skyport.message.GameFinishedMessage;
 import skyport.message.GameStateMessage;
+import skyport.message.InfoMessage;
 import skyport.message.Message;
 import skyport.message.action.ActionMessage;
 import skyport.network.Connection;
@@ -61,8 +60,10 @@ public class Skyport {
             return;
         }
         
+        Message info = new InfoMessage(time, rounds, filename, users);
+        
         logger.info("Starting graphics server.");
-        GraphicsServer graphics = new GraphicsServer(port+10);
+        GraphicsServer graphics = new GraphicsServer(info, port+10);
         graphics.start();
         
         logger.info("Waiting for clients to connect.");
@@ -72,21 +73,11 @@ public class Skyport {
             Socket client = socket.accept();
             Connection conn = new Connection(client);
             new Thread(conn).start();
+            conn.sendMessage(info);
             players.add(new Player(conn));
         }
-        
         logger.info("All clients connected.");
-        
-        logger.info("Shuffling players.");
-        
-        
-        logger.info("Shaking hands with players.");
-        players.stream()
-                .parallel()
-                .map(Player::handshake)
-                .forEach(finish);
-        logger.info("All hands shook.");
-        
+
         logger.info("Setting spawnpoints.");
         Collections.shuffle(players);        
         Queue<Vector2d> spawnpoints = world.getSpawnpoints();
@@ -95,12 +86,9 @@ public class Skyport {
         }
         
         logger.info("Sending initial game state.");
-        logger.info("Waiting for loadout.");
         Message state0 = new GameStateMessage(0, world, players);
         players.stream()
-            .peek(p -> p.send(state0))
-            .map(Player::loadout)
-            .forEach(finish);
+            .peek(p -> p.send(state0));
         graphics.sendToAll(state0);
         logger.info("Recieved loadout from all.");
   
@@ -156,10 +144,16 @@ public class Skyport {
            Collections.rotate(players, 1);
         }
         
-        String winner = players.stream()
-                .max(comparing(Player::score))
-                .map(Player::getName)
-                .orElse("TIE!");
+        players.sort(comparing(Player::score));
+        Collections.reverse(players);
+        players.removeIf(p -> p.score() < players.get(0).score());
+        String winner;
+        if (players.size() > 1) {
+            winner = String.format("A %d-way tie between: ", players.size());
+            winner += String.join(", ", players.toArray(new String[players.size()]));
+        } else {
+            winner = String.format("The winner is ", players.get(0));
+        }
         
         logger.info("Winner: " + winner);
         Message message = new GameFinishedMessage(winner);
@@ -182,13 +176,4 @@ public class Skyport {
 
         Skyport.runGame(filename, port, rounds, timeout);
     }
-    
-    static Consumer<Future<Void>> finish = f -> {
-        try {
-            f.get();
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    };
 }

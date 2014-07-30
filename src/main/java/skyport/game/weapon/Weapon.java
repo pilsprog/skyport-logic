@@ -44,8 +44,7 @@ public abstract class Weapon {
         if (o instanceof Weapon) {
             Weapon other = (Weapon) o;
             return this.name.equals(other.name) && this.level == other.level;
-        } else {
-            return false;
-        }
+        } 
+        return false;
     }
 }
