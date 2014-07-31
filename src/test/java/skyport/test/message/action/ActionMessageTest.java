@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.log4j.PropertyConfigurator;
@@ -191,7 +192,7 @@ public class ActionMessageTest {
 
         Field f = Player.class.getDeclaredField("secondaryWeapon");
         f.setAccessible(true);
-        f.set(player1, new Droid());
+        f.set(player1, CompletableFuture.completedFuture(new Droid()));
 
         for(int i = 0; i < 4; i ++) {
             player1.addScrap();
