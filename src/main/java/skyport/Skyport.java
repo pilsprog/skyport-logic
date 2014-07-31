@@ -96,13 +96,13 @@ public class Skyport {
         for (int round = 1; round <= rounds; round++) {
             for (Player player : players) {
                 logger.info("Starting player '" + player.getName() + "' turn.");
+                logger.info("Clearing all messages from player queue.");
+                player.clear();
                 logger.info("Sending first round to all.");
                 Message state = new GameStateMessage(round, world, players);
                 players.stream().forEach(p -> p.send(state));
                 graphics.sendToAll(state);
 
-                logger.info("Clearing all messages from " + player.getName());
-                player.clear();
                 if (player.isDead()) {
                     logger.info(player.getName() + " is dead. Respawning...");
                     player.respawn();
