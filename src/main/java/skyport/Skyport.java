@@ -148,8 +148,9 @@ public class Skyport {
         players.removeIf(p -> p.score() < players.get(0).score());
         String winner;
         if (players.size() > 1) {
-            winner = String.format("A %d-way tie between: ", players.size());
-            winner += String.join(", ", players.toArray(new String[players.size()]));
+            winner = String.format("A %d-way tie between: %s", 
+                    players.size(),
+                    String.join(", ", players.toArray(new String[players.size()])));
         } else {
             winner = String.format("The winner is ", players.get(0));
         }
