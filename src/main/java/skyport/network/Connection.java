@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -14,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import skyport.adapter.ActionMessageDeserializer;
+import skyport.adapter.FutureSerializer;
 import skyport.adapter.MessageDeserializer;
 import skyport.adapter.TileSerializer;
 import skyport.adapter.Vector2dAdapter;
@@ -38,6 +40,7 @@ public class Connection implements Runnable {
 
     protected Gson gson = new GsonBuilder()
         .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES)
+        .registerTypeAdapter(Future.class, new FutureSerializer())
         .registerTypeAdapter(Vector2d.class, new Vector2dAdapter())
         .registerTypeAdapter(Message.class, new MessageDeserializer())
         .registerTypeAdapter(ActionMessage.class, new ActionMessageDeserializer())

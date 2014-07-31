@@ -2,6 +2,7 @@ package skyport.network;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;
+import java.util.concurrent.Future;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import skyport.adapter.ActionMessageDeserializer;
+import skyport.adapter.FutureSerializer;
 import skyport.adapter.MessageDeserializer;
 import skyport.adapter.TileSerializer;
 import skyport.adapter.Vector2dAdapter;
@@ -30,6 +32,7 @@ public class GraphicsServer extends WebSocketServer {
     private Gson gson = new GsonBuilder()
         .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES)
         .registerTypeAdapter(Vector2d.class, new Vector2dAdapter())
+        .registerTypeAdapter(Future.class, new FutureSerializer())
         .registerTypeAdapter(Message.class, new MessageDeserializer())
         .registerTypeAdapter(ActionMessage.class, new ActionMessageDeserializer())
         .registerTypeAdapter(Tile.class, new TileSerializer())

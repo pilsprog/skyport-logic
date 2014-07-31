@@ -1,26 +1,42 @@
 package skyport.test;
 
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 import skyport.exception.ProtocolException;
+import skyport.game.weapon.Droid;
+import skyport.game.weapon.Laser;
 import skyport.message.HandshakeMessage;
+import skyport.message.LoadoutMessage;
 import skyport.network.Connection;
 
 public class Utils {
     
     public static Connection getMockConnection(String name) throws ProtocolException {
-        HandshakeMessage message = spy(new HandshakeMessage());
+        HandshakeMessage handshake = spy(new HandshakeMessage());
         doNothing()
-            .when(message)
+            .when(handshake)
             .validate();
-        when(message.getName())
+        when(handshake.getName())
             .thenReturn(name);
+        
+        LoadoutMessage loadout = spy(new LoadoutMessage());
+        doNothing()
+            .when(loadout)
+            .validate();
+        doReturn(new Droid())
+            .when(loadout)
+            .getPrimaryWeapon();
+        doReturn(new Laser())
+            .when(loadout)
+            .getSecondaryWeapon();
         
         Connection conn = mock(Connection.class);
         when(conn.next())
-            .thenReturn(message);
+            .thenReturn(handshake)
+            .thenReturn(loadout);
 
         return conn;
     }
