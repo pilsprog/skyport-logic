@@ -188,7 +188,9 @@ public class Player {
                 return null;
             }
             if (message instanceof ActionMessage) {
-                return (ActionMessage)message;
+                ActionMessage action = (ActionMessage)message;
+                action.setFrom(this.getName());
+                return action;
             }
         }
     }

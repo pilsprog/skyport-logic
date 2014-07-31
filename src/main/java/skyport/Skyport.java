@@ -107,24 +107,23 @@ public class Skyport {
                     logger.info(player.getName() + " is dead. Respawning...");
                     player.respawn();
                 } else {
-                    List<ActionMessage> messages = new ArrayList<>();
+                    List<ActionMessage> actions = new ArrayList<>();
                     Instant stop = Instant.now().plus(time, MILLIS);
                     for (int a = 0; a < 3; a++) {
                         logger.info("Waiting for action " + a + ".");
                         long timeout = Math.max(0, MILLIS.between(Instant.now(), stop));
-                        ActionMessage message = player.next(timeout, MILLISECONDS);
-                        if (message == null) {
+                        ActionMessage action = player.next(timeout, MILLISECONDS);
+                        if (action == null) {
                             logger.debug("==> Player '" + player.getName() + "' timed out in round " + round + ".");
                             break;
                         }
 
                         try {
                             logger.info("Performing action.");
-                            message.performAction(player, world);
-                            message.setFrom(player.getName());
-                            messages.add(message);
-                            logger.info("Successful message: " + message.toString());
-                            players.stream().forEach(p -> p.send(message));
+                            action.performAction(player, world);
+                            actions.add(action);
+                            logger.info("Successful message: " + action.toString());
+                            players.stream().forEach(p -> p.send(action));
                         } catch (ProtocolException e) {
                             logger.debug(e.getMessage());
                             player.send(new ErrorMessage(e));
@@ -135,7 +134,7 @@ public class Skyport {
                     player.send(new EndTurnMessage());
 
                     logger.info("Sending actions to graphics.");
-                    for (Message m : messages) {
+                    for (Message m : actions) {
                         graphics.sendToAll(m);
                     }
                 }
